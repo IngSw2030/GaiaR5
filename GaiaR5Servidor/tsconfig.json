@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
+    "outDir": "dist",
+    "sourceMap": true,
+    "baseUrl": "src",
+    "paths": {
+      "@entidades/*": ["entidades/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".idea",
+    ".vscode"
+  ]
+}

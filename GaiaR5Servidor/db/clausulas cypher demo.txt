@@ -1,0 +1,14 @@
+CREATE (:Acopio{nombre:"Las marianas", direccion:"Calle 100 #89-15", horario:"8:00 am a 5:00 pm", avatar:"search", tags:"{'tags': ['Plastico', 'Madera']}"})
+CREATE (:Acopio{nombre:"Los hermanos de javier", direccion:"Calle 45 #7-30", horario:"9:00 am a 10:00 pm", avatar:"add", tags:"{'tags': ['Metal', 'Vidrio']}"})
+CREATE (:Acopio{nombre:"El codito", direccion:"Calle 13 #30-20", horario:"8:00 am a 5:00 pm", avatar:"delete", tags:"{'tags': ['Plastico', 'Madera', 'Vidrio', 'Carton']}"})
+CREATE (:Acopio{nombre:"Las tortugas", direccion:"Calle 69 #4-20", horario:"10:00 pm a 8:00 am", avatar:"wifi", tags:"{'tags': ['Pizza']}"})
+
+MATCH (a1:Acopio{nombre:"Las marianas"}), (r1:Recurso) WHERE r1.nombre IN ["Plastico", "Madera"] WITH a1, r1 CREATE (a1)-[:Recicla]->(r1)
+
+MATCH (a2:Acopio{nombre:"Los hermanos de javier"}), (r2:Recurso) WHERE r2.nombre IN ["Metal", "Vidrio"] WITH a2, r2 CREATE (a2)-[:Recicla]->(r2)
+
+MATCH (a3:Acopio{nombre:"El codito"}), (r3:Recurso) WHERE r3.nombre IN ["Plastico", "Madera", "Vidrio", "Carton"] WITH a3, r3 CREATE (a3)-[:Recicla]->(r3)
+
+MATCH (a4:Acopio{nombre:"Las tortugas"}), (r4:Recurso) WHERE r4.nombre IN ["Pizza"] WITH a4, r4 CREATE (a4)-[:Recicla]->(r4)
+
+MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN ["Metal", "Madera"] RETURN a, r
