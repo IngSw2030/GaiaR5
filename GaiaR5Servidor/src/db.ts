@@ -1,6 +1,9 @@
-import neo4j from "neo4j-driver"
-import {Driver, Session} from "neo4j-driver";
-export default class DB{
+import neo4j, {Driver, Session} from "neo4j-driver"
+import IDBAdaptador from "./adaptadores/IDBAdaptador";
+import CentroAcopio from "@entidades/CentroAcopio";
+import Usuario from "../src/entidades/Usuario";
+
+export default class DB implements IDBAdaptador{
     private static instancia: DB;
     private driver:Driver;
     private session:Session;
@@ -17,23 +20,52 @@ export default class DB{
         }
         return DB.instancia;
     }
-    async buscar(filtro){
-        let resultado = [];
-        let incluidos = [];
-        let resultados = await this.session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN $filtro RETURN a", {
-            filtro: filtro
+
+    async obtenerCentrosPorRecurso(recurso: string): Promise<CentroAcopio[]> {
+        let resultado: CentroAcopio[] = [];
+        let resultados = await this.session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN $recurso RETURN DISTINCT a", {
+            recurso
         });
         resultados.records.forEach((nodo)=>{
             nodo.forEach((acopio)=>{
                 let acopioData = acopio.properties;
                 let tags = acopioData.tags.replace(new RegExp('\'', 'g'), "\"");
                 acopioData.tags = JSON.parse(tags).tags;
-                if(!incluidos.includes(acopioData.nombre)){
-                    incluidos.push(acopioData.nombre)
-                    resultado.push(acopioData)
-                }
             })
         })
         return resultado;
     }
+
+    async obtenerRecursos(): Promise<string[]> {
+        let consulta = await this.session.run("MATCH (r:Recurso) RETURN DISTINCT r.nombre");
+        return consulta.records.map((registro) => {
+            return registro.get("r.nombre");
+        });
+    }
+
+    async crearUsuario(usuario:Usuario): Promise<Usuario> {
+        let consulta = await this.session.run("CREATE (n:Person $props) RETURN n", {
+            props: usuario
+        });
+        let props = consulta.records[0].get('n').properties;
+        return new Usuario(props.nombre, props.cedula, props.semillas);
+    }
+
+    obtenerUsuario(): Promise<Usuario> {
+        return Promise.resolve(undefined);
+    }
+
+    asignarSemillasUsuario(): Promise<number> {
+
+        return Promise.resolve(0);
+    }
+
+    obtenerNodosPorEtiqueta(etiquetaNodo, filtro): Record<any, any>[] {
+        return [];
+    }
+
+    obtenerNodosPorRelacion(etiquedaNodoOrigen, etiquetaRelacion, etiquetaNodoDestino): Record<any, any> {
+        return undefined;
+    }
+
 }

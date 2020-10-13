@@ -1,6 +1,4 @@
-import IInflador from "@entidades/inflador/IInflador";
-
-export default class CentroAcopio implements IInflador{
+export default class CentroAcopio{
     private _nombre:String;
     private _direccion: String;
     private _numero: String;
