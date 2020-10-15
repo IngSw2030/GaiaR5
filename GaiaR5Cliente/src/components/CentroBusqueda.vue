@@ -28,13 +28,27 @@
             <q-item-section>
               <q-item clickable v-ripple>
                 <q-item-section>
-                  <q-item-label>Las marianas</q-item-label>
+                  <q-item-label>Asociación de recicladores buenos aires Gladys</q-item-label>
                   <q-item-label caption>
                     Horario: 8:00 am a 5:00 pm
+                  </q-item-label>
+                  <q-item-label caption>
+                    Hace tres semanas
                   </q-item-label>
                 </q-item-section>
               </q-item>
               <q-separator spaced inset />
+              <q-item clickable v-ripple>
+                <q-item-section>
+                  <q-item-label>Asociación de recicladores de oficio nueva visión</q-item-label>
+                  <q-item-label caption>
+                    Horario: 8:00 am a 5:00 pm
+                  </q-item-label>
+                  <q-item-label caption>
+                    Hace un mes
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
             </q-item-section>
           </div>
         </q-list>
