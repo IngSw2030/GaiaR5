@@ -1,30 +1,43 @@
 import IControlador from "../IControlador";
 import {Express} from "express";
 import DB from "../../db";
+import Controlador from "../Controlador";
 
 export default class CentrosAcopio implements IControlador{
     path: string;
+    server: Express;
+    controlador: Controlador;
 
     constructor(path: string) {
         this.path = path;
     }
 
-    install(server: Express): void {
+    install(server: Express, controlador:Controlador): void {
+        this.server = server;
+        this.controlador = controlador;
         server.get(`${this.path}/obtenerRecursos`, async (req, res) => {
             res.send(await this.obtenerRecursos());
         });
         console.log(`Registrando: ${this.path}/obtenerRecursos`);
         server.post(`${this.path}/obtenerCentrosPorRecurso`, async (req, res) =>{
-            return await this.obtnerCentrosPorRecurso(req.body.filtro);
+            res.send(await this.obtenerCentrosPorRecurso(req.body.filtro));
+        });
+        console.log(`Registrando: ${this.path}/crearCentroAcopio`);
+        server.post(`${this.path}/crearCentroAcopio`, async (req, res) =>{
+            res.send(await this.crearCentroAcopio(req.body.centroAcopio));
         });
         console.log(`Registrando: ${this.path}/obtenerCentrosPorRecurso`);
+    }
+
+    async crearCentroAcopio(centroAcopio){
+        return await DB.obtenerInstancia().crearCentroAcopio(centroAcopio);
     }
 
     async obtenerRecursos(){
         return await DB.obtenerInstancia().obtenerRecursos();
     }
 
-    async obtnerCentrosPorRecurso(recurso){
+    async obtenerCentrosPorRecurso(recurso:string){
         return await DB.obtenerInstancia().obtenerCentrosPorRecurso(recurso);
     }
 }
