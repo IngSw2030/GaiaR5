@@ -15,19 +15,26 @@
 
     <div class="relative-position container   flex flex-center">
       <GmapMap
-      :center="{lat:4.629070, lng:-74.062716}"
+      :center="origen"
       :zoom="15"
       map-type-id="roadmap"
       style="width: 500px; height: 300px"
       >
-        <GmapMarker :position="{lat:  4.629070, lng: -74.062716}" />
+        <GmapMarker :position="origen" />
+        <GmapMarker :position="{lat:  destino.lat, lng: destino.lng}" />
+
+        <gmap-polygon :paths="[origen,destino]" :editable="false" :draggable="false" :path="true" ></gmap-polygon>
       </GmapMap>
     </div>
     <br>
-    <template >
+
+
+    <div class="relative-position container   flex flex-center">
     <q-btn style="color: #7FA949" align="center" icon="eco" label="Validar visita">
     </q-btn>
-    </template>
+    </div>
+
+
   </q-page>
 </template>
 
@@ -43,7 +50,28 @@ Vue.use(VueGoogleMaps, {
   }
 })
 @Component
-export default class Ruta extends Vue{}
+export default class Ruta extends Vue{
+  data(){
+    return{
+      coordenadas:{
+        lat:0,
+        lng:0
+      },
+
+      origen:{
+        lat:4.629070,
+        lng: -74.062716
+      },
+
+      destino:{
+        lat:4.632304,
+        lng:-74.070685
+      }
+
+    }
+
+  }
+}
 </script>
 
 
