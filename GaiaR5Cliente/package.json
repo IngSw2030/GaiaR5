@@ -15,7 +15,8 @@
     "core-js": "^3.6.5",
     "quasar": "^1.0.0",
     "vue-class-component": "^7.2.2",
-    "vue-property-decorator": "^8.3.0"
+    "vue-property-decorator": "^8.3.0",
+    "vue2-google-maps": "^0.10.7"
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",

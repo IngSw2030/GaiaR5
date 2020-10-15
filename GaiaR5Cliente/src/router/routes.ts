@@ -6,7 +6,9 @@ const routes: RouteConfig[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Index.vue') },
-      { path: '/busqueda', component: () => import('components/CentroBusqueda') }
+      { path: '/busqueda', component: () => import('components/CentroBusqueda') },
+      { path: '/mapa', component: () => import('components/mapa') },
+      { path: '/info', component: () => import('components/infoCentroAcopio') }
     ]
   },
 
