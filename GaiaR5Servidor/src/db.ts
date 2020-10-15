@@ -23,28 +23,26 @@ export default class DB {
     }
 
     async obtenerCentroPorNombre(nombre: string){
-        let consulta = await this.session.run("MATCH (a:Acopio) WHERE a.nombre = $nombre RETURN a", {
+        let consulta = await this.session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE a.nombre = $nombre RETURN DISTINCT a, r.nombre", {
             nombre: nombre
         });
-        let props = consulta.records[0].get("a").properties;
-        let tags = props.tags.replace(new RegExp('\'', 'g'), "\"");
-        props.tags = JSON.parse(tags).tags;
-        return props;
+        let centro = consulta.records[0].get("a").properties;
+        centro.recursos = [];
+        for(let record of consulta.records.values()){
+            centro.recursos.push(record.get("r.nombre"));
+        }
+        return centro;
     }
 
     async obtenerCentrosPorRecurso(recurso: string): Promise<CentroAcopio[]> {
-        let resultado: CentroAcopio[] = [];
-        let resultados = await this.session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN $recurso RETURN DISTINCT a", {
+        let consulta = await this.session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN $recurso RETURN DISTINCT a.nombre", {
             recurso
         });
-        resultados.records.forEach((nodo) => {
-            nodo.forEach((acopio) => {
-                let acopioData = acopio.properties;
-                let tags = acopioData.tags.replace(new RegExp('\'', 'g'), "\"");
-                acopioData.tags = JSON.parse(tags).tags;
-            })
-        })
-        return resultado;
+        let centros = [];
+        for(let record of consulta.records.values()){
+            centros.push(await this.obtenerCentroPorNombre(record.get("a.nombre")));
+        }
+        return centros;
     }
 
     async obtenerRecursos(): Promise<string[]> {
@@ -83,15 +81,49 @@ export default class DB {
 
     async crearCentroAcopio(centroAcopio){
         let props = await this.crearEntidad("Acopio", centroAcopio);
-        return new CentroAcopio(props.nombre, props.direccion, props.numero, props.latitud, props.longitud, props.pagina, props.horarioApertura, props.horarioCierre);
+        return new CentroAcopio(props.nombre, props.direccion, props.numero, props.latitud, props.longitud, props.pagina, props.horarioApertura, props.horarioCierre, props.recursos);
     }
 
-    obtenerNodosPorEtiqueta(etiquetaNodo, filtro): Record<any, any>[] {
-        return [];
+    async iniciarRecorrido(cedula:string, centro:string){
+        let props = {
+            fecha: Date.now(),
+            semillas: 0,
+            finalizada: false
+        }
+        let consulta = await this.session.run("MATCH (u:Usuario{cedula:$cedula}), (a:Acopio{nombre:$centro}) WITH u, a CREATE (u)-[v:Visita $props]->(a) return v", {
+            cedula,
+            centro,
+            props
+        });
+        return consulta.records[0].get("v").properties;
     }
 
-    obtenerNodosPorRelacion(etiquedaNodoOrigen, etiquetaRelacion, etiquetaNodoDestino): Record<any, any> {
-        return undefined;
+    async finalizarRecorrido(cedula:string, semillas: number){
+        let consulta = await this.session.run("MATCH (u:Usuario{cedula:$cedula})-[v:Visita{finalizada: false}]-(a:Acopio) SET v.finalizada = true, v.semillas = $semillas RETURN v, a",
+            {
+                cedula,
+                semillas
+            });
+        return {
+            visita: consulta.records[0].get("v").properties,
+            centro: consulta.records[0].get("a").properties
+        }
     }
+
+    async obtenerHistorialVisitas(cedula: string){
+        let consulta = await this.session.run("MATCH (u:Usuario{cedula:$cedula})-[v:Visita{finalizada:true}]-(a:Acopio) return v, a.nombre", {
+            cedula
+        });
+        let visitas = [];
+        for(let record of consulta.records.values()){
+            let visita = {
+                visita: record.get("v").properties,
+                centro: record.get("a.nombre")
+            }
+            visitas.push(visita);
+        }
+        return visitas;
+    }
+
 
 }

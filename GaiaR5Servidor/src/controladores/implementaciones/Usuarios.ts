@@ -22,14 +22,24 @@ export default class Usuarios implements IControlador{
             res.send(await this.crearUsuario(req.body.usuario));
         })
         console.log(`Registrando: ${this.path}/crearUsuario`);
+
+
         server.post(`${this.path}/asignarSemillas`, async(req, res) => {
             res.send(await this.asignarSemillas(req.body.cedula, req.body.semillas));
         })
         console.log(`Registrando: ${this.path}/asignarSemillas`);
+
+
         server.post(`${this.path}/finalizarRecorrido`, async(req, res) => {
             res.send(await this.finalizarRecorrido(req.body.cedula, req.body.distancia));
         })
         console.log(`Registrando: ${this.path}/finalizarRecorrido`);
+
+
+        server.post(`${this.path}/obtenerHistorialVisitas`, async(req, res) => {
+            res.send(await this.obtenerHistorialVisitas(req.body.cedula));
+        })
+        console.log(`Registrando: ${this.path}/obtenerHistorialVisitas`);
     }
 
     async crearUsuario(usuario:Usuario){
@@ -42,9 +52,14 @@ export default class Usuarios implements IControlador{
 
     async finalizarRecorrido(cedula:string, distancia:number){
         let semillas = new AsignarSemillasAleatorias().calcularSemillas(distancia);
+        let visita = await DB.obtenerInstancia().finalizarRecorrido(cedula, semillas);
         let nodo = await this.asignarSemillas(cedula, semillas);
         return {
-            "semillas": semillas
+            visita
         };
+    }
+
+    async obtenerHistorialVisitas(cedula:string){
+        return await DB.obtenerInstancia().obtenerHistorialVisitas(cedula);
     }
 }

@@ -2,6 +2,7 @@ import IControlador from "../IControlador";
 import {Express} from "express";
 import {Client, LatLng} from "@googlemaps/google-maps-services-js";
 import Controlador from "../Controlador";
+import DB from "../../db";
 
 export default class Geografico implements IControlador {
     path: string;
@@ -10,8 +11,6 @@ export default class Geografico implements IControlador {
     private APIKEY = "AIzaSyDm1cQh3R0DKN9fK-n7pwv0kWsTG5mlIEE"
     pruebaInicio = [4.63127345, -74.06408751];
     pruebaFin = [4.64588103, -74.07849526];
-
-
 
     constructor(path: string) {
         this.path = path;
@@ -24,6 +23,11 @@ export default class Geografico implements IControlador {
             res.send(await this.solicitarRecorrido(req.body.ubicacionUsuario, req.body.ubicacionCentro));
         })
         console.log(`Registrando: ${this.path}/solicitarRecorrido`);
+        //////////////////////////////////////////////////////////////////
+        server.post(`${this.path}/iniciarRecorrido`, async (req, res) => {
+            res.send(await this.iniciarRecorrido(req.body.ubicacionUsuario, req.body.ubicacionCentro, req.body.cedula, req.body.centro));
+        })
+        console.log(`Registrando: ${this.path}/iniciarRecorrido`);
     }
 
     async solicitarRecorrido(ubicacionUsuario:LatLng, ubicacionCentro:LatLng) {
@@ -35,7 +39,19 @@ export default class Geografico implements IControlador {
                 key: this.APIKEY
             }
         });
-        console.log(directions.data);
+        return directions.data;
+    }
+
+    async iniciarRecorrido(ubicacionUsuario:LatLng, ubicacionCentro:LatLng, cedula:string, centro:string) {
+        const client = new Client({});
+        let directions = await client.directions({
+            params: {
+                origin: ubicacionUsuario,
+                destination: ubicacionCentro,
+                key: this.APIKEY
+            }
+        });
+        await DB.obtenerInstancia().iniciarRecorrido(cedula, centro);
         return directions.data;
     }
 }

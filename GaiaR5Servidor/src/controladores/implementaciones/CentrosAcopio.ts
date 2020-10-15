@@ -19,18 +19,22 @@ export default class CentrosAcopio implements IControlador{
             res.send(await this.obtenerRecursos());
         });
         console.log(`Registrando: ${this.path}/obtenerRecursos`);
+        /////////////////////////////////////////////////////////////
         server.post(`${this.path}/obtenerCentrosPorRecurso`, async (req, res) =>{
-            res.send(await this.obtenerCentrosPorRecurso(req.body.filtro));
+            res.send(await this.obtenerCentrosPorRecurso(req.body.recurso));
         });
-        console.log(`Registrando: ${this.path}/crearCentroAcopio`);
+        console.log(`Registrando: ${this.path}/obtenerCentrosPorRecurso`);
+        /////////////////////////////////////////////////////////////
         server.post(`${this.path}/crearCentroAcopio`, async (req, res) =>{
             res.send(await this.crearCentroAcopio(req.body.centroAcopio));
         });
-        console.log(`Registrando: ${this.path}/obtenerCentrosPorRecurso`);
+        console.log(`Registrando: ${this.path}/crearCentroAcopio`);
+        /////////////////////////////////////////////////////////////
         server.post(`${this.path}/obtenerCentroPorNombre`, async (req, res) =>{
             res.send(await this.obtenerCentroPorNombre(req.body.nombre));
         });
         console.log(`Registrando: ${this.path}/obtenerCentroPorNombre`);
+        /////////////////////////////////////////////////////////////
     }
 
     async crearCentroAcopio(centroAcopio){
