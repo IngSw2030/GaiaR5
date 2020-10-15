@@ -22,6 +22,16 @@ export default class DB {
         return DB.instancia;
     }
 
+    async obtenerCentroPorNombre(nombre: string){
+        let consulta = await this.session.run("MATCH (a:Acopio) WHERE a.nombre = $nombre RETURN a", {
+            nombre: nombre
+        });
+        let props = consulta.records[0].get("a").properties;
+        let tags = props.tags.replace(new RegExp('\'', 'g'), "\"");
+        props.tags = JSON.parse(tags).tags;
+        return props;
+    }
+
     async obtenerCentrosPorRecurso(recurso: string): Promise<CentroAcopio[]> {
         let resultado: CentroAcopio[] = [];
         let resultados = await this.session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN $recurso RETURN DISTINCT a", {

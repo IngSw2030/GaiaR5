@@ -5,7 +5,7 @@ import DB from "./db";
 import Controlador from "./controladores/Controlador";
 
 const server = exp();
-const port = 4557;
+const port = 4558;
 const db: DB = DB.obtenerInstancia();
 //
 server.use(cors());

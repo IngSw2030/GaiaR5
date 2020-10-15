@@ -27,6 +27,10 @@ export default class CentrosAcopio implements IControlador{
             res.send(await this.crearCentroAcopio(req.body.centroAcopio));
         });
         console.log(`Registrando: ${this.path}/obtenerCentrosPorRecurso`);
+        server.post(`${this.path}/obtenerCentroPorNombre`, async (req, res) =>{
+            res.send(await this.obtenerCentroPorNombre(req.body.nombre));
+        });
+        console.log(`Registrando: ${this.path}/obtenerCentroPorNombre`);
     }
 
     async crearCentroAcopio(centroAcopio){
@@ -39,5 +43,9 @@ export default class CentrosAcopio implements IControlador{
 
     async obtenerCentrosPorRecurso(recurso:string){
         return await DB.obtenerInstancia().obtenerCentrosPorRecurso(recurso);
+    }
+
+    async obtenerCentroPorNombre(nombre:string){
+        return await DB.obtenerInstancia().obtenerCentroPorNombre(nombre);
     }
 }
