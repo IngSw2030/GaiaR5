@@ -2,6 +2,9 @@
 
   <q-page>
 
+    <h2>  quiero saber mis coordenadas   </h2>
+
+
     <GmapMap
       :center="{lat:4.629070, lng:-74.062716}"
       :zoom="15"
@@ -36,6 +39,7 @@ Vue.use(VueGoogleMaps, {
 })
 
  export default {
+
 }
 </script>
 
