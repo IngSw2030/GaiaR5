@@ -19,10 +19,28 @@
         <q-card-section>
           Tags:
           <div class="row items-center">
-            <q-chip v-for="(tag, indice) in centro.tags" :key="'tag-'+centro.nombre+indice">{{tag}}</q-chip>
+            <q-chip v-for="(tag, indice) in centro.recursos" :key="'tag-'+centro.nombre+indice">{{tag}}</q-chip>
           </div>
           <p>{{centro.direccion}}</p>
           <p>{{centro.horario}}</p>
+
+
+          <q-item active clickable v-ripple >
+            <q-item-section avatar >
+              <q-icon name="settings" style="color: #7FA949;" />
+            </q-item-section>
+
+            <q-item-section class="text-dark">
+              Configuración
+            </q-item-section>
+
+            <q-item-section avatar>
+              <q-icon name="keyboard_arrow_right" style="color: #336eb9;" />
+            </q-item-section>
+
+          </q-item>
+
+
         </q-card-section>
       </q-card>
     </q-expansion-item>

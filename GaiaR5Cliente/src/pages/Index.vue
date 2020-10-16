@@ -2,14 +2,15 @@
   <q-page style="background-color: #fdebc7">
     <div class="row">
       <div class="col-8">
-        <q-select style="background-color: #fdebc7"
-          filled  bg-color="#fdebc7"
+        <q-select
+          filled
           v-model="tags"
           multiple
           :options="opciones"
-          label="Tags" color="light-green"
-          class="full-width">
-        </q-select>
+          label="Tags"
+          style="width: 250px"
+          class="full-width"
+        />
       </div>
       <div class="col-4">
         <q-btn label="Buscar" icon="search" @click="filtrar" color="light-green" glossy class="full-width"/>
@@ -37,7 +38,7 @@ import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
 })
 export default class PageIndex extends Vue {
   tags:String[] = [];
-  opciones: String[] = ['Plastico', 'Vidrio', 'Madera', 'Carton', 'Metal', "Pizza"];
+  opciones: String[] = [];
   centrosAcopio: CentroAcopio[] = [];
   centrosAcopioFiltrados: CentroAcopio[] = [];
 
@@ -63,6 +64,7 @@ export default class PageIndex extends Vue {
       console.log(error);
     });
   }
+
 
 };
 </script>
