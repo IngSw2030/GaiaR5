@@ -1,19 +1,18 @@
 <template>
-  <q-page>
+  <q-page style="background-color: #fdebc7">
     <div class="row">
       <div class="col-8">
-        <q-select
-          filled
+        <q-select style="background-color: #fdebc7"
+          filled  bg-color="#fdebc7"
           v-model="tags"
           multiple
           :options="opciones"
-          label="Tags"
-          style="width: 250px"
-          class="full-width"
-        />
+          label="Tags" color="light-green"
+          class="full-width">
+        </q-select>
       </div>
       <div class="col-4">
-        <q-btn label="Buscar" icon="search" @click="filtrar" color="orange" glossy class="full-width"/>
+        <q-btn label="Buscar" icon="search" @click="filtrar" color="light-green" glossy class="full-width"/>
       </div>
     </div>
     <div class="row full-width">

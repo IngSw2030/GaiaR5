@@ -42,12 +42,12 @@
 
           </q-item>
 
-          <q-item active clickable v-ripple>
+          <q-item to="/semillas" active clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="assessment" style="color: #7FA949;" />
             </q-item-section>
 
-            <q-item-section class="text-dark">
+            <q-item-section  class="text-dark">
               Semillas
             </q-item-section>
 

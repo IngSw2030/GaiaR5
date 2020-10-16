@@ -13,7 +13,7 @@
         </template>
 
         <template v-slot:hint>
-          <q-btn flat style="color: #7FA949" label="tag" unelevated icon="storage" />
+          <q-btn flat style="color: #7fa949" label="tag" unelevated icon="storage" />
         </template>
       </q-input>
     </div>
