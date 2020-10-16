@@ -25,17 +25,13 @@
           <p>{{centro.horario}}</p>
 
 
-          <q-item active clickable v-ripple >
+          <q-item to="/info" active clickable v-ripple >
             <q-item-section avatar >
-              <q-icon name="settings" style="color: #7FA949;" />
+              <q-icon name="keyboard_arrow_right" style="color: #7FA949;" />
             </q-item-section>
 
             <q-item-section class="text-dark">
-              Configuración
-            </q-item-section>
-
-            <q-item-section avatar>
-              <q-icon name="keyboard_arrow_right" style="color: #336eb9;" />
+              Ir
             </q-item-section>
 
           </q-item>
