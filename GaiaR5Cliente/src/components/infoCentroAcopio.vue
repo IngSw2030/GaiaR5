@@ -39,7 +39,18 @@
       <q-btn to="/ruta"  color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
       </div>
     </q-item>
-    
+
+
+    <q-item class="column justify-center full-height full-width text-center" >
+      <div class="text-weight-bold" style="color: #7FA949;margin-top: 75px; ">
+        <div class="text-center"style="font-size: 2.7ex;" >prueba </div>
+      </div>
+
+      <div >
+        <q-btn @Click="setCoordenadas" color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
+      </div>
+    </q-item>
+
 
   </q-page>
 </template>
@@ -67,7 +78,7 @@ export default class infoCentroAcopio extends Vue  {
 
     }
   }
-
+  
 
 }
 </script>
