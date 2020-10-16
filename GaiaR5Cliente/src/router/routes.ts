@@ -9,7 +9,8 @@ const routes: RouteConfig[] = [
       { path: '/mapa', component: () => import('components/mapa') },
       { path: '/info', component: () => import('components/infoCentroAcopio')},
       {path: '/centrobusqueda', component: () => import('components/CentroBusqueda') },
-      {path: '/ruta', component: () => import('components/Ruta') }
+      {path: '/ruta', component: () => import('components/Ruta') },
+      {path: '/semillas', component: () => import('components/HistorialSemillas') }
 ]
   },
 

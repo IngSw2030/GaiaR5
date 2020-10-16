@@ -1,4 +1,5 @@
 <template>
+  <q-page padding  style="background-color: #fdebc7">
   <div>
     <q-expansion-item>
       <template v-slot:header>
@@ -26,6 +27,7 @@
       </q-card>
     </q-expansion-item>
   </div>
+  </q-page>
 </template>
 
 <script lang="ts">

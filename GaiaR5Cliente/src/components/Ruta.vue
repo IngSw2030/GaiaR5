@@ -30,7 +30,8 @@
 
 
     <div class="relative-position container   flex flex-center">
-    <q-btn style="color: #7FA949" align="center" icon="eco" label="Validar visita">
+    <q-btn style="color: #7FA949" align="center" icon="eco" label="Validar visita"  >
+
     </q-btn>
     </div>
 

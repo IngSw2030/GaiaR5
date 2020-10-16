@@ -1,6 +1,7 @@
 <template>
   <q-page padding  style="background-color: #fdebc7">
 
+
     <q-item active clickable v-ripple fixed-right >
       <q-item-section avatar>
         <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 8ex; " />
@@ -8,28 +9,37 @@
     </q-item>
 
     <div class="text-weight-bold" style="color: #7FA949;">
-      <div class="text-center"style="font-size: 3.5ex;" >Centro de Acopio Cercanos a ti </div>
+      <div class="text-center"style="font-size: 3.5ex;" >Centro de Acopio Villa Maria </div>
     </div>
 
-    <q-input color="dark-12" v-model="text" label="Mi ubicación">
-      <template v-slot:prepend>
-        <q-icon name="person_pin_circle" style="color: #7FA949; size_font: 10 em" />
-      </template>
-    </q-input>
-
-    <div class="relative-position container   flex flex-center">
-    <GmapMap
-      :center="{lat:4.629070, lng:-74.062716}"
-      :zoom="15"
-      map-type-id="roadmap"
-      style="width: 500px; height: 300px"
-    >
-
-      <GmapMarker :position="{lat:  4.629070, lng: -74.062716}" />
-
-    </GmapMap>
-
+    <div class="column relative-position container   flex flex-center" >
+    <p style ="margin-bottom: 0px" >  Horario : L-S 8:00 am-3:30 pm</p>
+      <p >  Recibe: plástico,cartón</p>
     </div>
+
+
+
+    <div class="relative-position container   flex flex-center" style="margin-top: 30px; ">
+        <GmapMap
+          :center="{lat:4.629070, lng:-74.062716}"
+          :zoom="15"
+          map-type-id="roadmap"
+          style="width: 500px; height: 300px"
+        >
+
+          <GmapMarker :position="{lat:  4.629070, lng: -74.062716}" />
+        </GmapMap>
+    </div>
+    <q-item class="column justify-center full-height full-width text-center" >
+      <div class="text-weight-bold" style="color: #7FA949;margin-top: 75px; ">
+        <div class="text-center"style="font-size: 2.7ex;" >Conocer ruta desde mi ubicación </div>
+      </div>
+
+      <div >
+      <q-btn to="/ruta"  color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
+      </div>
+    </q-item>
+
 
 
   </q-page>
