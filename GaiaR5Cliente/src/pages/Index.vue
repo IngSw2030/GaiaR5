@@ -48,11 +48,7 @@ export default class PageIndex extends Vue {
     }).then((res=>{
       console.log(res);
       this.centrosAcopio = res.data;
-      this.$q.notify(`Felicitaciones encontraste ${this.centrosAcopio.length} centros de acopio`);
-      this.$q.dialog({
-        title: 'Felicidades',
-        message: `Felicitaciones encontraste ${this.centrosAcopio.length} centros de acopio`
-      });
+
     }))
   }
 

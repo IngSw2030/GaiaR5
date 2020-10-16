@@ -25,7 +25,7 @@
           <p>{{centro.horario}}</p>
 
 
-          <q-item to="/info" active clickable v-ripple >
+          <q-item to="/info" active clickable v-ripple  style= "background-color: #336eb9" >
             <q-item-section avatar >
               <q-icon name="keyboard_arrow_right" style="color: #7FA949;" />
             </q-item-section>

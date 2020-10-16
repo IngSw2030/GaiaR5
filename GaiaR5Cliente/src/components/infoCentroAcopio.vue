@@ -2,7 +2,7 @@
   <q-page padding  style="background-color: #fdebc7">
 
 
-    <q-item active clickable v-ripple fixed-right >
+    <q-item to="/" active clickable v-ripple fixed-right >
       <q-item-section avatar>
         <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 8ex; " />
       </q-item-section>
@@ -21,13 +21,13 @@
 
     <div class="relative-position container   flex flex-center" style="margin-top: 30px; ">
         <GmapMap
-          :center="{lat:4.629070, lng:-74.062716}"
+          :center="coordenadas"
           :zoom="15"
           map-type-id="roadmap"
           style="width: 500px; height: 300px"
         >
 
-          <GmapMarker :position="{lat:  4.629070, lng: -74.062716}" />
+          <GmapMarker :position="coordenadas" />
         </GmapMap>
     </div>
     <q-item class="column justify-center full-height full-width text-center" >
@@ -40,6 +40,16 @@
       </div>
     </q-item>
 
+
+    <q-item class="column justify-center full-height full-width text-center" >
+      <div class="text-weight-bold" style="color: #7FA949;margin-top: 75px; ">
+        <div class="text-center"style="font-size: 2.7ex;" >prueba </div>
+      </div>
+
+      <div >
+        <q-btn @Click="setCoordenadas" color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
+      </div>
+    </q-item>
 
 
   </q-page>
@@ -55,6 +65,20 @@ Vue.use(VueGoogleMaps, {
     key: 'AIzaSyADfRbp9uevhD-MsNaoLKbvRWIKbZGPNWE'
   }
 })
+
 @Component
-export default class CercaDeMi extends Vue {}
+export default class infoCentroAcopio extends Vue  {
+
+  data(){
+    return{
+      coordenadas:{
+        lat:4.629070,
+        lng:-74.062716
+      }
+
+    }
+  }
+  
+
+}
 </script>

@@ -48,6 +48,7 @@ import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
 export default class HistorialSemillas extends Vue {
   semillas: number;
   usuarios: number;
+
     showNotif() {
     this.$q.notify({
                      message: 'Visita centros de acopio de la ciudad y registra tu visita',
