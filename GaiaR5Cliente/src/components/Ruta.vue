@@ -32,7 +32,7 @@
 
 
     <div class="relative-position container   flex flex-center">
-    <q-btn style="color: #7FA949" align="center" icon="eco" label="Validar visita"  >
+    <q-btn style="color: #7FA949" align="center" icon="eco" label="Validar visita" @click="showNotif" >
 
     </q-btn>
     </div>
@@ -54,6 +54,7 @@ Vue.use(VueGoogleMaps, {
 })
 @Component
 export default class Ruta extends Vue{
+  semillas:String[] = [];
   data(){
     return{
       coordenadas:{
@@ -75,7 +76,13 @@ export default class Ruta extends Vue{
 
   }
 
-
+  showNotif () {
+    this.$q.notify({
+      type: 'positive',
+      color:'light-green',
+      message: `Visita Registrada`
+    })
+  }
 }
 </script>
 
