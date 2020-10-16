@@ -42,8 +42,8 @@ export default class PageIndex extends Vue {
   centrosAcopioFiltrados: CentroAcopio[] = [];
 
   filtrar(){
-    this.$axios.post("http://localhost:4557/buscar-acopio", {
-      filtro: this.tags
+    this.$axios.post("http://f00b0e326316.ngrok.io/centrosAcopio/obtenerCentrosPorRecurso", {
+      recurso: this.tags
     }).then((res=>{
       console.log(res);
       this.centrosAcopio = res.data;
@@ -54,6 +54,16 @@ export default class PageIndex extends Vue {
       });
     }))
   }
+
+  mounted(){
+    this.$axios.get("http://f00b0e326316.ngrok.io/centrosAcopio/obtenerRecursos").then((res)=>{
+      console.log(res);
+      this.opciones = res.data;
+    }).catch((error)=>{
+      console.log(error);
+    });
+  }
+
 };
 </script>
 <style>
