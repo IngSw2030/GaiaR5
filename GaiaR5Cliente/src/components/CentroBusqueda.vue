@@ -3,7 +3,8 @@
   <div>
     <div>
       <br>
-      <q-input filled bottom-slots v-model="text" label="Centro de acopio" label-color="light-green-9" bg-color="#FAEBC3" :dense="dense">
+      <q-input filled bottom-slots v-model="text" label="Centro de acopio" label-color="light-green-9"
+               bg-color="#FAEBC3" :dense="dense"  >
         <template v-slot:before>
           <q-btn flat unelevated icon="arrow_back" color="secondary"/>
         </template>
@@ -13,7 +14,7 @@
         </template>
 
         <template v-slot:hint>
-          <q-btn flat style="color: #7fa949" label="tag" unelevated icon="storage" />
+          <q-btn flat style="color: #7fa949" label="tag" unelevated icon="storage" @click="filtrar" />
         </template>
       </q-input>
     </div>
@@ -61,12 +62,44 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component } from 'vue-property-decorator';
+import CentroAcopioBusqueda from "components/CentroAcopioBusqueda.vue";
+import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
 
-@Component
- export default class CentroBusqueda extends Vue {
-}
+@Component({
+  components: { CentroAcopioBusqueda }
+})
+export default class CentroBusqueda extends Vue {
+  tags:String[] = [];
+  opciones: String[] = ['Plastico', 'Vidrio'];
+  centrosAcopio: CentroAcopio[] = [];
+  centrosAcopioFiltrados: CentroAcopio[] = [];
+
+  filtrar(){
+    this.$axios.post("http://514941bdbaf3.ngrok.io/centrosAcopio/obtenerCentroPorNombre", {
+      recurso: this.tags
+    }).then((res=>{
+      console.log(res);
+      this.centrosAcopio = res.data;
+      this.$q.notify(`Felicitaciones encontraste ${this.centrosAcopio.length} centros de acopio`);
+      this.$q.dialog({
+        title: 'Felicidades',
+        message: `Felicitaciones encontraste ${this.centrosAcopio.length} centros de acopio`
+      });
+    }))
+  }
+
+  mounted(){
+    this.$axios.get("http://514941bdbaf3.ngrok.io/centrosAcopio/obtenerRecursos").then((res)=>{
+      console.log(res);
+      this.opciones = res.data;
+    }).catch((error)=>{
+      console.log(error);
+    });
+  }
+
+};
 </script>
-
 <style scoped>
 
 </style>
