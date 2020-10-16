@@ -6,12 +6,14 @@
       </template>
     </q-input>
     <br>
-    <q-input color="dark-12" v-model="text" label="Ubicación Centro de acopio">
+    <q-input color="dark-12" v-model="text" label="Ubicación Centro de acopio" placeholder="hola">
       <template v-slot:prepend>
         <q-icon name="person_pin_circle" style="color: #7FA949; size_font: 10 em" />
       </template>
     </q-input>
     <br>
+
+
 
     <div class="relative-position container   flex flex-center">
       <GmapMap
@@ -71,6 +73,8 @@ export default class Ruta extends Vue{
     }
 
   }
+
+
 }
 </script>
 
