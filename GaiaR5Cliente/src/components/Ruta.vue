@@ -6,7 +6,7 @@
       </template>
     </q-input>
     <br>
-    <q-input color="dark-12" v-model="text" label="Ubicación Centro de acopio" placeholder="hola">
+    <q-input color="dark-12" v-model="text" label="Ubicación Centro de acopio" >
       <template v-slot:prepend>
         <q-icon name="person_pin_circle" style="color: #7FA949; size_font: 10 em" />
       </template>
@@ -18,7 +18,7 @@
     <div class="relative-position container   flex flex-center">
       <GmapMap
       :center="origen"
-      :zoom="15"
+      :zoom="14"
       map-type-id="roadmap"
       style="width: 500px; height: 300px"
       >

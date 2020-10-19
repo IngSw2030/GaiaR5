@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">GaiaR5</string>
+    <string name="title_activity_main">GaiaR5</string>
+    <string name="package_name">com.ingesoft.gaiar5</string>
+    <string name="custom_url_scheme">com.ingesoft.gaiar5</string>
+</resources>

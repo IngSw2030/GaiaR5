@@ -1,0 +1,7 @@
+{
+  "appId": "com.ingesoft.gaiar5",
+  "appName": "GaiaR5",
+  "bundledWebRuntime": false,
+  "npmClient": "yarn",
+  "webDir": "www"
+}

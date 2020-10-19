@@ -120,7 +120,7 @@
 
 
 
-          <q-item active clickable v-ripple >
+          <q-item to="/mapa" active clickable v-ripple >
             <q-item-section avatar >
               <q-icon name="settings" style="color: #7FA949;" />
             </q-item-section>

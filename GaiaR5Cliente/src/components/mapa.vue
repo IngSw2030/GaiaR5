@@ -4,7 +4,9 @@
 
     <h2>  quiero saber mis coordenadas !!!!  </h2>
 
+    <p>  {{origen.lat}} latitud, {{origen.lng}} longitud,  </p>
     <p>  {{coordenadas.lat}} latitud, {{coordenadas.lng}} longitud,  </p>
+
 
     <GmapMap
       :center="origen"
@@ -14,9 +16,9 @@
     >
 
       <GmapMarker :position="origen" />
-      <GmapMarker :position="{lat:  destino.lat, lng: destino.lng}" />
+      <GmapMarker :position="{lat:  coordenadas.lat, lng: coordenadas.lng}" />
 
-      <gmap-polygon :paths="[origen,destino]" :editable="false" :draggable="false" :path="true" ></gmap-polygon>
+      <gmap-polygon :paths="[origen,coordenadas]" :editable="false" :draggable="false"  ></gmap-polygon>
 
     </GmapMap>
 
@@ -27,6 +29,9 @@
 <script>
 import Vue from 'vue'
 import * as VueGoogleMaps from 'vue2-google-maps'
+import { Plugins } from '@capacitor/core'
+import { mapsGetters } from 'vuex'
+const { Geolocation } = Plugins
 
 
 Vue.use(VueGoogleMaps, {
@@ -37,32 +42,63 @@ Vue.use(VueGoogleMaps, {
 
 
 
-
  export default {
  data(){
       return{
-        coordenadas:{
-          lat:0,
-          lng:0
-        },
-
         origen:{
+          lat: undefined,
+          lng: undefined
+        },
+        origenC:{
           lat:4.629070,
           lng: -74.062716
         },
 
         destino:{
+          lat:undefined,
+          lng:undefined
+        },
+        destinoC:{
           lat:4.632304,
           lng:-74.070685
         }
-
       }
-
  },
-   created(){
+
+   methods: {
+     getCurrentPosition() {
+       Geolocation.getCurrentPosition().then(position => {
+         this.origen.lat=position.coords.latitude
+         this.origen.lng=position.coords.longitude
+       });
+     }
+   },
+
+   mounted () {
+     this.getCurrentPosition()
+
+     // we start listening
+     this.geoId = Geolocation.watchPosition({}, (position, err) => {
+       this.origen.lat=position.coords.latitude
+       this.origen.lng=position.coords.longitude
+     })
+   },
+   beforeDestroy () {
+     // we do cleanup
+     Geolocation.clearWatch(this.geoId)
+   },
+
+   computed: {
+     coordenadas: {
+       get () {
+         return this.$store.state.store_CA.coordenadas
+       }
+   }
+
    }
 }
 </script>
+
 
 <style >
 

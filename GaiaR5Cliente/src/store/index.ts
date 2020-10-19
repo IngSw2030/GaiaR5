@@ -1,33 +1,36 @@
-import { store } from 'quasar/wrappers';
-import Vuex from 'vuex';
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-// import example from './module-example';
-// import { ExampleStateInterface } from './module-example/state';
+// we first import the module
+import store_CA from './store_CA'
 
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation
- */
+Vue.use(Vuex)
 
-export interface StateInterface {
-  // Define your own store structure, using submodules if needed
-  // example: ExampleStateInterface;
-  // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  example: unknown;
-}
-
-export default store(function ({ Vue }) {
-  Vue.use(Vuex);
-
-  const Store = new Vuex.Store<StateInterface>({
+export default function (/* { ssrContext } */) {
+  const Store = new Vuex.Store({
     modules: {
-      // example
+      // then we reference it
+      store_CA
     },
 
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: !!process.env.DEV
-  });
+    strict: process.env.DEV
+  })
 
-  return Store;
-});
+  /*
+    if we want some HMR magic for it, we handle
+    the hot update like below. Notice we guard this
+    code with "process.env.DEV" -- so this doesn't
+    get into our production build (and it shouldn't).
+  */
+
+  if (process.env.DEV && module.hot) {
+    module.hot.accept(['./store_CA'], () => {
+      const newStore_CA = require('./store_CA').default
+      Store.hotUpdate({ modules: { store_CA: newStore_CA } })
+    })
+  }
+
+  return Store
+}

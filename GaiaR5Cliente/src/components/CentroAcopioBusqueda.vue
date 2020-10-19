@@ -48,6 +48,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import CentroAcopio from "src/api/clases/CentroAcopioBusqueda";
 
+
 @Component
 export default class CentroAcopioBusqueda extends Vue {
   @Prop() centro:CentroAcopio;

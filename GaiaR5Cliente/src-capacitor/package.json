@@ -1,0 +1,12 @@
+{
+  "name": "gaiar5",
+  "version": "0.0.1",
+  "description": ".",
+  "author": "Jairo Vanegas <jhvangar@gmail.com>",
+  "private": true,
+  "dependencies": {
+    "@capacitor/android": "2.4.2",
+    "@capacitor/cli": "^2.0.0",
+    "@capacitor/core": "^2.0.0"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "appId": "com.ingesoft.gaiar5",
+  "appName": "GaiaR5",
+  "bundledWebRuntime": false,
+  "npmClient": "yarn",
+  "webDir": "www",
+  "server": {
+    "url": "http://192.168.0.2:8080"
+  }
+}
