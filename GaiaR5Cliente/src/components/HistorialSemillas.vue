@@ -61,6 +61,12 @@ export default class HistorialSemillas extends Vue {
 
   }
 
+
+  get acumSemillas(){
+    return this.$store.state.store_CA.acumSemillas
+  }
+
+
 }
 </script>
 

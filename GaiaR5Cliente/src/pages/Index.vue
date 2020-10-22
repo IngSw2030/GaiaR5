@@ -38,7 +38,7 @@ import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
 })
 export default class PageIndex extends Vue {
   tags:String[] = [];
-  opciones: String[] = [];
+  opciones: String[] = ['residuos toxicos', 'carton'];
   centrosAcopio: CentroAcopio[] = [];
   centrosAcopioFiltrados: CentroAcopio[] = [];
 
@@ -59,6 +59,14 @@ export default class PageIndex extends Vue {
     }).catch((error)=>{
       console.log(error);
     });
+  }
+
+  computed(){
+
+    tags: {
+        return this.$store.state.store_CA.tags
+    }
+
   }
 
 

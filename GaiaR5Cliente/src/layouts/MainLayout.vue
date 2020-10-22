@@ -103,7 +103,7 @@
 
           </q-item>
 
-          <q-item to="/" active clickable v-ripple>
+          <q-item to="/centroBusqueda" active clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="location_on" style="color: #7FA949;" />
             </q-item-section>

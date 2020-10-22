@@ -98,6 +98,19 @@ export default class CentroBusqueda extends Vue {
     });
   }
 
+  get listaCentroCA(){
+    return this.$store.state.store_CA.centrosCA
+  }
+
+  get tagsMaterial(){
+    return this.$store.state.store_CA.centrosCA
+  }
+
+  setCentroElegido(val){
+    this.$store.commit('store_CA/updateCentroElegido', val)
+  }
+
+
 };
 </script>
 <style scoped>

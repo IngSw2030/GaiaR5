@@ -14,19 +14,21 @@
     <br>
 
 
-
     <div class="relative-position container   flex flex-center">
       <GmapMap
-      :center="origen"
-      :zoom="14"
-      map-type-id="roadmap"
-      style="width: 500px; height: 300px"
+        :center="ubicacion"
+        :zoom="15"
+        map-type-id="roadmap"
+        style="width: 500px; height: 300px"
       >
-        <GmapMarker :position="origen" />
-        <GmapMarker :position="{lat:  destino.lat, lng: destino.lng}" />
 
-        <gmap-polygon :paths="[origen,destino]" :editable="false" :draggable="false" :path="true" ></gmap-polygon>
+        <GmapMarker :position="ubicacion" />
+        <GmapMarker :position="coordenadasCA" />
+
+        <gmap-polygon :paths="[ubicacion,coordenadasCA]" :editable="false" :draggable="false"  ></gmap-polygon>
+
       </GmapMap>
+
     </div>
     <br>
 
@@ -41,39 +43,79 @@
   </q-page>
 </template>
 
-<script lang="ts">
 
-import {Vue, Component } from 'vue-property-decorator';
+<script>
 import Vue from 'vue'
 import * as VueGoogleMaps from 'vue2-google-maps'
+import { Plugins } from '@capacitor/core'
+import Component from 'vue-class-component'
+const { Geolocation } = Plugins
+
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyADfRbp9uevhD-MsNaoLKbvRWIKbZGPNWE'
+    key: 'AIzaSyCvJo0DJMLi_DQFL_nw_XC0M2LFzU-YK40'
   }
 })
+
+
 @Component
-export default class Ruta extends Vue{
-  semillas:String[] = [];
+export default class Ruta extends Vue {
   data(){
     return{
-      coordenadas:{
-        lat:0,
-        lng:0
-      },
-
       origen:{
-        lat:4.629070,
-        lng: -74.062716
+        lat: undefined,
+        lng: undefined
       },
-
       destino:{
-        lat:4.632304,
-        lng:-74.070685
+        lat:undefined,
+        lng:undefined
       }
-
     }
+  }
 
+  getCurrentPosition() {
+    Geolocation.getCurrentPosition().then(position => {
+      this.origen.lat=position.coords.latitude
+      this.origen.lng=position.coords.longitude
+      setUbicacion(origen)
+    });
+  }
+
+  created () {
+    this.getCurrentPosition()
+
+    // we start listening
+    this.geoId = Geolocation.watchPosition({}, (position, err) => {
+      this.origen.lat=position.coords.latitude
+      this.origen.lng=position.coords.longitude
+      setUbicacion(origen)
+    })
+  }
+
+  beforeDestroy () {
+    // we do cleanup
+    Geolocation.clearWatch(this.geoId)
+  }
+
+  get coordenadasCA(){
+    return this.$store.state.store_CA.coordenadas
+  }
+
+  get ubicacion(){
+    return this.$store.state.store_CA.ubicacionActual
+  }
+
+  get semillas(){
+    return this.$store.state.store_CA.acumSemillas
+  }
+
+  setUbicacion(val){
+    this.$store.commit('store_CA/updateUbicacion', val)
+  }
+
+  sumarSemillas(val){
+    this.$store.commit('store_CA/updateSemillas', val)
   }
 
   showNotif () {
@@ -83,9 +125,9 @@ export default class Ruta extends Vue{
       message: `Visita Registrada`
     })
   }
+
 }
 </script>
-
 
 <style scoped>
 

@@ -2,38 +2,38 @@
   <q-page padding  style="background-color: #fdebc7">
 
 
-    <q-item to="/" active clickable v-ripple fixed-right >
+    <q-item to="/centroBusqueda" active clickable v-ripple fixed-right >
       <q-item-section avatar>
         <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 8ex; " />
       </q-item-section>
     </q-item>
 
     <div class="text-weight-bold" style="color: #7FA949;">
-      <div class="text-center"style="font-size: 3.5ex;" >Centro de Acopio Villa Maria </div>
+      <div class="text-center"style="font-size: 3.5ex;" >{{centroElegido.nombre}} </div>
     </div>
 
     <div class="column relative-position container   flex flex-center" >
-    <p style ="margin-bottom: 0px" >  Horario : L-S 8:00 am-3:30 pm</p>
-      <p >  Recibe: plástico,cartón</p>
+    <p style ="margin-bottom: 0px" >  Horario : {{centroElegido.horario}}</p>
+      <p >  Recibe: {{centroElegido.materiales}}</p>
     </div>
 
 
 
     <div class="relative-position container   flex flex-center" style="margin-top: 30px; ">
         <GmapMap
-          :center="coordenadas"
+          :center="coordenadasCA"
           :zoom="15"
           map-type-id="roadmap"
           style="width: 500px; height: 300px"
         >
 
-          <GmapMarker :position="coordenadas" />
+          <GmapMarker :position="coordenadasCA" />
         </GmapMap>
     </div>
 
 
     <q-item class="column justify-center full-height full-width text-center" >
-      <div class="text-weight-bold" style="color: #7FA949;margin-top: 75px; ">
+      <div class="text-weight-bold" style="color: #7FA949;margin-top: 50px; ">
         <div class="text-center"style="font-size: 2.7ex;" >Conocer ruta desde mi ubicación </div>
       </div>
 
@@ -54,16 +54,15 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyADfRbp9uevhD-MsNaoLKbvRWIKbZGPNWE'
+    key: 'AIzaSyCvJo0DJMLi_DQFL_nw_XC0M2LFzU-YK40'
   }
 })
 
 @Component
-export default class infoCentroAcopio extends Vue  {
-
+export default class infoCentroAcopio extends Vue {
   data(){
     return{
-      coordenadas:{
+      origen:{
         lat:4.629070,
         lng:-74.062716
       }
@@ -71,6 +70,14 @@ export default class infoCentroAcopio extends Vue  {
     }
   }
 
+
+   get coordenadasCA () {
+     return this.$store.state.store_CA.coordenadas
+   }
+
+  get centroElegido () {
+    return this.$store.state.store_CA.centroElegido
+  }
 
 
 }
