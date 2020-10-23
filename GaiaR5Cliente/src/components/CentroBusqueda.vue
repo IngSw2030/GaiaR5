@@ -71,7 +71,7 @@ export default class CentroBusqueda extends Vue {
   }
 
   modelMultiple=[]
-  centrosAcopioFiltrados= []
+  centrosAcopioFiltrados= this.listaCentroCA
 
   centros: CentroAcopio[] =[
     new CentroAcopio("Asociacion de recuperados ambientales",
