@@ -9374,6 +9374,11 @@ tunnel@^0.0.6:
   resolved "https://registry.yarnpkg.com/tunnel/-/tunnel-0.0.6.tgz#72f1314b34a5b192db012324df2cc587ca47f92c"
   integrity sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==
 
+turbocommons-ts@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/turbocommons-ts/-/turbocommons-ts-3.7.0.tgz#7a9d9f3626d118f5ed8b2dc0bbccd552839989f4"
+  integrity sha512-uw49afeZFlpvkNP/By8nGj+WyELnKhAR0PitUwS3YTDZITsreNIVzeJqpaiMKsw0IV8m2CvDW2eMpNXdVKyX4A==
+
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
