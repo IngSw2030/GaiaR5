@@ -3,8 +3,8 @@
     <div class="q-gutter-md row items-start">
       <q-input v-model="texto" color="verde" label="Buscar" label-color="light-green-9" style="width: 400px">
         <template v-slot:append>
-          <q-icon name="search" color="light-green-9" style="background-color: #fdebc7" >
-          </q-icon>
+          <q-btn flat color="light-green-9" style="background-color: #fdebc7" @click="filtrarNombre"  icon="search">
+          </q-btn>
         </template>
       </q-input>
 
@@ -22,7 +22,6 @@
     </div>
 
       <div class="q-pa-md q-gutter-sm">
-        <q-btn @click="filtrarNombre" :ripple="true" color="light-green-9"label="Buscar por nombre" no-caps />
         <q-btn @click="filtrarTag" :ripple="true" color="light-green-9"label="Buscar por tag" no-caps />
       </div>
 
@@ -72,7 +71,7 @@ export default class CentroBusqueda extends Vue {
   }
 
   modelMultiple=[]
-  centrosAcopioFiltrados= []
+  centrosAcopioFiltrados= this.listaCentroCA
 
   centros: CentroAcopio[] =[
     new CentroAcopio("Asociacion de recuperados ambientales",
