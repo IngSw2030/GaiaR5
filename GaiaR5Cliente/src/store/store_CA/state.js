@@ -16,6 +16,7 @@ export default function () {
       lat:4.6365476,
       lng: -74.0652501
     },
+    centrosBus:[],
      //lista de centros de acopio del sistema
     centrosCA: [
       {

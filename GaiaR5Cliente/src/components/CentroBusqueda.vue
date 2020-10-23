@@ -1,13 +1,10 @@
 <template>
   <q-page style="background-color: #fdebc7 ">
     <div class="q-gutter-md row items-start">
-      <q-input v-model="texto" color="verde" label="Centro de acopio" label-color="light-green-9" @click="buscar">
+      <q-input v-model="texto" color="verde" label="Buscar" label-color="light-green-9" @click="buscar" style="width: 400px">
         <template v-slot:append>
           <q-icon name="search" color="light-green-9" style="background-color: #fdebc7" >
           </q-icon>
-        </template>
-        <template v-slot:before>
-          <q-btn flat unelevated icon="arrow_back" color="light-green-9" style="background-color: #fdebc7"/>
         </template>
         <template v-slot:after>
           <q-select borderless
@@ -16,22 +13,30 @@
                     multiple
                     :options="tagsMaterial" bg-color="#fdebc7"
                     label-color="light-green-9"
-                    style="min-width: 10px; max-width: 200px; color: #7FA949 ">
+                    style="min-width: 50px; max-width: 200px; color: #7FA949 ">
+            <template v-slot:append>
+              <q-icon name="local_offer" color="light-green-9" />
+            </template>
           </q-select>
         </template>
       </q-input>
     </div>
-    <br>
+    <div>
+      <br>
+    <p style="color: #7FA949; font-size: 18px" align="center">Centros de acopio</p>
+    </div>
     <div style="color: #fdebc7; background-color: #fdebc7">
       <q-card class ="row"
               flat
               borderless
               style="background: #fdebc7"
               v-for="centro in listaCentroCA">
-        <q-card-section class="col" v-html="centro.nombre" style="color: darkslategrey; font-size: 17px">
+        <q-card-section class="col" >
+          <q-btn v-html="centro.nombre" style="color: black; font-size: 15px; width:300px; height: 50px" align="left" @click="seleccionarCentro(centro)" clickable v-ripple >
+          </q-btn>
+          <q-separator />
         </q-card-section>
-        <q-btn @click="seleccionarCentro(centro)" clickable v-ripple >
-        </q-btn>
+
       </q-card>
     </div>
   </q-page>
@@ -129,6 +134,10 @@ export default class CentroBusqueda extends Vue {
 
   get tagsMaterial(){
     return this.$store.state.store_CA.tags
+  }
+
+  get listacentrobus(){
+    return this.$store.state.store_CA.centrobus
   }
 
   setCentroElegido(val){

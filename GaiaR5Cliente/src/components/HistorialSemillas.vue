@@ -9,19 +9,17 @@
 
       />
     </div>
-    <q-item class="relative-position container   flex flex-center">
-      <p
-        style="border:green 2px solid  ; border-radius: 20px ; padding: 20px; width: 500px;margin-top: 1px ; margin-bottom: 1px">
-        Semillas: {{acumSemillas}}
-      </p>
-    </q-item>
-    <q-item class="relative-position container   flex flex-center">
-      <p style="border:green 2px solid  ; border-radius: 20px ; padding: 20px; width: 500px">
-        Semillas
+
+    <q-item class="column relative-position container   flex flex-center" >
+      <p class="column" style="border:green 2px solid  ; border-radius: 20px ; padding: 20px; width: 500px"
+        v-for="centro in listaCentroCA">
+        Visita a:
+        <q-card-section v-html="centro.nombre" style="color: darkslategrey; font-size: 17px " />
+        29/04/2020
+        300 Semillas obtenidas
       </p>
     </q-item>
     <q-item class="column justify-center full-height full-width text-center">
-
     </q-item>
   </q-page>
 </template>
@@ -36,7 +34,9 @@ import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
 })
 export default class HistorialSemillas extends Vue {
 
-
+  get listaCentroCA(){
+    return this.$store.state.store_CA.centrosCA
+  }
   get acumSemillas(){
     return this.$store.state.store_CA.acumSemillas
   }
