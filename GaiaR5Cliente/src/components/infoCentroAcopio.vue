@@ -54,7 +54,7 @@
       </div>
 
       <div >
-      <q-btn to="ruta" color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
+      <q-btn to="/ruta"  color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
       </div>
     </q-item>
 
@@ -73,13 +73,15 @@ Vue.use(VueGoogleMaps, {
   }
 })
 
+
+
 @Component
 export default class infoCentroAcopio extends Vue {
   data(){
     return{
       origen:{
-        lat:4.629070,
-        lng:-74.062716
+        lat:undefined,
+        lng:undefined
       }
 
     }
@@ -89,6 +91,7 @@ export default class infoCentroAcopio extends Vue {
    get coordenadasCA () {
      return this.$store.state.store_CA.coordenadas
    }
+
 
   get centroElegido () {
     return this.$store.state.store_CA.centroElegido

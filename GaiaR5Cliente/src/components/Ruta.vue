@@ -1,7 +1,7 @@
 <template>
   <q-page padding  style="background-color: #fdebc7">
 
-    <q-item to="/centroBusqueda" active clickable v-ripple fixed-right >
+    <q-item to="/info" active clickable v-ripple fixed-right >
       <q-item-section avatar>
         <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 8ex; " />
       </q-item-section>
@@ -14,8 +14,6 @@
     <div class="column relative-position container   flex flex-center" >
       <p style ="margin-bottom: 0px" >  Horario : {{centroElegido.horario}}</p>
       <p style ="margin-bottom: 0px" >  Dirección : {{centroElegido.direccion}}</p>
-      <p style ="margin-bottom: 0px" >  prueba : {{diflng}}</p>
-
 
       <br>
 
@@ -41,11 +39,11 @@
       >
 
         <GmapMarker :position="ubicacion"/>
-        <GmapMarker :position="coordenadasCA" />
+        <GmapMarker :position="{lat:  centroElegido.lat, lng: centroElegido.lng}" />
 
-        <gmap-polygon :paths="[ubicacion,coordenadasCA]" :editable="false" :draggable="false"  ></gmap-polygon>
+        <gmap-polygon :paths="[ubicacion,{lat:  centroElegido.lat, lng: centroElegido.lng}]" :editable="false" :draggable="false"  ></gmap-polygon>
 
-        <GmapInfoWindow :position="coordenadasCA" :options="{pixelOffset: {width: 0, height: -35},
+        <GmapInfoWindow :position="{lat:  centroElegido.lat, lng: centroElegido.lng}" :options="{pixelOffset: {width: 0, height: -35},
         content:'Destino' }" />
 
       </GmapMap>
@@ -54,7 +52,7 @@
     <br>
 
     <div class="relative-position container   flex flex-center">
-      <q-btn style="color: #7FA949" v-on:click.once="showNotif" icon="eco" label="Validar visita" :disabled='validadorMapa' />
+      <q-btn  style="color: #7FA949" v-on:click.once="showNotif" icon="eco" label="Validar visita" :disabled='validadorMapa' />
     </div>
 
   </q-page>
@@ -100,7 +98,8 @@ export default class Ruta extends Vue {
         disableDefaultUi: false,
       },
       diflng:100,
-      diflat:100
+      diflat:100,
+      intervalid1:'',
 
     }
   }
@@ -109,20 +108,20 @@ export default class Ruta extends Vue {
     Geolocation.getCurrentPosition().then(position => {
       this.origen.lat=position.coords.latitude
       this.origen.lng=position.coords.longitude
-      setUbicacion(origen)
-      verficarCercania()
+      this.setUbicacion(this.origen)
+
     });
   }
 
-  mounted () {
+  created () {
     this.getCurrentPosition()
 
     // we start listening
     this.geoId = Geolocation.watchPosition({}, (position, err) => {
       this.origen.lat=position.coords.latitude
       this.origen.lng=position.coords.longitude
-      setUbicacion(origen)
-      verficarCercania()
+      this.setUbicacion(this.origen)
+      this.todo()
     })
   }
 
@@ -137,22 +136,22 @@ export default class Ruta extends Vue {
 
   verficarCercania(){
     this.setCoordendas()
-    if(0==this.diflat)
+    if(0.0003>=this.diflat)
     {
-     if (0==this.diflng){
-       setValidadorMapa(true)
+     if (0.0003>=this.diflng){
+       this.setValidadorMapa(false)
     }
     }
-    setValidadorMapa(false)
   }
 
   setValidadorMapa(val){
     this.$store.commit('store_CA/updateValidadorMapa', val)
   }
 
+
   setCoordendas(){
-    this.diflng=this.ubicacion.lat-this.coordenadasCA.lat
-    this.diflat=this.ubicacion.lng-this.coordenadasCA.lng
+    this.diflng=Math.abs(this.ubicacion.lat-this.centroElegido.lat)
+    this.diflat=Math.abs(this.ubicacion.lng-this.centroElegido.lng)
   }
 
   get ubicacion(){
@@ -181,11 +180,19 @@ export default class Ruta extends Vue {
       color:'light-green',
       message: `Visita Registrada`,
     })
+    this.sumarSemillas(500)
   }
 
   get centroElegido () {
     return this.$store.state.store_CA.centroElegido
   }
+
+  todo(){
+    this.intervalid1 = setInterval(() => {
+     this.verficarCercania();
+    }, 2000);
+  }
+
 
 }
 </script>
