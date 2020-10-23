@@ -22,8 +22,8 @@
     </div>
 
       <div class="q-pa-md q-gutter-sm">
-        <q-btn :ripple="true" color="light-green-9"label="Buscar por nombre" no-caps />
-        <q-btn :ripple="true" color="light-green-9"label="Buscar por tag" no-caps />
+        <q-btn @click="filtrarNombre" :ripple="true" color="light-green-9"label="Buscar por nombre" no-caps />
+        <q-btn @click="filtrarTag" :ripple="true" color="light-green-9"label="Buscar por tag" no-caps />
       </div>
 
 
@@ -36,7 +36,7 @@
               flat
               borderless
               style="background: #fdebc7"
-              v-for="centro in listaCentroCA">
+              v-for="centro in centrosAcopioFiltrados">
         <q-card-section class="col" >
           <q-btn v-html="centro.nombre" style="color: black; font-size: 15px; width:300px; height: 50px" align="left" @click="seleccionarCentro(centro)" clickable v-ripple >
           </q-btn>
@@ -54,7 +54,7 @@ import { Vue, Component } from 'vue-property-decorator';
 import { Vue, Component } from 'vue-property-decorator';
 import CentroAcopioBusqueda from "components/CentroAcopioBusqueda.vue";
 import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
-//import { StringUtils } from 'turbocommons-ts';
+const {StringUtils} = require('turbocommons-ts');
 
 @Component({
   components: { CentroAcopioBusqueda }
@@ -62,6 +62,7 @@ import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
 
 export default class CentroBusqueda extends Vue {
 
+  texto=undefined
 
   data() {
     return {
@@ -70,7 +71,6 @@ export default class CentroBusqueda extends Vue {
     }
   }
 
-  centrosAcopio=[]
   modelMultiple=[]
   centrosAcopioFiltrados= []
 
@@ -157,15 +157,34 @@ export default class CentroBusqueda extends Vue {
   }
 
 
-  filtrar(){
+  filtrarNombre(){
     this.centrosAcopioFiltrados = [];
-      this.centrosAcopio.forEach((centro)=>{
-
+      this.listaCentroCA.forEach((centro)=>{
+        if(StringUtils.compareSimilarityPercent(this.texto, centro.nombre)>25)
+        {
+          this.centrosAcopioFiltrados.push(centro)
+        }
       })
   }
 
+
+  filtrarTag(){
+    this.centrosAcopioFiltrados = [];
+    this.modelMultiple.forEach((tag)=>{
+      this.listaCentroCA.forEach((centro)=>{
+        if(centro.materiales.forEach((tagCentro)=>{
+          if(!this.centrosAcopioFiltrados.includes(centro) && tag == tagCentro){
+            this.centrosAcopioFiltrados.push(centro);
+          }
+        }));
+      })
+    })
+  }
+
+
   prueba(){
-    console.log(StringUtils.compareByLevenshtein('abc', 'axc'));
+    console.log(this.texto)
+
   }
 
 
