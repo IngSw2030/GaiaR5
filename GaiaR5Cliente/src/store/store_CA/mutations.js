@@ -34,3 +34,6 @@ export const updateHistorialSem = (state, opened) => {
 export const updateSemillas = (state, opened) => {
   state.acumSemillas += opened
 }
+export const updateValidadorMapa = (state, opened) => {
+  state.validadorMapa = opened
+}

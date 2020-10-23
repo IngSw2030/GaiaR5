@@ -1,3 +1,4 @@
+import CentroAcopio from "src/api/clases/CentroAcopioBusqueda";
 
 export default function () {
   return {
@@ -18,12 +19,13 @@ export default function () {
      //lista de centros de acopio del sistema
     centrosCA: [
       {
+
         nombre:'Centro de Acopio Villa Maria',
         horario:' L-S 8:00 am-3:30 pm',
         materiales:[
-          'residuos toxicos',
-          'plastico',
-          'carton'
+          {tag: 'residuos toxicos'},
+          {tag:'plastico'},
+          {tag:'carton'}
         ],
         direccion:'Cll 7 B No. 12 -17',
         lat:4.632304,
@@ -33,8 +35,8 @@ export default function () {
         nombre:'Centro de Acopio Doña Juana',
         horario:' L-S 7:00 am-6:00 pm',
         materiales:[
-          'vidrio',
-          'papel'
+          {tag:'vidrio'},
+          {tag:'papel'}
         ],
         direccion:'Clr 45 B No. 34A -17',
         lat:4.616422,
@@ -46,15 +48,15 @@ export default function () {
       nombre:'Centro de Acopio Doña Juana',
       horario:' L-S 7:00 am-6:00 pm',
       materiales:[
-        'vidrio',
-        'papel'
+        {tag:'vidrio'},
+        {tag:'papel'}
       ],
       direccion:'Clr 45 B No. 34A -17',
       lat:4.616422,
       lng:-74.068297
     },
      //tags de materiales dentro del sistema
-    tags:['residuos toxicos', 'carton', 'plastico','vidrio', 'papel'],
+    tags:['residuos toxicos', 'carton', 'plastico','vidrio', 'papel','Madera', 'Metal'],
     //historial de semillas de usuario
     historialSemillas:[
       {
@@ -69,7 +71,8 @@ export default function () {
       }
     ] ,
     //semillas del usuario
-    acumSemillas: 5000
+    acumSemillas: 5000,
+    validadorMapa:true
 
   }
 }

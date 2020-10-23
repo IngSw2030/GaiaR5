@@ -9,15 +9,10 @@
 
       />
     </div>
-    <q-item v-for="(cedula) in usuarios" :key="'cedula'" class="relative-position container   flex flex-center" style=" margin-top: 1px; margin-bottom: 0px">
-      <p style="border:green 2px solid  ; border-radius: 20px ; padding: 20px; width: 500px; margin-bottom: 0px">
-        Semillas
-      </p>
-    </q-item>
     <q-item class="relative-position container   flex flex-center">
       <p
         style="border:green 2px solid  ; border-radius: 20px ; padding: 20px; width: 500px;margin-top: 1px ; margin-bottom: 1px">
-        Semillas
+        Semillas: {{acumSemillas}}
       </p>
     </q-item>
     <q-item class="relative-position container   flex flex-center">
@@ -26,13 +21,7 @@
       </p>
     </q-item>
     <q-item class="column justify-center full-height full-width text-center">
-      <div class="text-weight-bold" style="color: #7FA949;margin-top: 1px; ">
-        <div class="text-center" style="font-size: 2.7ex;">¿Cómo acumular semillas?</div>
-      </div>
 
-      <div>
-        <q-btn color="light-green" label="Continuar" @click="showNotif" style="margin-top: 3px; "></q-btn>
-      </div>
     </q-item>
   </q-page>
 </template>
@@ -46,26 +35,15 @@ import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
   components: {HistorialSemillas}
 })
 export default class HistorialSemillas extends Vue {
-  semillas: number;
-  usuarios: number;
-
-    showNotif() {
-    this.$q.notify({
-                     message: 'Visita centros de acopio de la ciudad y registra tu visita',
-                     color: 'light-green',
-                     multiLine: true,
-                     actions: [
-                       {label: 'Buscar Centros de Acopio' , color: 'yellow', handler: () => { /* ... */}},
-                     ]
-                   })
-
-  }
 
 
   get acumSemillas(){
     return this.$store.state.store_CA.acumSemillas
   }
 
+  get centroElegido () {
+    return this.$store.state.store_CA.centroElegido
+  }
 
 }
 </script>

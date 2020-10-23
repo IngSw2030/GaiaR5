@@ -28,3 +28,7 @@ export function getHistorialSemillas (state) {
 export function getAcumSemillas (state) {
   return state.acumSemillas
 }
+
+export function getValidadorMapa (state) {
+  return state.validadorMapa
+}

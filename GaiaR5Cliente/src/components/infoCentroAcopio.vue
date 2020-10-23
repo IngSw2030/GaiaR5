@@ -14,20 +14,36 @@
 
     <div class="column relative-position container   flex flex-center" >
     <p style ="margin-bottom: 0px" >  Horario : {{centroElegido.horario}}</p>
-      <p >  Recibe: {{centroElegido.materiales}}</p>
+      <p style ="margin-bottom: 0px" >  Dirección : {{centroElegido.direccion}}</p>
+
     </div>
 
+    <q-list bordered padding>
+
+      <q-item-label header  style ="margin-bottom: 0px" >
+        <div class="text-dark">   Materiales : </div>
+      </q-item-label>
+
+      <q-item v-for="mat in centroElegido.materiales" >
+        <q-item-section avatar>
+          <q-icon color="primary" name="panorama_fish_eye" />
+        </q-item-section>
+        <q-item-section>{{mat.tag }} </q-item-section>
+
+      </q-item>
+
+    </q-list>
 
 
     <div class="relative-position container   flex flex-center" style="margin-top: 30px; ">
         <GmapMap
-          :center="coordenadasCA"
+          :center="{lat:  centroElegido.lat , lng: centroElegido.lng}"
           :zoom="15"
           map-type-id="roadmap"
           style="width: 500px; height: 300px"
         >
 
-          <GmapMarker :position="coordenadasCA" />
+          <GmapMarker :position="{lat:  centroElegido.lat , lng: centroElegido.lng}" />
         </GmapMap>
     </div>
 
@@ -38,10 +54,9 @@
       </div>
 
       <div >
-      <q-btn to="/ruta"  color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
+      <q-btn to="ruta" color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
       </div>
     </q-item>
-
 
 
   </q-page>
@@ -78,6 +93,8 @@ export default class infoCentroAcopio extends Vue {
   get centroElegido () {
     return this.$store.state.store_CA.centroElegido
   }
+
+
 
 
 }
