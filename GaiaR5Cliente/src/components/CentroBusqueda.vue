@@ -1,26 +1,32 @@
 <template>
   <q-page style="background-color: #fdebc7 ">
     <div class="q-gutter-md row items-start">
-      <q-input v-model="texto" color="verde" label="Buscar" label-color="light-green-9" @click="buscar" style="width: 400px">
+      <q-input v-model="texto" color="verde" label="Buscar" label-color="light-green-9" style="width: 400px">
         <template v-slot:append>
           <q-icon name="search" color="light-green-9" style="background-color: #fdebc7" >
           </q-icon>
         </template>
-        <template v-slot:after>
-          <q-select borderless
-                    color="light-green-9"
-                    v-model="modelMultiple"
-                    multiple
-                    :options="tagsMaterial" bg-color="#fdebc7"
-                    label-color="light-green-9"
-                    style="min-width: 50px; max-width: 200px; color: #7FA949 ">
-            <template v-slot:append>
-              <q-icon name="local_offer" color="light-green-9" />
-            </template>
-          </q-select>
-        </template>
       </q-input>
+
+        <q-select borderless
+                  color="light-green-9"
+                  v-model="modelMultiple"
+                  multiple
+                  :options="tagsMaterial" bg-color="#fdebc7"
+                  label-color="light-green-9"
+                  style="min-width: 50px; max-width: 200px; color: #7FA949 ">
+          <template v-slot:append>
+            <q-icon name="local_offer" color="light-green-9" />
+          </template>
+        </q-select>
     </div>
+
+      <div class="q-pa-md q-gutter-sm">
+        <q-btn :ripple="true" color="light-green-9"label="Buscar por nombre" no-caps />
+        <q-btn :ripple="true" color="light-green-9"label="Buscar por tag" no-caps />
+      </div>
+
+
     <div>
       <br>
     <p style="color: #7FA949; font-size: 18px" align="center">Centros de acopio</p>
@@ -48,7 +54,7 @@ import { Vue, Component } from 'vue-property-decorator';
 import { Vue, Component } from 'vue-property-decorator';
 import CentroAcopioBusqueda from "components/CentroAcopioBusqueda.vue";
 import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
-
+//import { StringUtils } from 'turbocommons-ts';
 
 @Component({
   components: { CentroAcopioBusqueda }
@@ -66,6 +72,7 @@ export default class CentroBusqueda extends Vue {
 
   centrosAcopio=[]
   modelMultiple=[]
+  centrosAcopioFiltrados= []
 
   centros: CentroAcopio[] =[
     new CentroAcopio("Asociacion de recuperados ambientales",
@@ -151,11 +158,16 @@ export default class CentroBusqueda extends Vue {
 
 
   filtrar(){
-    this.listaCentroCA.then((res=>{
-      console.log(res);
-      this.centrosAcopio = res.data;
-    }))
+    this.centrosAcopioFiltrados = [];
+      this.centrosAcopio.forEach((centro)=>{
+
+      })
   }
+
+  prueba(){
+    console.log(StringUtils.compareByLevenshtein('abc', 'axc'));
+  }
+
 
 }
 
