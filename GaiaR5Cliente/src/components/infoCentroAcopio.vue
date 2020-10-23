@@ -24,11 +24,11 @@
         <div class="text-dark">   Materiales : </div>
       </q-item-label>
 
-      <q-item v-for="mat in centroElegido.materiales" >
+      <q-item v-for="mat in centroElegido.tags" >
         <q-item-section avatar>
           <q-icon color="primary" name="panorama_fish_eye" />
         </q-item-section>
-        <q-item-section>{{mat.tag }} </q-item-section>
+        <q-item-section>{{mat }} </q-item-section>
 
       </q-item>
 

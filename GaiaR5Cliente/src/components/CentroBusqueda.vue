@@ -10,9 +10,10 @@
 
         <q-select borderless
                   color="light-green-9"
-                  v-model="modelMultiple"
+                  v-model="tags"
                   multiple
-                  :options="tagsMaterial" bg-color="#fdebc7"
+                  :options="this.tagsMaterial"
+                  bg-color="#fdebc7"
                   label-color="light-green-9"
                   style="min-width: 50px; max-width: 200px; color: #7FA949 ">
           <template v-slot:append>
@@ -22,7 +23,7 @@
     </div>
 
       <div class="q-pa-md q-gutter-sm">
-        <q-btn @click="filtrarTag" :ripple="true" color="light-green-9"label="Buscar por tag" no-caps />
+        <q-btn  :ripple="true" color="light-green-9"label="Buscar por tag" @click="filtrarTag" no-caps />
       </div>
 
 
@@ -70,7 +71,7 @@ export default class CentroBusqueda extends Vue {
     }
   }
 
-  modelMultiple=[]
+tags=[]
   centrosAcopioFiltrados= this.listaCentroCA
 
   centros: CentroAcopio[] =[
@@ -120,7 +121,7 @@ export default class CentroBusqueda extends Vue {
       false
     )]
   centrofiltrado:CentroAcopio[] =[];
-  texto:string ="";
+  modelmultiple:String[]=[];
 
   filtro(){
     return this.texto
@@ -169,11 +170,12 @@ export default class CentroBusqueda extends Vue {
 
   filtrarTag(){
     this.centrosAcopioFiltrados = [];
-    this.modelMultiple.forEach((tag)=>{
+    this.tags.forEach((tag)=>{
       this.listaCentroCA.forEach((centro)=>{
-        if(centro.materiales.forEach((tagCentro)=>{
+        if(centro.tags.some((tagCentro)=>{
           if(!this.centrosAcopioFiltrados.includes(centro) && tag == tagCentro){
             this.centrosAcopioFiltrados.push(centro);
+            return true;
           }
         }));
       })
