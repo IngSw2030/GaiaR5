@@ -1,13 +1,10 @@
 <template>
   <q-page style="background-color: #fdebc7 ">
-    <div class="q-gutter-md row items-start">
+    <div class="q-gutter-md row items-start ">
       <q-input v-model="texto" color="verde" label="Centro de acopio" label-color="light-green-9" @click="buscar">
         <template v-slot:append>
           <q-icon name="search" color="light-green-9" style="background-color: #fdebc7" >
           </q-icon>
-        </template>
-        <template v-slot:before>
-          <q-btn flat unelevated icon="arrow_back" color="light-green-9" style="background-color: #fdebc7"/>
         </template>
         <template v-slot:after>
           <q-select borderless
