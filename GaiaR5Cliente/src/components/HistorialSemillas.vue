@@ -8,6 +8,8 @@
         src="https://www.pngkey.com/png/full/59-595509_drawing-tree-root-arbol-con-raices-dibujo.png"
 
       />
+
+      <p class="text-weight-bold"  style="font-size: 3rem;color: #7FA949;"> Semillas: {{acumSemillas}} </p>
     </div>
 
     <q-item class="column relative-position container   flex flex-center" >
