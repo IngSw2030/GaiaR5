@@ -3,7 +3,7 @@
 
     <q-item to="/info" active clickable v-ripple fixed-right >
       <q-item-section avatar>
-        <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 8ex; " />
+        <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 5ex" />
       </q-item-section>
     </q-item>
 
@@ -18,11 +18,12 @@
       <br>
 
       <q-item >
-        <q-item-section avatar>
-          <q-icon color="primary" name="person_pin_circle" style="font-size: 2rem;" />
+        <q-item-section avatar style="display: flex;flex-direction: row;justify-content: center;align-content: center">
+          <q-icon color="primary" name="person_pin_circle" style="font-size: 1.5rem" />
+          <p class="text-dark" style="vertical-align: center">   Mi ubicación : </p>
         </q-item-section>
 
-        <div class="text-dark">   Mi ubicación : </div>
+
       </q-item>
 
 
