@@ -4,7 +4,7 @@
 
     <q-item to="/centroBusqueda" active clickable v-ripple fixed-right >
       <q-item-section avatar>
-        <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 8ex; " />
+        <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 5ex; " />
       </q-item-section>
     </q-item>
 
@@ -15,26 +15,15 @@
     <div class="column relative-position container   flex flex-center" >
     <p style ="margin-bottom: 0px" >  Horario : {{centroElegido.horario}}</p>
       <p style ="margin-bottom: 0px" >  Dirección : {{centroElegido.direccion}}</p>
-
-    </div>
-
-    <q-list bordered padding>
-
-      <q-item-label header  style ="margin-bottom: 0px" >
-        <div class="text-dark">   Materiales : </div>
-      </q-item-label>
-
-      <q-item v-for="mat in centroElegido.tags" >
-        <q-item-section avatar>
-          <q-icon color="primary" name="panorama_fish_eye" />
-        </q-item-section>
-        <q-item-section>{{mat }} </q-item-section>
-
+      <q-item-section avatar style="display: flex;flex-direction: row;justify-content: center;align-content: center" >
+        <q-icon color="light-green" name="eco" >
+        </q-icon>
+        <p >Materiales:</p>
+      </q-item-section>
+      <q-item v-for="mat in centroElegido.tags"  style="margin-top: -30px">
+        <q-item-section >{{mat }} </q-item-section>
       </q-item>
-
-    </q-list>
-
-
+    </div>
     <div class="relative-position container   flex flex-center" style="margin-top: 30px; ">
         <GmapMap
           :center="{lat:  centroElegido.lat , lng: centroElegido.lng}"
