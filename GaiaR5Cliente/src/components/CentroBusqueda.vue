@@ -17,17 +17,12 @@
                   label-color="light-green-9"
                   style="min-width: 50px; max-width: 200px; color: #7FA949 ">
           <template v-slot:append>
-            <q-icon name="local_offer" color="light-green-9" />
+            <q-icon name="local_offer" color="light-green-9" @click="filtrarTag" />
           </template>
         </q-select>
     </div>
 
-      <div class="q-pa-md q-gutter-sm">
-        <q-btn  :ripple="true" color="light-green-9"label="Buscar por tag" @click="filtrarTag" no-caps />
-      </div>
-
-
-    <div>
+      <div>
       <br>
     <p style="color: #7FA949; font-size: 18px" align="center">Centros de acopio</p>
     </div>
