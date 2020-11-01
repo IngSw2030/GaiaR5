@@ -11,7 +11,9 @@ const routes: RouteConfig[] = [
       { path: '/info', component: () => import('components/infoCentroAcopio')},
       {path: '/centrobusqueda', component: () => import('components/CentroBusqueda') },
       {path: '/ruta', component: () => import('components/Ruta') },
-      {path: '/semillas', component: () => import('components/HistorialSemillas') }
+      {path: '/semillas', component: () => import('components/HistorialSemillas') },
+      {path: '/login', component: () => import('components/Login') },
+      {path: '/inicio', component: () => import('components/Inicio') }
 ]
   },
 
