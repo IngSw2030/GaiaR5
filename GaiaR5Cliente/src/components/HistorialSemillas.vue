@@ -17,8 +17,8 @@
         v-for="centro in listaCentroCA">
         Visita a:
         <q-card-section v-html="centro.nombre" style="color: darkslategrey; font-size: 17px " />
-        29/04/2020
-        300 Semillas obtenidas
+        23/00/2020
+        500 Semillas obtenidas
       </p>
     </q-item>
     <q-item class="column justify-center full-height full-width text-center">

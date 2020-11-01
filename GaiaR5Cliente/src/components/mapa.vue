@@ -4,30 +4,34 @@
 
     <h2>  quiero saber mis coordenadas   </h2>
 
-    <p>   var, {{variable}}   </p>
+    <p>   var, {{cosa}}   </p>
 
-    <p>  {{cosa.lat}} latitud, {{cosa.lng}} longitud,  </p>
     <p>  {{ubicacion.lat}} latitud, {{ubicacion.lng}} longitud,  </p>
     <p>  {{coordenadas.lat}} latitud, {{coordenadas.lng}} longitud,  </p>
 
 
     <GmapMap
+      ref="map"
       :center="ubicacion"
       :zoom="15"
       map-type-id="roadmap"
       style="width: 500px; height: 300px"
     >
 
-      <GmapMarker :position="ubicacion" />
-      <GmapMarker :position="{lat:  coordenadas.lat, lng: coordenadas.lng}" />
+      <GmapMarker :position="this.origenC" />
+      <GmapMarker :position="{lat:  this.destinoC.lat, lng: this.destinoC.lng}" />
 
-      <gmap-polygon :paths="[ubicacion,coordenadas]" :editable="false" :draggable="false"  ></gmap-polygon>
+      <GmapInfoWindow :position="this.origenC" :options="{pixelOffset: {width: 0, height: -35} }">
+        <p>   var, {{variable}}   </p>
+        </GmapInfoWindow>
+
+      <gmap-polygon :paths="[this.origenC,this.destinoC]" :editable="false" :draggable="false"  ></gmap-polygon>
 
     </GmapMap>
 
 
     <div >
-      <q-btn @click="cambiarVariable(origenC)" color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
+      <q-btn @click="dibujarRuta" color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
     </div>
 
   </q-page>
@@ -52,7 +56,7 @@ Vue.use(VueGoogleMaps, {
 @Component
 export default class mapa extends Vue {
 
-  cosa= this.ubicacion
+  cosa= this.prueba()
 
   data(){
     return{
@@ -77,9 +81,9 @@ export default class mapa extends Vue {
   }
   getCurrentPosition() {
     Geolocation.getCurrentPosition().then(position => {
-      this.origen.lat=position.coords.latitude
-      this.origen.lng=position.coords.longitude
-      this.$store.commit('store_CA/updateUbicacion', origen)
+      //this.origen.lat=position.coords.latitude
+      //this.origen.lng=position.coords.longitude
+      //this.$store.commit('store_CA/updateUbicacion', origen)
     });
   }
 
@@ -88,9 +92,9 @@ export default class mapa extends Vue {
 
     // we start listening
     this.geoId = Geolocation.watchPosition({}, (position, err) => {
-      this.origen.lat=position.coords.latitude
-      this.origen.lng=position.coords.longitude
-      this.$store.commit('store_CA/updateUbicacion', origen)
+      //this.origen.lat=position.coords.latitude
+      //this.origen.lng=position.coords.longitude
+      //this.$store.commit('store_CA/updateUbicacion', origen)
     })
   }
 
@@ -124,6 +128,42 @@ export default class mapa extends Vue {
   set setVariable (val) {
     this.$store.commit('store_CA/updateVariable', val)
   }
+
+
+  prueba(){
+    var co=5
+    return co
+  }
+
+  dibujarRuta() {
+
+    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer;
+    directionsDisplay.setMap(this.$refs.map.$mapObject);
+
+
+
+    //google maps API's direction service
+
+    function dibujarMapa(ds,dd){
+      ds.route({
+          origin: this.origenC,
+          destination: this.destinoC,
+          travelMode: 'TRANSIT'
+        },
+        function (response, status) {
+        if (status === "OK") {
+          dd.setDirections(response);
+        } else {
+          console.log("no salio")
+          window.alert("Directions request failed due to " + status);
+        }
+          });
+    }
+
+
+  }
+
 
 }
 </script>

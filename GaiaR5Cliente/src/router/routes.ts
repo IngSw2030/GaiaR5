@@ -7,6 +7,7 @@ const routes: RouteConfig[] = [
     children: [
       { path: '', component: () => import('components/CentroBusqueda') },
       { path: '/mapa', component: () => import('components/mapa') },
+      { path: '/cerca', component: () => import('components/cercaAmi') },
       { path: '/info', component: () => import('components/infoCentroAcopio')},
       {path: '/centrobusqueda', component: () => import('components/CentroBusqueda') },
       {path: '/ruta', component: () => import('components/Ruta') },

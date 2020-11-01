@@ -1,7 +1,7 @@
 <template>
   <q-page padding  style="background-color: #fdebc7">
 
-    <q-item to="/info" active clickable v-ripple fixed-right >
+    <q-item to="/cerca" active clickable v-ripple fixed-right >
       <q-item-section avatar>
         <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 5ex" />
       </q-item-section>
