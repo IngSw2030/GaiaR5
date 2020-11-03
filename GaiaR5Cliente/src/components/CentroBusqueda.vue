@@ -1,7 +1,7 @@
 <template>
   <q-page style="background-color: #fdebc7 ">
     <div class="q-gutter-md row items-start">
-      <q-input v-model="texto" color="verde" label="Buscar" label-color="light-green-9" style="width: 400px">
+      <q-input v-model="texto" color="verde" label="Buscar" label-color="light-green-9" style="width: 400px" >
         <template v-slot:append>
           <q-btn flat color="light-green-9" style="background-color: #fdebc7" @click="filtrarNombre"  icon="search">
           </q-btn>

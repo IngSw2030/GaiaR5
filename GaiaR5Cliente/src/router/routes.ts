@@ -12,7 +12,8 @@ const routes: RouteConfig[] = [
       {path: '/ruta', component: () => import('components/Ruta') },
       {path: '/semillas', component: () => import('components/HistorialSemillas') },
       {path: '/login', component: () => import('components/Login') },
-      {path: '/inicio', component: () => import('components/Inicio') }
+      {path: '/inicio', component: () => import('components/Inicio') },
+      {path: '/bususuario', component: () => import('components/BuscarUsuario') },
 ]
   },
 
