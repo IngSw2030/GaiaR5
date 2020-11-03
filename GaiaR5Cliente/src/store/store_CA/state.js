@@ -113,12 +113,16 @@ export default function () {
     ],
      //centro elegido por el usuario
     centroElegido: {
-      nombre:'Centro de Acopio Doña Juana',
-      horario:' L-S 7:00 am-6:00 pm',
-      tags:["vidrio","papel"],
-      direccion:'Clr 45 B No. 34A -17',
-      lat:4.616422,
-      lng:-74.068297
+
+
+    nombre:'Centro de Acopio Villa Maria',
+      horario:' L-S 8:00 am-3:30 pm',
+    tags:["Residuos toxicos","Plastico", "Carton"
+     ],
+    direccion:'Cll 7 B No. 12 -17',
+    lat:4.632304,
+    lng:-74.070685
+
     },
      //tags de materiales dentro del sistema
     tags:['Residuos toxicos', 'Carton', 'Plastico','Vidrio', 'Papel','Madera', 'Metal'],

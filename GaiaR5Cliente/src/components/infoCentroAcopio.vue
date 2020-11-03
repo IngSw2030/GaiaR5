@@ -63,7 +63,6 @@ Vue.use(VueGoogleMaps, {
 })
 
 
-
 @Component
 export default class infoCentroAcopio extends Vue {
   data(){
