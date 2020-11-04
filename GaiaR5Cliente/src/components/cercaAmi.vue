@@ -115,7 +115,6 @@ export default class cercaAmi extends Vue {
       this.origen.lat=position.coords.latitude
       this.origen.lng=position.coords.longitude
       this.setUbicacion(this.origen)
-
     });
   }
 

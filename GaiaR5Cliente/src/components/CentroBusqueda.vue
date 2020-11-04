@@ -1,186 +1,146 @@
 <template>
   <q-page style="background-color: #fdebc7 ">
-    <div class="q-gutter-md row items-start">
-      <q-input v-model="texto" color="verde" label="Buscar" label-color="light-green-9" style="width: 400px" >
-        <template v-slot:append>
-          <q-btn flat color="light-green-9" style="background-color: #fdebc7" @click="filtrarNombre"  icon="search">
-          </q-btn>
-        </template>
-      </q-input>
-
-        <q-select borderless
-                  color="light-green-9"
-                  v-model="tags"
-                  multiple
-                  :options="this.tagsMaterial"
-                  bg-color="#fdebc7"
-                  label-color="light-green-9"
-                  style="min-width: 50px; max-width: 200px; color: #7FA949 ">
+    <div v-if="!centroElegido">
+      <div class="q-gutter-md row items-start">
+        <q-input v-model="texto" color="verde" label="Buscar" label-color="light-green-9" style="width: 400px">
           <template v-slot:append>
-            <q-icon name="local_offer" color="light-green-9" @click="filtrarTag" />
+            <q-btn color="light-green-9" flat icon="search" style="background-color: #fdebc7" @click="buscar">
+            </q-btn>
           </template>
+        </q-input>
+        <q-select v-model="tags"
+                  :options="tagsMaterial"
+                  bg-color="#fdebc7"
+                  borderless
+                  color="light-green-9"
+                  label-color="light-green-9"
+                  multiple
+                  style="min-width: 50px; max-width: 200px; color: #7FA949 ">
         </q-select>
-    </div>
+      </div>
 
       <div>
-      <br>
-    <p style="color: #7FA949; font-size: 18px" align="center">Centros de acopio</p>
+        <br>
+        <p align="center" style="color: #7FA949; font-size: 18px">Centros de acopio</p>
+      </div>
+      <q-list>
+        <q-item v-for="(centro, indice) in centrosBack" :key="`${centro.nombre}:${indice}`"
+                clickable style="background: #fdebc7" @click="seleccionarCentro(centro)">
+          <q-item-label>{{ centro.nombre }}</q-item-label>
+        </q-item>
+      </q-list>
     </div>
-    <div style="color: #fdebc7; background-color: #fdebc7">
-      <q-card class ="row"
-              flat
-              borderless
-              style="background: #fdebc7"
-              v-for="centro in centrosAcopioFiltrados">
-        <q-card-section class="col" >
-          <q-btn v-html="centro.nombre" style="color: black; font-size: 15px; width:300px; height: 50px" align="left" @click="seleccionarCentro(centro)" clickable v-ripple >
-          </q-btn>
-          <q-separator />
-        </q-card-section>
-
-      </q-card>
+    <div v-else>
+      <info-centro-acopio :centro="centroElegido" @volver="limpiarCentroElegido"/>
     </div>
   </q-page>
 </template>
 
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
-import { Vue, Component } from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import CentroAcopioBusqueda from "components/CentroAcopioBusqueda.vue";
 import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
+import infoCentroAcopio from "components/infoCentroAcopio.vue";
+
 const {StringUtils} = require('turbocommons-ts');
+const url = "http://6684480d9141.ngrok.io";
 
 @Component({
-  components: { CentroAcopioBusqueda }
+  components: {
+    CentroAcopioBusqueda,
+    infoCentroAcopio
+  }
 })
 
 export default class CentroBusqueda extends Vue {
+  centrosBack: CentroAcopio[] = [];
+  texto = ""
+  tags = []
+  centrosAcopioFiltrados = this.listaCentroCA
+  centroElegido: CentroAcopio = null;
+  model = null;
+  multiple = null;
+  centrofiltrado: CentroAcopio[] = [];
+  modelmultiple: String[] = [];
 
-  texto=undefined
-
-  data() {
-    return {
-      model: null,
-      multiple: null,
-    }
+  get listaCentroCA() {
+    return this.$store.state.store_CA.centrosCA
   }
 
-tags=[]
-  centrosAcopioFiltrados= this.listaCentroCA
+  get tagsMaterial() {
+    return this.$store.state.store_CA.tags
+  }
 
-  centros: CentroAcopio[] =[
-    new CentroAcopio("Asociacion de recuperados ambientales",
-      "Cll 68 A # 70 - 13", ["Plastico", "Madera"], "8:00 am a 5:00 pm", false),
+  get listacentrobus() {
+    return this.$store.state.store_CA.centrobus
+  }
 
-    new CentroAcopio(
-      "Las manzanas" ,
-      "Cll 80 A # 70 - 20",
-      ["Plastico"],
-      "8:00 am a 5:00 pm",
-      false
-    ),
-    new CentroAcopio(
-      "Los hermanos de javier",
-      "Calle 45 #7-30",
-      ["Papel", "Vidrio"],
-      "9:00 am a 10:00 pm",
-      false
-    ),
-    new CentroAcopio(
-      "El codito",
-      "Calle 13 #30-20",
-      ["Plastico", "Madera", "Vidrio", "Carton"],
-      "8:00 am a 5:00 pm",
-      true
-    ),
-    new CentroAcopio(
-      "Las tortugas",
-      "Calle 69 #4-20",
-      ["Aluminio"],
-      "10:00 pm a 8:00 am",
-      false
-    ),
-    new CentroAcopio(
-      "Las almendras",
-      "Calle 69 #4-20",
-      ["Aluminio", "Madera"],
-      "10:00 pm a 8:00 am",
-      false
-    ),
-    new CentroAcopio(
-      "Las peras",
-      "Calle 69 #4-20",
-      ["Plastico"],
-      "10:00 pm a 8:00 am",
-      false
-    )]
-  centrofiltrado:CentroAcopio[] =[];
-  modelmultiple:String[]=[];
-
-  filtro(){
+  filtro() {
     return this.texto
   }
 
   buscar() {
-    this.centros.forEach((centro)=>{
-      if(centro.nombre.indexOf(this.texto) !== -1){
-        this.centrofiltrado.push(centro);
+    this.$axios.get(`${url}/centroAcopio`, {
+      params: {
+        nombre: this.texto
+      }
+    }).then((resultado) => {
+      let centro = resultado.data;
+      this.centrosBack = [];
+      let centroNuevo = new CentroAcopio(centro.nombre, centro.direccion, centro.tags, centro.horario, centro.avatar, centro.latitud, centro.longitud);
+      //centroNuevo.tags = JSON.parse(centroNuevo.tags);
+      this.centrosBack.push(centroNuevo);
+      console.log(this.centrosBack);
+    });
+  }
+
+  setCentroElegido(val: any) {
+    this.$store.commit('store_CA/updateCentroElegido', val);
+  }
+
+  seleccionarCentro(centro: CentroAcopio) {
+    this.centroElegido = centro;
+  }
+
+
+  filtrarNombre() {
+    this.centrosAcopioFiltrados = [];
+    this.listaCentroCA.forEach((centro: any) => {
+      if (StringUtils.compareSimilarityPercent(this.texto, centro.nombre) > 25) {
+        this.centrosAcopioFiltrados.push(centro)
       }
     })
   }
 
-  get listaCentroCA(){
-    return this.$store.state.store_CA.centrosCA
-  }
 
-  get tagsMaterial(){
-    return this.$store.state.store_CA.tags
-  }
-
-  get listacentrobus(){
-    return this.$store.state.store_CA.centrobus
-  }
-
-  setCentroElegido(val){
-    this.$store.commit('store_CA/updateCentroElegido', val)
-  }
-
-  seleccionarCentro(centro){
-    this.setCentroElegido(centro)
-    this.$router.push('/info')
-  }
-
-
-  filtrarNombre(){
+  /*filtrarTag() {
     this.centrosAcopioFiltrados = [];
-      this.listaCentroCA.forEach((centro)=>{
-        if(StringUtils.compareSimilarityPercent(this.texto, centro.nombre)>25)
-        {
-          this.centrosAcopioFiltrados.push(centro)
-        }
-      })
-  }
-
-
-  filtrarTag(){
-    this.centrosAcopioFiltrados = [];
-    this.tags.forEach((tag)=>{
-      this.listaCentroCA.forEach((centro)=>{
-        if(centro.tags.some((tagCentro)=>{
-          if(!this.centrosAcopioFiltrados.includes(centro) && tag == tagCentro){
+    this.tags.forEach((tag) => {
+      this.listaCentroCA.forEach((centro:any) => {
+        if (centro.tags.some((tagCentro:any) => {
+          if (!this.centrosAcopioFiltrados.includes(centro) && tag == tagCentro) {
             this.centrosAcopioFiltrados.push(centro);
             return true;
           }
-        }));
+        }))
       })
     })
+  }*/
+
+
+  prueba() {
+    console.log(this.texto)
   }
 
+  mounted() {
+    this.$axios.get("http://6684480d9141.ngrok.io/recursos").then((respuesta) => {
+      this.$store.commit('store_CA/updateTags', respuesta.data);
+    });
+  }
 
-  prueba(){
-    console.log(this.texto)
-
+  limpiarCentroElegido(){
+    this.centroElegido = null;
   }
 
 
@@ -188,5 +148,10 @@ tags=[]
 
 </script>
 <style scoped>
-
+.botonAcopio {
+  color: black;
+  font-size: 15px;
+  width: 300px;
+  height: 50px
+}
 </style>
