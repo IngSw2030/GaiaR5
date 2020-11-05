@@ -3,20 +3,20 @@
 
     <div align="center">
       <q-img
-        width="215px"
         height="265px"
         src="https://www.pngkey.com/png/full/59-595509_drawing-tree-root-arbol-con-raices-dibujo.png"
+        width="215px"
 
       />
 
-      <p class="text-weight-bold"  style="font-size: 3rem;color: #7FA949;"> Semillas: {{acumSemillas}} </p>
+      <p class="text-weight-bold" style="font-size: 3rem;color: #7FA949;"> Semillas: {{ acumSemillas }} </p>
     </div>
 
-    <q-item class="column relative-position container   flex flex-center" >
-      <p class="column" style="border:green 2px solid  ; border-radius: 20px ; padding: 20px; width: 500px"
-        v-for="centro in listaCentroCA">
+    <q-item class="column relative-position container   flex flex-center">
+      <p v-for="centro in listaCentroCA" class="column"
+         style="border:green 2px solid  ; border-radius: 20px ; padding: 20px; width: 500px">
         Visita a:
-        <q-card-section v-html="centro.nombre" style="color: darkslategrey; font-size: 17px " />
+        <q-card-section style="color: darkslategrey; font-size: 17px " v-html="centro.nombre"/>
         23/00/2020
         500 Semillas obtenidas
       </p>
@@ -27,23 +27,22 @@
 </template>
 
 <script lang="ts">
-import {Vue, Component} from 'vue-property-decorator';
-import CentroAcopioBusqueda from "components/CentroAcopioBusqueda.vue";
-import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
+import {Component, Vue} from 'vue-property-decorator';
 
 @Component({
   components: {HistorialSemillas}
 })
 export default class HistorialSemillas extends Vue {
 
-  get listaCentroCA(){
+  get listaCentroCA() {
     return this.$store.state.store_CA.centrosCA
   }
-  get acumSemillas(){
+
+  get acumSemillas() {
     return this.$store.state.store_CA.acumSemillas
   }
 
-  get centroElegido () {
+  get centroElegido() {
     return this.$store.state.store_CA.centroElegido
   }
 

@@ -41,7 +41,7 @@
 import {Component, Vue} from 'vue-property-decorator';
 import CentroAcopioBusqueda from "components/CentroAcopioBusqueda.vue";
 import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
-import infoCentroAcopio from "components/infoCentroAcopio.vue";
+import infoCentroAcopio from "components/InfoCentroAcopio.vue";
 
 const {StringUtils} = require('turbocommons-ts');
 const url = "http://6684480d9141.ngrok.io";
@@ -58,7 +58,7 @@ export default class CentroBusqueda extends Vue {
   texto = ""
   tags = []
   centrosAcopioFiltrados = this.listaCentroCA
-  centroElegido: CentroAcopio = null;
+  centroElegido: CentroAcopio | undefined = undefined;
   model = null;
   multiple = null;
   centrofiltrado: CentroAcopio[] = [];
@@ -140,7 +140,7 @@ export default class CentroBusqueda extends Vue {
   }
 
   limpiarCentroElegido(){
-    this.centroElegido = null;
+    this.centroElegido = undefined;
   }
 
 

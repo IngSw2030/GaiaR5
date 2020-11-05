@@ -64,7 +64,7 @@
 import Vue from 'vue'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import { Plugins } from '@capacitor/core'
-import Component from 'vue-class-component'
+import {  } from 'vue-class-component'
 const { Geolocation } = Plugins
 
 

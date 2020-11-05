@@ -1,21 +1,22 @@
-import { RouteConfig } from 'vue-router';
+import {RouteConfig} from 'vue-router';
 
 const routes: RouteConfig[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('components/CentroBusqueda') },
-      { path: '/mapa', component: () => import('components/mapa') },
-      { path: '/cerca', component: () => import('components/cercaAmi') },
-      { path: '/info', component: () => import('components/infoCentroAcopio')},
-      {path: '/centrobusqueda', component: () => import('components/CentroBusqueda') },
-      {path: '/ruta', component: () => import('components/Ruta') },
-      {path: '/semillas', component: () => import('components/HistorialSemillas') },
-      {path: '/login', component: () => import('components/Login') },
-      {path: '/inicio', component: () => import('components/Inicio') },
-      {path: '/bususuario', component: () => import('components/BuscarUsuario') },
-]
+      //Es importante recordar que para que el compilador lo reconozca los archivos .vue deben escribirse con esa extension
+      {path: '', component: () => import('components/CentroBusqueda.vue')},
+      {path: '/mapa', component: () => import('components/Mapa.vue')},
+      {path: '/cerca', component: () => import('components/CercaAMi.vue')},
+      {path: '/info', component: () => import('components/InfoCentroAcopio.vue')},
+      {path: '/centrobusqueda', component: () => import('components/CentroBusqueda.vue')},
+      {path: '/ruta', component: () => import('components/Ruta.vue')},
+      {path: '/semillas', component: () => import('components/HistorialSemillas.vue')},
+      {path: '/login', component: () => import('components/Login.vue')},
+      {path: '/inicio', component: () => import('components/Inicio.vue')},
+      {path: '/bususuario', component: () => import('components/BuscarUsuario.vue')},
+    ]
   },
 
   // Always leave this as last one,

@@ -7,7 +7,7 @@
     </q-item>
 
     <div class="text-weight-bold" style="color: #7FA949;">
-      <div class="text-center"style="font-size: 3.5ex;" >{{centro.nombre}} </div>
+      <div class="text-center" style="font-size: 3.5ex;" >{{centro.nombre}} </div>
     </div>
 
     <div class="column relative-position container   flex flex-center" >
@@ -29,7 +29,7 @@
     </div>
     <q-item class="column justify-center full-height full-width text-center" >
       <div class="text-weight-bold" style="color: #7FA949;margin-top: 50px; ">
-        <div class="text-center"style="font-size: 2.7ex;" >Conocer ruta desde mi ubicación </div>
+        <div class="text-center" style="font-size: 2.7ex;" >Conocer ruta desde mi ubicación </div>
       </div>
 
       <div >
@@ -44,32 +44,39 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import {} from 'googlemaps';
 import { Plugins } from '@capacitor/core'
 import CentroAcopioBusqueda from "src/api/clases/CentroAcopioBusqueda";
+import Map = google.maps.Map;
+import Marker = google.maps.Marker;
 const { Geolocation } = Plugins;
 const url = "http://6684480d9141.ngrok.io";
 
 
 @Component
 export default class infoCentroAcopio extends Vue {
-  @Prop() centro:CentroAcopioBusqueda;
+  @Prop() centro!: CentroAcopioBusqueda;
   origen = {
     latitud: 4.628305,
     longitud: -74.064502
   };
-
-  mapa = undefined;
+  mapa:Map | undefined = undefined;
+  marcadorUsuario:Marker | undefined = undefined;
+  marcadorCentro:Marker | undefined = undefined;
 
   mounted(){
-    this.mapa = new google.maps.Map(document.getElementById("mapa"), {
+    /*Geolocation.getCurrentPosition().then(position => {
+      this.origen.latitud = position.coords.latitude;
+      this.origen.longitud = position.coords.longitude;
+    });*/
+    this.mapa = new google.maps.Map(<Element> document.getElementById("mapa"), {
       center: {lat: this.origen.latitud, lng: this.origen.longitud},
       zoom: 13
     });
-    let markerYo = new google.maps.Marker({
+    this.marcadorUsuario = new google.maps.Marker({
       position: {lat: this.origen.latitud, lng: this.origen.longitud},
       map: this.mapa,
       title: "Usted esta aqui",
       label: "Y"
     });
-    let markerCentro = new google.maps.Marker({
+    this.marcadorCentro = new google.maps.Marker({
       position: {lat: this.centro.latitud, lng: this.centro.longitud},
       map: this.mapa,
       title: this.centro.nombre,
@@ -88,10 +95,6 @@ export default class infoCentroAcopio extends Vue {
         renderDirecciones.setDirections(result);
       }
     }));
-    /*Geolocation.getCurrentPosition().then(position => {
-      this.origen.latitud = position.coords.latitude;
-      this.origen.longitud = position.coords.longitude;
-    });*/
   }
 
   volverABusqueda(){
