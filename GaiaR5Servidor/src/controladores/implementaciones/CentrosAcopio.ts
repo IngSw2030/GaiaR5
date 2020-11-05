@@ -2,39 +2,52 @@ import IControlador from "../IControlador";
 import {Express} from "express";
 import DB from "../../db";
 import Controlador from "../Controlador";
+import SuperControlador, {EndPoint, metodoEnum} from "../SuperControlador";
 
-export default class CentrosAcopio implements IControlador{
-    path: string;
+export default class CentrosAcopio extends SuperControlador implements IControlador{
     server: Express;
     controlador: Controlador;
 
     constructor(path: string) {
-        this.path = path;
+        super(path);
+        this.endpoints = [
+            {
+                etiqueta: "recursos",
+                metodo: metodoEnum.GET,
+                manejador: async (req, res) => {
+                    res.send(await this.obtenerRecursos());
+                }
+            },
+            {
+                etiqueta: "centroAcopio/recurso",
+                metodo: metodoEnum.GET,
+                manejador: async (req, res) =>{
+                    console.log("Recurso: ", req.query.recurso);
+                    res.send(await this.obtenerCentrosPorRecurso(<string>req.query.recurso));
+                }
+            },
+            {
+                etiqueta: "centroAcopio",
+                metodo: metodoEnum.POST,
+                manejador: async (req, res) =>{
+                    res.send(await this.crearCentroAcopio(req.body.centroAcopio));
+                }
+            },
+            {
+                etiqueta: "centroAcopio",
+                metodo: metodoEnum.GET,
+                manejador: async (req, res) =>{
+                    res.send(await this.obtenerCentroPorNombre(<string> req.query.nombre));
+                    res.sendStatus(200);
+                }
+            },
+        ];
     }
 
-    install(server: Express, controlador:Controlador): void {
+    instalar(server: Express, controlador:Controlador): void {
         this.server = server;
         this.controlador = controlador;
-        server.get(`${this.path}/obtenerRecursos`, async (req, res) => {
-            res.send(await this.obtenerRecursos());
-        });
-        console.log(`Registrando: ${this.path}/obtenerRecursos`);
-        /////////////////////////////////////////////////////////////
-        server.post(`${this.path}/obtenerCentrosPorRecurso`, async (req, res) =>{
-            res.send(await this.obtenerCentrosPorRecurso(req.body.recurso));
-        });
-        console.log(`Registrando: ${this.path}/obtenerCentrosPorRecurso`);
-        /////////////////////////////////////////////////////////////
-        server.post(`${this.path}/crearCentroAcopio`, async (req, res) =>{
-            res.send(await this.crearCentroAcopio(req.body.centroAcopio));
-        });
-        console.log(`Registrando: ${this.path}/crearCentroAcopio`);
-        /////////////////////////////////////////////////////////////
-        server.post(`${this.path}/obtenerCentroPorNombre`, async (req, res) =>{
-            res.send(await this.obtenerCentroPorNombre(req.body.nombre));
-        });
-        console.log(`Registrando: ${this.path}/obtenerCentroPorNombre`);
-        /////////////////////////////////////////////////////////////
+        super.exponer(this.server);
     }
 
     async crearCentroAcopio(centroAcopio){

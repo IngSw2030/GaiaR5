@@ -3,43 +3,62 @@ import {Express} from "express";
 import DB from "../../db";
 import Usuario from "@entidades/Usuario";
 import Controlador from "../Controlador";
-import ISemillas from "../../estrategias/ISemillas";
 import AsignarSemillasAleatorias from "../../estrategias/AsignarSemillasAleatorias";
+import SuperControlador, {metodoEnum} from "../SuperControlador";
+import {LatLng} from "@googlemaps/google-maps-services-js";
+import Geografico from "./Geografico";
 
-export default class Usuarios implements IControlador{
-    path: string;
+export default class Usuarios extends SuperControlador implements IControlador{
     server: Express;
     controlador: Controlador;
 
     constructor(path: string) {
-        this.path = path;
+        super(path);
+        this.endpoints = [
+            {
+                etiqueta: "usuario",
+                metodo: metodoEnum.GET,
+                manejador: async(req, res) => {
+                    //TODO: Implementar la recuperacion de un usuario por query
+                    //res.send(await this.crearUsuario(req.body.usuario));
+                }
+            },
+            {
+                etiqueta: "usuario",
+                metodo: metodoEnum.POST,
+                manejador: async(req, res) => {
+                    res.send(await this.crearUsuario(req.body.usuario));
+                }
+            },
+            {
+                etiqueta: "usuario/viajes",
+                metodo: metodoEnum.GET,
+                manejador: async(req, res) => {
+                    let cedula = <string> req.query.cedula;
+                    res.send(await this.obtenerHistorialVisitas(cedula));
+                }
+            },
+            {
+                etiqueta: "usuario/viaje",
+                metodo: metodoEnum.POST,
+                manejador: async(req, res) => {
+                    res.send(await this.iniciarRecorrido(req.body.inicio, req.body.fin, req.body.cedula, req.body.centro));
+                }
+            },
+            {
+                etiqueta: "usuario/viaje",
+                metodo: metodoEnum.PATCH,
+                manejador: async(req, res) => {
+                    res.send(await this.finalizarRecorrido(req.body.cedula, req.body.distancia));
+                }
+            },
+        ]
     }
 
-    install(server: Express, controlador:Controlador): void {
+    instalar(server: Express, controlador:Controlador): void {
         this.server = server;
         this.controlador = controlador;
-        server.post(`${this.path}/crearUsuario`, async(req, res) => {
-            res.send(await this.crearUsuario(req.body.usuario));
-        })
-        console.log(`Registrando: ${this.path}/crearUsuario`);
-
-
-        server.post(`${this.path}/asignarSemillas`, async(req, res) => {
-            res.send(await this.asignarSemillas(req.body.cedula, req.body.semillas));
-        })
-        console.log(`Registrando: ${this.path}/asignarSemillas`);
-
-
-        server.post(`${this.path}/finalizarRecorrido`, async(req, res) => {
-            res.send(await this.finalizarRecorrido(req.body.cedula, req.body.distancia));
-        })
-        console.log(`Registrando: ${this.path}/finalizarRecorrido`);
-
-
-        server.post(`${this.path}/obtenerHistorialVisitas`, async(req, res) => {
-            res.send(await this.obtenerHistorialVisitas(req.body.cedula));
-        })
-        console.log(`Registrando: ${this.path}/obtenerHistorialVisitas`);
+        super.exponer(this.server);
     }
 
     async crearUsuario(usuario:Usuario){
@@ -53,10 +72,17 @@ export default class Usuarios implements IControlador{
     async finalizarRecorrido(cedula:string, distancia:number){
         let semillas = new AsignarSemillasAleatorias().calcularSemillas(distancia);
         let visita = await DB.obtenerInstancia().finalizarRecorrido(cedula, semillas);
-        let nodo = await this.asignarSemillas(cedula, semillas);
+        await this.asignarSemillas(cedula, semillas);
         return {
             visita
         };
+    }
+
+    async iniciarRecorrido(inicio:LatLng, fin:LatLng, cedula:string, centro:string) {
+        let moduloGeografico = <Geografico> this.controlador.modulos.get("geografico");
+        let direcciones = await moduloGeografico.solicitarRecorrido(inicio, fin);
+        await DB.obtenerInstancia().iniciarRecorrido(cedula, centro);
+        return direcciones;
     }
 
     async obtenerHistorialVisitas(cedula:string){

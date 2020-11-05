@@ -7,11 +7,11 @@ import Geografico from "./implementaciones/Geografico";
 export default class Controlador{
     modulos: Map<string, IControlador> = new Map<string, IControlador>()
     constructor(server: Express) {
-        this.modulos.set("centrosAcopio", new CentrosAcopio("/centrosAcopio"));
-        this.modulos.set("usuarios", new Usuarios("/usuarios"));
-        this.modulos.set("geografico", new Geografico("/geografico"));
+        this.modulos.set("centrosAcopio", new CentrosAcopio(""));
+        this.modulos.set("usuarios", new Usuarios(""));
+        this.modulos.set("geografico", new Geografico(""));
         for(let modulo of this.modulos.values()){
-            modulo.install(server, this);
+            modulo.instalar(server, this);
         }
     }
 

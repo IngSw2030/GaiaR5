@@ -1,11 +1,10 @@
 import IControlador from "../IControlador";
 import {Express} from "express";
-import {Client, LatLng} from "@googlemaps/google-maps-services-js";
+import {Client, LatLng, TravelMode} from "@googlemaps/google-maps-services-js";
 import Controlador from "../Controlador";
-import DB from "../../db";
+import SuperControlador, {metodoEnum} from "../SuperControlador";
 
-export default class Geografico implements IControlador {
-    path: string;
+export default class Geografico extends SuperControlador implements IControlador {
     server: Express;
     controlador: Controlador;
     private APIKEY = "AIzaSyDm1cQh3R0DKN9fK-n7pwv0kWsTG5mlIEE"
@@ -13,45 +12,37 @@ export default class Geografico implements IControlador {
     pruebaFin = [4.64588103, -74.07849526];
 
     constructor(path: string) {
-        this.path = path;
+        super(path);
+        this.endpoints = [
+            {
+                etiqueta: "ruta",
+                metodo: metodoEnum.GET,
+                manejador: async (req, res) => {
+                    console.log(req.query);
+                    let inicio = req.query.inicio;
+                    let fin = req.query.fin;
+                    res.send(await this.solicitarRecorrido([Number(inicio[0]), Number(inicio[1])], [Number(fin[0]), Number(fin[1])]));
+                }
+            }
+        ];
     }
 
-    install(server: Express, controlador: Controlador): void {
+    instalar(server: Express, controlador: Controlador): void {
         this.server = server;
         this.controlador = controlador;
-        server.post(`${this.path}/solicitarRecorrido`, async (req, res) => {
-            res.send(await this.solicitarRecorrido(req.body.ubicacionUsuario, req.body.ubicacionCentro));
-        })
-        console.log(`Registrando: ${this.path}/solicitarRecorrido`);
-        //////////////////////////////////////////////////////////////////
-        server.post(`${this.path}/iniciarRecorrido`, async (req, res) => {
-            res.send(await this.iniciarRecorrido(req.body.ubicacionUsuario, req.body.ubicacionCentro, req.body.cedula, req.body.centro));
-        })
-        console.log(`Registrando: ${this.path}/iniciarRecorrido`);
+        super.exponer(this.server);
     }
 
     async solicitarRecorrido(ubicacionUsuario:LatLng, ubicacionCentro:LatLng) {
-        const client = new Client({});
-        let directions = await client.directions({
+        const cliente = new Client({});
+        let direcciones = await cliente.directions({
             params: {
                 origin: ubicacionUsuario,
                 destination: ubicacionCentro,
-                key: this.APIKEY
+                key: this.APIKEY,
+                mode: TravelMode.driving
             }
         });
-        return directions.data;
-    }
-
-    async iniciarRecorrido(ubicacionUsuario:LatLng, ubicacionCentro:LatLng, cedula:string, centro:string) {
-        const client = new Client({});
-        let directions = await client.directions({
-            params: {
-                origin: ubicacionUsuario,
-                destination: ubicacionCentro,
-                key: this.APIKEY
-            }
-        });
-        await DB.obtenerInstancia().iniciarRecorrido(cedula, centro);
-        return directions.data;
+        return direcciones.data;
     }
 }
