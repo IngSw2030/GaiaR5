@@ -5,14 +5,14 @@ import Usuario from "../src/entidades/Usuario";
 export default class DB {
     private static instancia: DB;
     private driver: Driver;
-    private session: Session;
+    private _session: Session;
 
     private constructor() {
         this.driver = neo4j.driver(
             'neo4j://localhost',
             neo4j.auth.basic('neo4j', '1234')
         );
-        this.session = this.driver.session();
+        this._session = this.driver.session();
     }
 
     public static obtenerInstancia(): DB {
@@ -22,8 +22,12 @@ export default class DB {
         return DB.instancia;
     }
 
+    public get session(){
+        return this._session;
+    }
+
     async obtenerCentroPorNombre(nombre: string){
-        let consulta = await this.session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE a.nombre = $nombre RETURN DISTINCT a, r.nombre", {
+        let consulta = await this._session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE a.nombre = $nombre RETURN DISTINCT a, r.nombre", {
             nombre: nombre
         });
         let centro = consulta.records[0].get("a").properties;
@@ -35,7 +39,7 @@ export default class DB {
     }
 
     async obtenerCentrosPorRecurso(recurso: string): Promise<CentroAcopio[]> {
-        let consulta = await this.session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN $recurso RETURN DISTINCT a.nombre", {
+        let consulta = await this._session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN $recurso RETURN DISTINCT a.nombre", {
             recurso
         });
         let centros = [];
@@ -46,21 +50,21 @@ export default class DB {
     }
 
     async obtenerRecursos(): Promise<string[]> {
-        let consulta = await this.session.run("MATCH (r:Recurso) RETURN DISTINCT r.nombre");
+        let consulta = await this._session.run("MATCH (r:Recurso) RETURN DISTINCT r.nombre");
         return consulta.records.map((registro) => {
             return registro.get("r.nombre");
         });
     }
 
     private async crearEntidad(entidad:string, props:object){
-        let consulta = await this.session.run(`CREATE (n:${entidad} $props) RETURN n`, {
+        let consulta = await this._session.run(`CREATE (n:${entidad} $props) RETURN n`, {
             props: props
         });
         return consulta.records[0].get('n').properties;
     }
 
     async crearUsuario(usuario: Usuario): Promise<Usuario> {
-        let consulta = await this.session.run("CREATE (n:Usuario $props) RETURN n", {
+        let consulta = await this._session.run("CREATE (n:Usuario $props) RETURN n", {
             props: usuario
         });
         let props = consulta.records[0].get('n').properties;
@@ -72,7 +76,7 @@ export default class DB {
     }
 
     async asignarSemillasUsuario(cedula: string, semillas: number): Promise<number> {
-        let consulta = await this.session.run("MATCH (u:Usuario{cedula:$cedula}) SET u.semillas = u.semillas + $semillas RETURN u", {
+        let consulta = await this._session.run("MATCH (u:Usuario{cedula:$cedula}) SET u.semillas = u.semillas + $semillas RETURN u", {
             "cedula": cedula,
             "semillas": semillas
         });
@@ -90,7 +94,7 @@ export default class DB {
             semillas: 0,
             finalizada: false
         }
-        let consulta = await this.session.run("MATCH (u:Usuario{cedula:$cedula}), (a:Acopio{nombre:$centro}) WITH u, a CREATE (u)-[v:Visita $props]->(a) return v", {
+        let consulta = await this._session.run("MATCH (u:Usuario{cedula:$cedula}), (a:Acopio{nombre:$centro}) WITH u, a CREATE (u)-[v:Visita $props]->(a) return v", {
             cedula,
             centro,
             props
@@ -99,7 +103,7 @@ export default class DB {
     }
 
     async finalizarRecorrido(cedula:string, semillas: number){
-        let consulta = await this.session.run("MATCH (u:Usuario{cedula:$cedula})-[v:Visita{finalizada: false}]-(a:Acopio) SET v.finalizada = true, v.semillas = $semillas RETURN v, a",
+        let consulta = await this._session.run("MATCH (u:Usuario{cedula:$cedula})-[v:Visita{finalizada: false}]-(a:Acopio) SET v.finalizada = true, v.semillas = $semillas RETURN v, a",
             {
                 cedula,
                 semillas
@@ -111,7 +115,7 @@ export default class DB {
     }
 
     async obtenerHistorialVisitas(cedula: string){
-        let consulta = await this.session.run("MATCH (u:Usuario{cedula:$cedula})-[v:Visita{finalizada:true}]-(a:Acopio) return v, a.nombre", {
+        let consulta = await this._session.run("MATCH (u:Usuario{cedula:$cedula})-[v:Visita{finalizada:true}]-(a:Acopio) return v, a.nombre", {
             cedula
         });
         let visitas = [];

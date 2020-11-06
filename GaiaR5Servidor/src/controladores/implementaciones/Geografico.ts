@@ -2,28 +2,29 @@ import IControlador from "../IControlador";
 import {Express} from "express";
 import {Client, LatLng, TravelMode} from "@googlemaps/google-maps-services-js";
 import Controlador from "../Controlador";
-import SuperControlador, {metodoEnum} from "../SuperControlador";
+import SuperControlador from "../SuperControlador";
+import EndPoint, {metodoEnum} from "../EndPoint";
 
 export default class Geografico extends SuperControlador implements IControlador {
     server: Express;
     controlador: Controlador;
-    private APIKEY = "AIzaSyDm1cQh3R0DKN9fK-n7pwv0kWsTG5mlIEE"
     pruebaInicio = [4.63127345, -74.06408751];
     pruebaFin = [4.64588103, -74.07849526];
+    private APIKEY = "AIzaSyDm1cQh3R0DKN9fK-n7pwv0kWsTG5mlIEE"
 
     constructor(path: string) {
         super(path);
         this.endpoints = [
-            {
-                etiqueta: "ruta",
-                metodo: metodoEnum.GET,
-                manejador: async (req, res) => {
+            new EndPoint(
+                "ruta",
+                metodoEnum.GET,
+                async (req, res) => {
                     console.log(req.query);
                     let inicio = req.query.inicio;
                     let fin = req.query.fin;
                     res.send(await this.solicitarRecorrido([Number(inicio[0]), Number(inicio[1])], [Number(fin[0]), Number(fin[1])]));
                 }
-            }
+            )
         ];
     }
 
@@ -33,7 +34,7 @@ export default class Geografico extends SuperControlador implements IControlador
         super.exponer(this.server);
     }
 
-    async solicitarRecorrido(ubicacionUsuario:LatLng, ubicacionCentro:LatLng) {
+    async solicitarRecorrido(ubicacionUsuario: LatLng, ubicacionCentro: LatLng) {
         const cliente = new Client({});
         let direcciones = await cliente.directions({
             params: {

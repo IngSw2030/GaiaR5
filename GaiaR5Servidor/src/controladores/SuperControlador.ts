@@ -1,17 +1,7 @@
-import {Express, RequestHandler} from "express";
-import Controlador from "./Controlador";
-export enum metodoEnum{
-    "GET" = "GET",
-    "POST" = "POST",
-    "PUT" = "PUT",
-    "DELETE" = "DELETE",
-    "PATCH" = "PATCH"
-}
-export interface EndPoint{
-    etiqueta: string,
-    metodo: metodoEnum,
-    manejador: RequestHandler
-}
+import {Express} from "express";
+import EndPoint from "./EndPoint";
+import {metodoEnum} from "./EndPoint";
+
 export default class SuperControlador{
     protected path: string;
     protected endpoints: EndPoint[];

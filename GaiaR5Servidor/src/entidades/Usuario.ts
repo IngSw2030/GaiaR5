@@ -8,6 +8,7 @@ export default class Usuario{
     nombre:string = "";
     cedula:string = "";
     semillas: number = 0;
+    pass: string = "";
     stickers: Sticker[] = [];
     reconocimientos: Reconocimiento[] = [];
     posts: Post[] = [];
