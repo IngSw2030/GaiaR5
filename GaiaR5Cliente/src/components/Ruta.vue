@@ -200,4 +200,6 @@ export default class Ruta extends Vue {
 
 <style scoped>
 
+
+
 </style>

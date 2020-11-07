@@ -91,7 +91,7 @@ export default class CentroBusqueda extends Vue {
       });
       let centro = resultado.data;
       this.centrosBack = [];
-      let centroNuevo = new CentroAcopio(centro.nombre, centro.direccion, centro.latitud, centro.longitud);
+      let centroNuevo = new CentroAcopio(centro.nombre, centro.direccion,"", centro.latitud, centro.longitud);
       //centroNuevo.tags = JSON.parse(centroNuevo.tags);
       this.centrosBack.push(centroNuevo);
       console.log(this.centrosBack);

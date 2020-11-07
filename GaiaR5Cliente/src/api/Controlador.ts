@@ -1,7 +1,7 @@
 import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 
 export default class Controlador{
-  private static URL:string = "http://localhost:4557";
+  private static URL:string = "http://8f3740624df2.ngrok.io";
   private static token: string = "";
 
   public static async iniciarSesion(cedula: string, pass: string){

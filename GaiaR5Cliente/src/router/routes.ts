@@ -6,7 +6,7 @@ const routes: RouteConfig[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       //Es importante recordar que para que el compilador lo reconozca los archivos .vue deben escribirse con esa extension
-      {path: '', component: () => import('components/CentroBusqueda.vue')},
+      {path: '', component: () => import('components/PaginaInicio.vue')},
       {path: '/mapa', component: () => import('components/Mapa.vue')},
       {path: '/cerca', component: () => import('components/CercaAMi.vue')},
       {path: '/info', component: () => import('components/InfoCentroAcopio.vue')},

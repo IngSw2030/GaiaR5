@@ -28,7 +28,7 @@
       <q-scroll-area
         style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd; background-color: #fdebc7">
         <q-list padding>
-          <q-item v-ripple clickable>
+          <q-item v-ripple clickable to="/">
             <q-item-section avatar>
               <q-icon name="home" style="color: #7FA949;"/>
             </q-item-section>
