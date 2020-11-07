@@ -1,78 +1,33 @@
-import Comentario from "@entidades/Comentario";
-import Contenido from "@entidades/Contenido";
+import Comentario from "./Comentario";
+import Contenido from "./Contenido";
 
 export default class Post{
-    private _creador: string;
-    private _publicacion: number;
-    private _titulo:string;
-    private _tags: string[];
-    private _likes:number = 0;
-    private _comentarios: Comentario[] = [];
-    private _contenido: Contenido[] = [];
+    public creador: string;
+    public publicacion: number;
+    public titulo:string;
+    public tags: string[];
+    public likes:number = 0;
+    public comentarios: Comentario[] = [];
+    public contenido: Contenido[] = [];
 
     constructor(creador: string, publicacion: number, titulo: string, tags: string[], likes?: number, comentarios?: [], contenido?: []) {
-        this._creador = creador;
-        this._publicacion = publicacion;
-        this._titulo = titulo;
-        this._tags = tags;
-        this._likes = likes? likes : 0;
-        this._comentarios = comentarios? comentarios : [];
-        this._contenido = contenido? contenido : [];
+        this.creador = creador;
+        this.publicacion = publicacion;
+        this.titulo = titulo;
+        this.tags = tags;
+        this.likes = likes? likes : 0;
+        this.comentarios = comentarios? comentarios : [];
+        this.contenido = contenido? contenido : [];
     }
 
-    get creador(): string {
-        return this._creador;
-    }
-
-    set creador(value: string) {
-        this._creador = value;
-    }
-
-    get publicacion(): number {
-        return this._publicacion;
-    }
-
-    set publicacion(value: number) {
-        this._publicacion = value;
-    }
-
-    get titulo(): string {
-        return this._titulo;
-    }
-
-    set titulo(value: string) {
-        this._titulo = value;
-    }
-
-    get tags(): string[] {
-        return this._tags;
-    }
-
-    set tags(value: string[]) {
-        this._tags = value;
-    }
-
-    get likes(): number {
-        return this._likes;
-    }
-
-    set likes(value: number) {
-        this._likes = value;
-    }
-
-    get comentarios(): Comentario[] {
-        return this._comentarios;
-    }
-
-    set comentarios(value: Comentario[]) {
-        this._comentarios = value;
-    }
-
-    get contenido(): Contenido[] {
-        return this._contenido;
-    }
-
-    set contenido(value: Contenido[]) {
-        this._contenido = value;
+    public hidratar(json:any):Post{
+        this.creador = json.creador;
+        this.publicacion = json.publicacion;
+        this.titulo = json.titulo;
+        this.tags = json.tags;
+        this.likes = json.likes;
+        this.comentarios = json.comentarios;
+        this.contenido = json.contenido;
+        return this;
     }
 }

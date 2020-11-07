@@ -1,3 +1,1 @@
-export default abstract class Contenido{
-
-}
+export {default} from "../../../entidades/Contenido";

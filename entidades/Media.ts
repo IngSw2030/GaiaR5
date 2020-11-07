@@ -1,4 +1,4 @@
-import Contenido from "@entidades/Contenido";
+import Contenido from "./Contenido";
 
 export default abstract class Media extends Contenido{
     private _alto: number;

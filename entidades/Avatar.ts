@@ -1,8 +1,6 @@
-import Reconocimiento from "@entidades/Reconocimiento";
-
-export default class Avatar extends Reconocimiento{
+export default class Avatar{
+    imagen: string
     constructor(imagen: string) {
-        super();
         this.imagen = imagen;
     }
 }

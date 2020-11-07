@@ -1,6 +1,5 @@
 import neo4j, {Driver, Session} from "neo4j-driver"
-import CentroAcopio from "@entidades/CentroAcopio";
-import Usuario from "@entidades/Usuario";
+import {CentroAcopio, Usuario} from "../../entidades";
 
 export default class DB {
     private static instancia: DB;

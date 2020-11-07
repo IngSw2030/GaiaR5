@@ -1,4 +1,4 @@
-import Media from "@entidades/Media";
+import Media from "./Media";
 
 export default class Video extends Media{
     private _enlaceVideo: string;

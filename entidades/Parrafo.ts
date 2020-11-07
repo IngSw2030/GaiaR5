@@ -1,4 +1,4 @@
-import Contenido from "@entidades/Contenido";
+import Contenido from "./Contenido";
 
 export default class Parrafo extends Contenido {
     constructor(texto: string) {

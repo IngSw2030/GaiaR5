@@ -1,4 +1,4 @@
-import Chat from "@entidades/Chat";
+import Chat from "./Chat";
 
 export default class Buzon {
     constructor(chats: Chat[]) {

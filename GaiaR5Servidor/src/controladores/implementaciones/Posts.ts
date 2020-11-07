@@ -2,7 +2,7 @@ import SuperControlador from "../SuperControlador";
 import IControlador from "../IControlador";
 import Controlador from "../Controlador";
 import {Express} from "express";
-import Post from "@entidades/Post";
+import {Post} from "../../../../entidades";
 import DB from "../../db";
 import EndPoint, {metodoEnum} from "../EndPoint";
 import Autentificacion, {Payload} from "../../servicios/Autentificacion";
@@ -17,7 +17,7 @@ export default class Posts extends SuperControlador implements IControlador {
                 metodoEnum.POST,
                 async (req, res) => {
                     let token:Payload = Autentificacion.verificar(req);
-                    let estado = (await this.crearPost(req.body.post, token.cedula))? 200 : 500;
+                    let estado = (await this.crearPost(new Post("", 0, "", []).hidratar(req.body.post), token.cedula))? 200 : 500;
                     res.sendStatus(estado);
                 }
             )
@@ -32,8 +32,9 @@ export default class Posts extends SuperControlador implements IControlador {
 
     public async crearPost(post: Post, cedulaUsuario: string): Promise<boolean> {
         try {
+            console.log(post);
             await DB.obtenerInstancia().session.run(
-                "CREATE (u:Usuario { cedula: $cedulaUsuario })-[r:Postea]->(p:Post $post) RETURN p",
+                "MATCH (u:Usuario) WHERE u.cedula = $cedulaUsuario WITH u CREATE (u)-[r:Postea]->(p:Post $post) RETURN p",
                 {
                     cedulaUsuario,
                     post
@@ -41,9 +42,9 @@ export default class Posts extends SuperControlador implements IControlador {
             );
             for(let tag of post.tags){
                 await DB.obtenerInstancia().session.run(
-                    "CREATE (p:Post {cedula: $cedula, titulo: $titulo})-[r:MarcadoPor]->(t:Tag {tag: $tag}) ",
+                    "MATCH (p:Post {creador: $creador, titulo: $titulo}) WITH p CREATE (p)-[r:MarcadoPor]->(t:Tag {tag: $tag}) ",
                     {
-                        cedula: cedulaUsuario,
+                        creador: cedulaUsuario,
                         titulo: post.titulo,
                         tag: tag
                     }

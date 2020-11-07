@@ -1,4 +1,4 @@
-import Usuario from "@entidades/Usuario";
+import Usuario from "./Usuario";
 
 export default class Chat {
     constructor(receptor: Usuario, mensajes: Chat[]) {
