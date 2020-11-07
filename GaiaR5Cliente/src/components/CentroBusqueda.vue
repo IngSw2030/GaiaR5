@@ -40,7 +40,7 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import CentroAcopioBusqueda from "components/CentroAcopioBusqueda.vue";
-import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
+import {CentroAcopio} from "../../../entidades";
 import infoCentroAcopio from "components/InfoCentroAcopio.vue";
 import Controlador from "../api/Controlador";
 import {evaAward} from "@quasar/extras/eva-icons";
@@ -91,7 +91,7 @@ export default class CentroBusqueda extends Vue {
       });
       let centro = resultado.data;
       this.centrosBack = [];
-      let centroNuevo = new CentroAcopio(centro.nombre, centro.direccion, centro.tags, centro.horario, centro.avatar, centro.latitud, centro.longitud);
+      let centroNuevo = new CentroAcopio(centro.nombre, centro.direccion, centro.latitud, centro.longitud);
       //centroNuevo.tags = JSON.parse(centroNuevo.tags);
       this.centrosBack.push(centroNuevo);
       console.log(this.centrosBack);
