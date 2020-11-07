@@ -6,8 +6,9 @@
     "sourceMap": true,
     "baseUrl": "src",
     "paths": {
-      "@entidades/*": ["entidades/*"]
-    }
+      "@entidades/*": ["../../entidades/*"]
+    },
+    "strict": true
   },
   "include": [
     "src/**/*.ts"

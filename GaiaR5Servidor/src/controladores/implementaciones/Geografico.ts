@@ -31,7 +31,7 @@ export default class Geografico extends SuperControlador implements IControlador
     instalar(server: Express, controlador: Controlador): void {
         this.server = server;
         this.controlador = controlador;
-        super.exponer(this.server);
+        super.exponer();
     }
 
     async solicitarRecorrido(ubicacionUsuario: LatLng, ubicacionCentro: LatLng) {

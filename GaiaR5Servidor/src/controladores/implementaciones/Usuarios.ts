@@ -8,14 +8,9 @@ import SuperControlador from "../SuperControlador";
 import {LatLng} from "@googlemaps/google-maps-services-js";
 import Geografico from "./Geografico";
 import EndPoint, {metodoEnum} from "../EndPoint";
-import {decode, encode} from "jwt-simple"
-
-const SECRETO = "Tw5Ingesoft"
+import Autentificacion from "../../servicios/Autentificacion";
 
 export default class Usuarios extends SuperControlador implements IControlador {
-    server: Express;
-    controlador: Controlador;
-
     constructor(path: string) {
         super(path);
         this.endpoints = [
@@ -68,9 +63,8 @@ export default class Usuarios extends SuperControlador implements IControlador {
                 "usuario/testJWT",
                 metodoEnum.POST,
                 (req, res) => {
-                    let tokenStr = req.headers.authorization.split(" ")[1];
+                    let token = Autentificacion.verificar(req);
                     try{
-                        let token = decode(tokenStr, SECRETO);
                         res.send(token.nombre);
                     }catch (e) {
                         res.status(401).send(e);
@@ -83,7 +77,7 @@ export default class Usuarios extends SuperControlador implements IControlador {
     instalar(server: Express, controlador: Controlador): void {
         this.server = server;
         this.controlador = controlador;
-        super.exponer(this.server);
+        super.exponer();
     }
 
     async crearUsuario(usuario: Usuario) {
@@ -128,7 +122,7 @@ export default class Usuarios extends SuperControlador implements IControlador {
                 cedula: usuario.cedula,
                 semillas: usuario.semillas
             }
-            return encode(payload, SECRETO);
+            return Autentificacion.crearToken(payload);
         }else{
             throw new Error("Credenciales incorrectas");
         }

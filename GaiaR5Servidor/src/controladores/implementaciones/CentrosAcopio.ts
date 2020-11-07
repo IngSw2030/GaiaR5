@@ -39,7 +39,6 @@ export default class CentrosAcopio extends SuperControlador implements IControla
                 metodoEnum.GET,
                 async (req, res) => {
                     res.send(await this.obtenerCentroPorNombre(<string>req.query.nombre));
-                    res.sendStatus(200);
                 }
             )
         ];
@@ -48,7 +47,7 @@ export default class CentrosAcopio extends SuperControlador implements IControla
     instalar(server: Express, controlador: Controlador): void {
         this.server = server;
         this.controlador = controlador;
-        super.exponer(this.server);
+        super.exponer();
     }
 
     async crearCentroAcopio(centroAcopio) {
