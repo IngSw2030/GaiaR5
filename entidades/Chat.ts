@@ -1,28 +1,11 @@
 import Usuario from "./Usuario";
 
 export default class Chat {
+    public receptor: Usuario;
+    public mensajes: Chat[];
+
     constructor(receptor: Usuario, mensajes: Chat[]) {
-        this._receptor = receptor;
-        this._mensajes = mensajes;
-    }
-
-    private _receptor: Usuario;
-
-    get receptor(): Usuario {
-        return this._receptor;
-    }
-
-    set receptor(value: Usuario) {
-        this._receptor = value;
-    }
-
-    private _mensajes: Chat[];
-
-    get mensajes(): Chat[] {
-        return this._mensajes;
-    }
-
-    set mensajes(value: Chat[]) {
-        this._mensajes = value;
+        this.receptor = receptor;
+        this.mensajes = mensajes;
     }
 }

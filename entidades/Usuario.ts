@@ -2,13 +2,13 @@ import Post from "./Post";
 import Buzon from "./Buzon";
 
 export default class Usuario{
-    nombre:string = "";
-    cedula:string = "";
-    semillas: number = 0;
-    pass: string = "";
-    posts: Post[] = [];
-    seguidos: Usuario[] = [];
-    buzon: Buzon | undefined = undefined;
+    public nombre:string = "";
+    public cedula:string = "";
+    public semillas: number = 0;
+    public pass: string = "";
+    public posts: Post[] = [];
+    public seguidos: Usuario[] = [];
+    public buzon: Buzon | undefined = undefined;
 
     constructor(nombre: string, cedula: string, semillas: number) {
         this.nombre = nombre;
