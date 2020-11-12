@@ -3,6 +3,15 @@
 
     <post-componente class="q-ma-xl" v-for="post in listaPost" :post-enviado="post"/>
 
+
+    <div class="relative-position container   flex flex-center">
+    <q-circular-progress
+      indeterminate
+      size="50px"
+      color="light-green"
+      class="q-ma-md"
+    />
+      </div>
   </q-page>
 </template>
 
