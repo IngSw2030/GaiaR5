@@ -1,9 +1,22 @@
 <template>
   <q-page >
 
-    <post-componente class="q-ma-xl"  :post-enviado="variablePost"/>
+    <q-item  active clickable v-ripple fixed-right >
+      <q-item-section avatar>
+        <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 5ex; " />
+      </q-item-section>
+    </q-item>
+
+    <post-componente class="q-my-md"  :post-enviado="variablePost"/>
     <comentario-componente class="q-my-md"  v-for="coment in listaComent" :comentario-enviado="coment"/>
-    <q-input standout="bg-light-green text-white" v-model="text" label="¿Qué opinas de este post?" />
+    <q-input standout="bg-light-green text-white" v-model="text" label="¿Qué opinas de este post?">
+      <template v-slot:prepend>
+        <q-icon name="label" />
+      </template>
+      <template v-slot:append>
+        <q-btn  dense flat icon="send" />
+      </template>
+    </q-input>
 
   </q-page>
 </template>

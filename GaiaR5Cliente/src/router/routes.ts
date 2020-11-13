@@ -16,8 +16,8 @@ const routes: RouteConfig[] = [
       {path: '/login', component: () => import('components/Login.vue')},
       {path: '/inicio', component: () => import('components/Inicio.vue')},
       {path: '/bususuario', component: () => import('components/BuscarUsuario.vue')},
-      {path: '/verPost', component: () => import('components/VerPost.vue')}
-
+      {path: '/verPost', component: () => import('components/VerPost.vue')},
+      {path: '/editarPost', component: () => import('components/EditarPost.vue')}
     ]
   },
 

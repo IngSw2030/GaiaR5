@@ -1,6 +1,13 @@
 <template>
   <q-page >
 
+    <q-input class="q-mx-xs" v-model="texto" color="verde" label="Buscar" label-color="light-green-9" >
+      <template v-slot:append>
+        <q-btn color="light-green-9" flat icon="search" style="background-color: #fdebc7" @click="buscar">
+        </q-btn>
+      </template>
+    </q-input>
+
     <post-componente class="q-ma-xl" v-for="post in listaPost" :post-enviado="post"/>
 
 
