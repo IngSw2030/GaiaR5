@@ -1,4 +1,4 @@
-import neo4j, {Driver, Session} from "neo4j-driver"
+import neo4j, {Driver, Record, Session} from "neo4j-driver"
 import {CentroAcopio, Usuario} from "../../entidades";
 
 export default class DB {
@@ -24,6 +24,22 @@ export default class DB {
             DB.instancia = new DB();
         }
         return DB.instancia;
+    }
+
+    desempacarRegistros(registros: Record[], variables: string[] | string): Array<object> {
+        let despempaquetado = [];
+        if (Array.isArray(variables)) {
+            despempaquetado = registros.map((registro) => {
+                return variables.map((variable) => {
+                    return registro.get(variable).properties;
+                });
+            });
+        } else {
+            despempaquetado = registros.map((registro) => {
+                return registro.get(<string>variables).properties;
+            });
+        }
+        return despempaquetado;
     }
 
     async obtenerCentroPorNombre(nombre: string) {
