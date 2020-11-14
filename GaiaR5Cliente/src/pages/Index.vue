@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page style="background-color: #fdebc7">
     <div class="row">
       <div class="col-8">
         <q-select
@@ -13,7 +13,7 @@
         />
       </div>
       <div class="col-4">
-        <q-btn label="Buscar" icon="search" @click="filtrar" color="orange" glossy class="full-width"/>
+        <q-btn label="Buscar" icon="search" @click="filtrar" color="light-green" glossy class="full-width"/>
       </div>
     </div>
     <div class="row full-width">
@@ -38,23 +38,38 @@ import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
 })
 export default class PageIndex extends Vue {
   tags:String[] = [];
-  opciones: String[] = ['Plastico', 'Vidrio', 'Madera', 'Carton', 'Metal', "Pizza"];
+  opciones: String[] = ['residuos toxicos', 'carton'];
   centrosAcopio: CentroAcopio[] = [];
   centrosAcopioFiltrados: CentroAcopio[] = [];
 
   filtrar(){
-    this.$axios.post("http://localhost:4557/buscar-acopio", {
-      filtro: this.tags
+    this.$axios.post("http://f00b0e326316.ngrok.io/centrosAcopio/obtenerCentrosPorRecurso", {
+      recurso: this.tags
     }).then((res=>{
       console.log(res);
       this.centrosAcopio = res.data;
-      this.$q.notify(`Felicitaciones encontraste ${this.centrosAcopio.length} centros de acopio`);
-      this.$q.dialog({
-        title: 'Felicidades',
-        message: `Felicitaciones encontraste ${this.centrosAcopio.length} centros de acopio`
-      });
+
     }))
   }
+
+  mounted(){
+    this.$axios.get("http://f00b0e326316.ngrok.io/centrosAcopio/obtenerRecursos").then((res)=>{
+      console.log(res);
+      this.opciones = res.data;
+    }).catch((error)=>{
+      console.log(error);
+    });
+  }
+
+  computed(){
+
+    tags: {
+        return this.$store.state.store_CA.tags
+    }
+
+  }
+
+
 };
 </script>
 <style>
