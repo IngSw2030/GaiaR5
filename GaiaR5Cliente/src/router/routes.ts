@@ -15,6 +15,10 @@ const routes: RouteConfig[] = [
       {path: '/login', component: () => import('components/Login') },
       {path: '/inicio', component: () => import('components/Inicio') },
       {path: '/bususuario', component: () => import('components/BuscarUsuario') },
+      {path: '/registroUsuario', component: () => import('components/RegistroUsuario')},
+      {path: '/editarUsuario', component: () => import('components/EditarPerfilUsuario')},
+      {path: '/miPerfil', component: () => import('components/PerfilUsuario')},
+      {path: '/visitarPerfil', component: () => import('components/VisitarPerfil')}
 ]
   },
 

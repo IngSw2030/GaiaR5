@@ -8,7 +8,7 @@
         src="https://i.ibb.co/ggbP1bT/2.png"
       />
     </div>
-    <div align="center" style="color: #1D1D1D; font-size: 19px; font-weight: bold">
+    <div align="center" style="color: darkgreen; font-size: 19px; font-weight: bold">
       Sigue siendo Eco...
     </div>
     <br>
@@ -35,17 +35,17 @@
         <q-btn push color="light-green-9" label="Iniciar Sesión" align="center" style=" font-size: medium; width: 200px" />
       </div>
       <br>
-    <div align="center">
-      <template >
-        <q-btn flat label="¿Olvidaste tu contraseña?" size="12px" color="light-green-9" style=""></q-btn>
-      </template>
-    </div>
+      <div align="center">
+        <template >
+          <q-btn flat label="¿Olvidaste tu contraseña?" size="12px" color="light-green-9" style=""></q-btn>
+        </template>
+      </div>
         <br><br>
     <div align="center" style="color: #7FA949; font-size: 19px; font-weight: bold">
       ¿Quieres hacer parte de la comunidad R5?
     </div>
     <div align="center">
-      <q-btn flat label="Registrarme" text-color="light-green-9" style="font-size: large"></q-btn>
+      <q-btn flat label="Registrarme" to="/registroUsuario" text-color="light-green-9" style="font-size: large"></q-btn>
     </div>
   </q-page>
 </template>
