@@ -10,11 +10,14 @@
   </q-page>
 </template>
 
-<script>
-export default {
-  name: "Inicio"
-}
+<script lang="ts">
+import {Component, Vue} from 'vue-property-decorator';
 
+@Component({
+  name: "Inicio"
+})
+export default class Inicio extends Vue {
+}
 </script>
 
 <style scoped>

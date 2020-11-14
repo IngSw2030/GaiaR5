@@ -50,7 +50,7 @@ import CentroAcopio from "src/api/clases/CentroAcopioBusqueda";
 
 @Component
 export default class CentroAcopioBusqueda extends Vue {
-  @Prop() centro:CentroAcopio;
+  @Prop() centro!:CentroAcopio;
 
   computed(){
 

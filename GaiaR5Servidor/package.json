@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --inspect=5858 -r ts-node/register ./src/server.ts",
+    "start": "node --inspect=5859 -r ts-node/register ./src/server.ts",
     "start:watch": "nodemon",
     "build": "tsc"
   },
@@ -32,9 +32,12 @@
     "ext": "ts"
   },
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.1.13",
     "@types/cors": "^2.8.7",
+    "@types/jwt-simple": "^0.5.33",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "jwt-simple": "^0.5.6",
     "neo4j-driver": "^4.1.2"
   }
 }

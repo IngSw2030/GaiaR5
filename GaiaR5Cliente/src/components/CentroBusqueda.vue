@@ -40,8 +40,10 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import CentroAcopioBusqueda from "components/CentroAcopioBusqueda.vue";
-import CentroAcopio from "../api/clases/CentroAcopioBusqueda";
-import infoCentroAcopio from "components/infoCentroAcopio.vue";
+import {CentroAcopio} from "../../../entidades";
+import infoCentroAcopio from "components/InfoCentroAcopio.vue";
+import Controlador from "../api/Controlador";
+import {evaAward} from "@quasar/extras/eva-icons";
 
 const {StringUtils} = require('turbocommons-ts');
 const url = "http://6684480d9141.ngrok.io";
@@ -58,7 +60,7 @@ export default class CentroBusqueda extends Vue {
   texto = ""
   tags = []
   centrosAcopioFiltrados = this.listaCentroCA
-  centroElegido: CentroAcopio = null;
+  centroElegido: CentroAcopio | null = null;
   model = null;
   multiple = null;
   centrofiltrado: CentroAcopio[] = [];
@@ -80,19 +82,22 @@ export default class CentroBusqueda extends Vue {
     return this.texto
   }
 
-  buscar() {
-    this.$axios.get(`${url}/centroAcopio`, {
-      params: {
-        nombre: this.texto
-      }
-    }).then((resultado) => {
+  async buscar() {
+    try {
+      let resultado:any = await Controlador.get("centroAcopio", {
+        params: {
+          nombre: this.texto
+        }
+      });
       let centro = resultado.data;
       this.centrosBack = [];
-      let centroNuevo = new CentroAcopio(centro.nombre, centro.direccion, centro.tags, centro.horario, centro.avatar, centro.latitud, centro.longitud);
+      let centroNuevo = new CentroAcopio(centro.nombre, centro.direccion, centro.latitud, centro.longitud);
       //centroNuevo.tags = JSON.parse(centroNuevo.tags);
       this.centrosBack.push(centroNuevo);
       console.log(this.centrosBack);
-    });
+    }catch (e){
+      this.$q.notify(`Ocurrio un error: ${e.message}`);
+    }
   }
 
   setCentroElegido(val: any) {
@@ -133,10 +138,9 @@ export default class CentroBusqueda extends Vue {
     console.log(this.texto)
   }
 
-  mounted() {
-    this.$axios.get("http://6684480d9141.ngrok.io/recursos").then((respuesta) => {
-      this.$store.commit('store_CA/updateTags', respuesta.data);
-    });
+  async mounted() {
+    let recursos = (await Controlador.get("recursos")).data;
+    this.$store.commit('store_CA/updateTags', recursos);
   }
 
   limpiarCentroElegido(){
