@@ -1,5 +1,5 @@
 <template>
-  <q-page >
+  <q-page style="background-color: #fdebc7">
 
     <q-input class="q-mx-xs" v-model="texto" color="verde" label="Buscar" label-color="light-green-9" >
       <template v-slot:append>
@@ -7,6 +7,13 @@
         </q-btn>
       </template>
     </q-input>
+
+    <div class="q-gutter-sm">
+      <q-radio v-model="shape" val="name" label="Busqueda por nombre" color="light-green" />
+      <q-radio v-model="shape" val="tag" label="Busqueda por tag" color="light-green" />
+    </div>
+
+
 
     <post-componente class="q-ma-xl" v-for="post in listaPost" :post-enviado="post"/>
 

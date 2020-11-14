@@ -1,6 +1,6 @@
 <template>
 
-  <q-card class="my-card" flat bordered>
+  <q-card class="my-card" flat bordered style="background-color: #fbf5d8">
     <q-item>
       <q-item-section avatar>
         <q-avatar>

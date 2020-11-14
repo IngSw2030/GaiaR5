@@ -1,5 +1,5 @@
 <template>
-  <q-page >
+  <q-page style="background-color: #fdebc7">
 
     <q-item  active clickable v-ripple fixed-right >
       <q-item-section avatar>
