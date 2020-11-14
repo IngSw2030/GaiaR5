@@ -63,6 +63,7 @@ export default class Usuarios extends SuperControlador implements IControlador {
                 "usuario/testJWT",
                 metodoEnum.POST,
                 (req, res) => {
+                    console.log(req.headers);
                     let token = Autentificacion.verificar(req);
                     try{
                         res.send(token.nombre);
