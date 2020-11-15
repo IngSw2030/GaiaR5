@@ -17,8 +17,13 @@ const routes: RouteConfig[] = [
       {path: '/inicio', component: () => import('components/Inicio.vue')},
       {path: '/bususuario', component: () => import('components/BuscarUsuario.vue')},
       {path: '/verPost', component: () => import('components/VerPost.vue')},
-      {path: '/editarPost', component: () => import('components/EditarPost.vue')}
+      {path: '/editarPost', component: () => import('components/EditarPost.vue')},
+      {path: '/registroUsuario', component: () => import('components/RegistroUsuario.vue')},
+      {path: '/editarUsuario', component: () => import('components/EditarPerfilUsuario.vue')},
+      {path: '/miPerfil', component: () => import('components/PerfilUsuario.vue')},
+      {path: '/visitarPerfil', component: () => import('components/VisitarPerfil.vue')}
     ]
+    
   },
 
   // Always leave this as last one,
