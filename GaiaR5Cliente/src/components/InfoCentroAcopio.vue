@@ -14,8 +14,7 @@
     <p style ="margin-bottom: 0px" >  Horario : {{centro.horario}}</p>
       <p style ="margin-bottom: 0px" >  Dirección : {{centro.direccion}}</p>
       <q-item-section avatar style="display: flex;flex-direction: row;justify-content: center;align-content: center" >
-        <q-icon color="light-green" name="eco" >
-        </q-icon>
+        <q-icon color="light-green" name="eco"/>
         <p >Materiales:</p>
       </q-item-section>
       <!-- <q-list>
@@ -42,8 +41,9 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import {} from 'googlemaps';
+import {CentroAcopio} from "../../../entidades"
 import { Plugins } from '@capacitor/core'
-import CentroAcopioBusqueda from "src/api/clases/CentroAcopioBusqueda";
+
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 const { Geolocation } = Plugins;
@@ -52,7 +52,7 @@ const url = "http://6684480d9141.ngrok.io";
 
 @Component
 export default class infoCentroAcopio extends Vue {
-  @Prop() centro!: CentroAcopioBusqueda;
+  @Prop() centro!: CentroAcopio;
   origen = {
     latitud: 4.628305,
     longitud: -74.064502
@@ -66,6 +66,7 @@ export default class infoCentroAcopio extends Vue {
       this.origen.latitud = position.coords.latitude;
       this.origen.longitud = position.coords.longitude;
     });*/
+    console.log(this.centro)
     this.mapa = new google.maps.Map(<Element> document.getElementById("mapa"), {
       center: {lat: this.origen.latitud, lng: this.origen.longitud},
       zoom: 13
