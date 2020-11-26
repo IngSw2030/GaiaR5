@@ -7,6 +7,7 @@ import DB from "../../db";
 import EndPoint, {metodoEnum} from "../EndPoint";
 import Autentificacion, {Payload} from "../../servicios/Autentificacion";
 import {int as neo4jInt} from 'neo4j-driver'
+import Like from "../../../../entidades/Interfaces TypeScript/Like";
 
 export default class ControladorPost extends SuperControlador implements IControlador {
 
@@ -74,6 +75,23 @@ export default class ControladorPost extends SuperControlador implements IContro
                         res.send(await this.tagsPopulares(Number.parseInt(<string>req.query.top)));
                     } catch (e) {
                         res.sendStatus(500);
+                    }
+                }
+            ),
+            new EndPoint(
+                "post/like",
+                 metodoEnum.POST,
+                async (req, res) => {
+                    try {
+                        let {cedula} = Autentificacion.verificar(req);
+                        await this.darLike(cedula, Post.hidratar(req.body))
+                        res.sendStatus(200);
+                    }catch (e){
+                        if(e.message == "Token invalido"){
+                            res.sendStatus(403);
+                        }else{
+                            res.sendStatus(500);
+                        }
                     }
                 }
             )
@@ -197,6 +215,20 @@ export default class ControladorPost extends SuperControlador implements IContro
             console.log(e);
             throw e;
         }
+    }
+
+    async darLike(cedula:string, post:Post) {
+        let like: Like = {
+            autor: cedula,
+            fecha: Date.now()
+        }
+        let query = "MATCH (u:Usuario{cedula:$cedula}), (p:Post{titulo:$titulo, creador:$creador}) WITH u, p CREATE (u)-[l:Like $like]->(p) SET p.likes = p.likes + 1 RETURN l";
+        await DB.obtenerInstancia().session.run(query, {
+            cedula: cedula,
+            titulo: post.titulo,
+            creador: post.creador,
+            like: like
+        });
     }
 
 }
