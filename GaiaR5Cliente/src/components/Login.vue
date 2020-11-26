@@ -64,8 +64,16 @@ export default class Login extends Vue {
 
    login() {
     console.log(Controlador.iniciarSesion(this.cedula, this.password));
-
   }
+
+  get autentificado(){
+    return this.$store.state.store_user.autentificacion
+  }
+
+  setAutentificado(){
+    this.$store.commit('store_user/toggleAutentificado')
+  }
+
 }
 </script>
 

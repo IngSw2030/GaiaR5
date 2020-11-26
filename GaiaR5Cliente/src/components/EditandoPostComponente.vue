@@ -15,7 +15,12 @@
 
     <q-separator />
 
-      <q-card-section class="col-4">
+    <q-input class="q-mx-xs"  v-model="tituloPost" label="titulo" stack-label :dense="dense" />
+
+    <q-separator />
+
+
+    <q-card-section class="col-4">
         <q-input
           v-model="contenidoPost"
           placeholder="¿De Qué quieres hablar?"
@@ -49,7 +54,7 @@
     <q-separator />
 
     <q-card-section>
-      <q-chip  style="background-color: #fbf5d8" v-for="tag in listaTags" icon="label" label="tag"  text-color="light-green" />
+      <q-chip removable  style="background-color: #fbf5d8" v-for="tag in listaTags" icon="label" :label="tag"  text-color="light-green" />
     </q-card-section>
 
 
@@ -71,6 +76,7 @@ export default class PostComponente extends Vue  {
 
   contenidoPost: string="";
   tagEntrante: string="";
+  tituloPost: string="";
 
 autor: Usuario=new Usuario(
   "Pepito perez",
@@ -78,18 +84,35 @@ autor: Usuario=new Usuario(
   5000
 )
 
- listaTags: String []= [
+ listaTags: string []= [
    "aluminio",
    "vidrio",
    "paz mundial"
  ]
 
+
+
   agregarTag(){
    this.listaTags.push("hola bebe")
   }
 
-  beforeCreated() {
-    this.listaTags=this.postEnviado.tags;
+ // beforeCreated() {
+   // this.listaTags=this.postEnviado.tags;
+  //}
+
+  //cedula del usuario
+
+  crearPost(){
+   let postCreado: Post= new Post(
+      "1013632535",
+      Date.now(),
+      this.tituloPost,
+      this.listaTags,
+      undefined,
+      undefined,
+      []
+
+    )
   }
 
   imprimir(){
