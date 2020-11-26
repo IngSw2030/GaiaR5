@@ -1,0 +1,14 @@
+MATCH (u:Usuario{cedula:"1013632535"})
+CALL {
+    WITH u
+    MATCH (u)-[:Postea]->(p)
+    RETURN p
+    LIMIT 2
+}
+CALL {
+    WITH u
+    MATCH (u)-[:Visita]->(v)
+    RETURN v
+    LIMIT 1
+}
+RETURN u, p, v

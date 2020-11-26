@@ -8,6 +8,7 @@ import EndPoint, {metodoEnum} from "../EndPoint";
 import Autentificacion, {Payload} from "../../servicios/Autentificacion";
 import {int as neo4jInt} from 'neo4j-driver'
 import Like from "../../../../entidades/Interfaces TypeScript/Like";
+import Reporte from "../../../../entidades/Interfaces TypeScript/Reporte";
 
 export default class ControladorPost extends SuperControlador implements IControlador {
 
@@ -102,6 +103,22 @@ export default class ControladorPost extends SuperControlador implements IContro
                     try {
                         let {cedula} = Autentificacion.verificar(req);
                         res.send(await this.comentar(cedula, Post.hidratar(req.body.post), req.body.comentario));
+                    }catch (e){
+                        if(e.message == "Token invalido"){
+                            res.sendStatus(403);
+                        }else{
+                            res.sendStatus(500);
+                        }
+                    }
+                }
+            ),
+            new EndPoint(
+                "post/reporte",
+                metodoEnum.POST,
+                async (req, res) => {
+                    try {
+                        let {cedula} = Autentificacion.verificar(req);
+                        res.send(await this.reportarPost(cedula, Post.hidratar(req.body.post), req.body.reporte));
                     }catch (e){
                         if(e.message == "Token invalido"){
                             res.sendStatus(403);
@@ -247,7 +264,7 @@ export default class ControladorPost extends SuperControlador implements IContro
         });
     }
 
-    async comentar(cedula: string, post: Post, comentario: string){
+    async comentar(cedula: string, post: Post, comentario: string) {
         let coment = new Comentario(cedula, comentario, Date.now());
         let consulta = await DB.obtenerInstancia().session.run("MATCH (p:Post{titulo: $titulo, creador: $creador}), (u:Usuario{cedula: $cedula}) CREATE (u)-[c:Comenta $comentario]->(p) RETURN c", {
             titulo: post.titulo,
@@ -258,4 +275,19 @@ export default class ControladorPost extends SuperControlador implements IContro
         return DB.obtenerInstancia().desempacarRegistros(consulta.records, "c");
     }
 
+    async reportarPost(cedula: string, post: Post, reporte:string){
+        let reporteObj: Reporte = {
+            autor: cedula,
+            fecha: Date.now(),
+            reporte: reporte,
+            solucionado: false
+        };
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (p:Post{titulo: $titulo, creador: $creador}), (u:Usuario{cedula: $cedula}) CREATE (u)-[r:Reporta $reporte]->(p) RETURN r", {
+            titulo: post.titulo,
+            creador: post.creador,
+            cedula: cedula,
+            reporte: reporteObj
+        });
+        return DB.obtenerInstancia().desempacarRegistros(consulta.records, "r");
+    }
 }
