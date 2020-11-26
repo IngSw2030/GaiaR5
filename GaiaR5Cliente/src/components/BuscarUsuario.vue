@@ -2,7 +2,7 @@
   <q-page style="background-color: #fdebc7 ">
    <br>
     <div class="q-gutter-md row items-start">
-      <q-input rounded outlined v-model="textoBusqueda" color="light-green-9" label="Buscar Usuarios" label-color="light-green-10" style="width: 400px" @input="filtrarNombreUsuario" >
+      <q-input rounded outlined v-model="textoBusqueda" color="light-green-9" label="Buscar Post" label-color="light-green-10" style="width: 400px" @input="filtrarNombreUsuario" >
         <template v-slot:prepend>
           <q-icon color="light-green-9" name="search">
           </q-icon>

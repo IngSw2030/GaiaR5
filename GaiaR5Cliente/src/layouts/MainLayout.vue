@@ -79,7 +79,7 @@
             </q-item-section>
 
             <q-item-section class="text-dark">
-              Post
+              Chat
             </q-item-section>
 
             <q-item-section avatar>
@@ -89,20 +89,7 @@
           </q-item>
 
 
-          <q-item v-ripple active clickable>
-            <q-item-section avatar>
-              <q-icon name="shopping_basket" style="color: #7FA949;"/>
-            </q-item-section>
 
-            <q-item-section class="text-dark">
-              Tienda
-            </q-item-section>
-
-            <q-item-section avatar>
-              <q-icon name="keyboard_arrow_right" style="color: #336eb9;"/>
-            </q-item-section>
-
-          </q-item>
 
           <q-item v-ripple active clickable to="/cerca">
             <q-item-section avatar>
