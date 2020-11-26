@@ -4,7 +4,8 @@ import {Request} from "express";
 export interface Payload {
     nombre: string,
     cedula: string,
-    semillas: number
+    semillas: number,
+    admin?: boolean
 }
 
 export default class Autentificacion {

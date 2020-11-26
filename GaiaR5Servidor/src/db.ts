@@ -37,9 +37,11 @@ export default class DB {
                 return [];
             }
             despempaquetado = registros.map((registro) => {
-                return variables.map((variable) => {
-                    return registro.get(variable).properties;
+                let reg = {};
+                variables.forEach((variable) => {
+                    reg[variable] = registro.get(variable).properties;
                 });
+                return reg;
             });
         } else {
             if(registros.length == 0){

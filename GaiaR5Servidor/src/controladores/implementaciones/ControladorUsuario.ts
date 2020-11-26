@@ -149,12 +149,16 @@ export default class ControladorUsuario extends SuperControlador implements ICon
                 cedula
             }
         );
-        let usuario: Usuario = query.records[0].get('u').properties;
+        let usuario = query.records[0].get('u').properties;
         if (pass === usuario.pass) {
             let payload = {
                 nombre: usuario.nombre,
                 cedula: usuario.cedula,
-                semillas: usuario.semillas
+                semillas: usuario.semillas,
+                admin: false
+            }
+            if(usuario.admin){
+                payload.admin = true;
             }
             return Autentificacion.crearToken(payload);
         } else {

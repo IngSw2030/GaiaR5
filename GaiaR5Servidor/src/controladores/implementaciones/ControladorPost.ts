@@ -59,10 +59,10 @@ export default class ControladorPost extends SuperControlador implements IContro
                         Autentificacion.verificar(req);
                         await this.editarPost(Post.hidratar(postActual), Post.hidratar(postNuevo))
                         res.sendStatus(200);
-                    }catch (e) {
-                        if(e.message == "Token invalido"){
+                    } catch (e) {
+                        if (e.message == "Token invalido") {
                             res.sendStatus(403);
-                        }else{
+                        } else {
                             res.sendStatus(500);
                         }
                     }
@@ -81,16 +81,16 @@ export default class ControladorPost extends SuperControlador implements IContro
             ),
             new EndPoint(
                 "post/like",
-                 metodoEnum.POST,
+                metodoEnum.POST,
                 async (req, res) => {
                     try {
                         let {cedula} = Autentificacion.verificar(req);
                         await this.darLike(cedula, Post.hidratar(req.body))
                         res.sendStatus(200);
-                    }catch (e){
-                        if(e.message == "Token invalido"){
+                    } catch (e) {
+                        if (e.message == "Token invalido") {
                             res.sendStatus(403);
-                        }else{
+                        } else {
                             res.sendStatus(500);
                         }
                     }
@@ -103,10 +103,10 @@ export default class ControladorPost extends SuperControlador implements IContro
                     try {
                         let {cedula} = Autentificacion.verificar(req);
                         res.send(await this.comentar(cedula, Post.hidratar(req.body.post), req.body.comentario));
-                    }catch (e){
-                        if(e.message == "Token invalido"){
+                    } catch (e) {
+                        if (e.message == "Token invalido") {
                             res.sendStatus(403);
-                        }else{
+                        } else {
                             res.sendStatus(500);
                         }
                     }
@@ -119,10 +119,30 @@ export default class ControladorPost extends SuperControlador implements IContro
                     try {
                         let {cedula} = Autentificacion.verificar(req);
                         res.send(await this.reportarPost(cedula, Post.hidratar(req.body.post), req.body.reporte));
-                    }catch (e){
-                        if(e.message == "Token invalido"){
+                    } catch (e) {
+                        if (e.message == "Token invalido") {
                             res.sendStatus(403);
+                        } else {
+                            res.sendStatus(500);
+                        }
+                    }
+                }
+            ),
+            new EndPoint(
+                "post/reportados",
+                metodoEnum.GET,
+                async (req, res) => {
+                    try {
+                        let {admin} = Autentificacion.verificar(req);
+                        if(admin){
+                            res.send(await this.reportePostsReportados());
                         }else{
+                            res.sendStatus(403);
+                        }
+                    } catch (e) {
+                        if (e.message == "Token invalido") {
+                            res.sendStatus(403);
+                        } else {
                             res.sendStatus(500);
                         }
                     }
@@ -244,13 +264,13 @@ export default class ControladorPost extends SuperControlador implements IContro
                     }
                 )
             }
-        }catch (e) {
+        } catch (e) {
             console.log(e);
             throw e;
         }
     }
 
-    async darLike(cedula:string, post:Post) {
+    async darLike(cedula: string, post: Post) {
         let like: Like = {
             autor: cedula,
             fecha: Date.now()
@@ -275,7 +295,7 @@ export default class ControladorPost extends SuperControlador implements IContro
         return DB.obtenerInstancia().desempacarRegistros(consulta.records, "c");
     }
 
-    async reportarPost(cedula: string, post: Post, reporte:string){
+    async reportarPost(cedula: string, post: Post, reporte: string) {
         let reporteObj: Reporte = {
             autor: cedula,
             fecha: Date.now(),
@@ -289,5 +309,11 @@ export default class ControladorPost extends SuperControlador implements IContro
             reporte: reporteObj
         });
         return DB.obtenerInstancia().desempacarRegistros(consulta.records, "r");
+    }
+
+    async reportePostsReportados() {
+        let query = "MATCH ()-[reporte:Reporta{solucionado:FALSE}]->(post:Post) RETURN reporte, post";
+        let consulta = await DB.obtenerInstancia().session.run(query);
+        return DB.obtenerInstancia().desempacarRegistros(consulta.records, ["reporte", "post"]);
     }
 }
