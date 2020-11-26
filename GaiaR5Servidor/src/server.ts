@@ -14,18 +14,6 @@ server.use(bp.json())
 
 const controlador = new Controlador(server);
 
-server.get("/hola-mundo", ((req, res) => {
-    res.send("Hola Mundo");
-}))
-
-server.post("/buscar-acopio", (async (req, res) => {
-    res.send(await db.obtenerCentrosPorRecurso(req.body.filtro));
-}))
-
-server.post("/test", (async (req, res) => {
-    res.send(await db.obtenerRecursos());
-}))
-
 server.listen(port, () => {
     console.log(`Servidor corriendo en el puerto ${port}.`);
 });

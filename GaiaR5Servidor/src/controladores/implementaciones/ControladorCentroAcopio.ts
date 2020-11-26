@@ -31,7 +31,7 @@ export default class ControladorCentroAcopio extends SuperControlador implements
                 "centroAcopio",
                 metodoEnum.POST,
                 async (req, res) => {
-                    res.send(await this.crearCentroAcopio(req.body.centroAcopio));
+                    res.send(await this.crearCentroAcopio(req.body));
                 }
             ),
             new EndPoint(
@@ -51,26 +51,45 @@ export default class ControladorCentroAcopio extends SuperControlador implements
     }
 
     async crearCentroAcopio(centroAcopio) {
-        return await DB.obtenerInstancia().crearCentroAcopio(centroAcopio);
+        let centro = await DB.obtenerInstancia().crearEntidad("Acopio", centroAcopio);
+        for (let recurso of centro.recursos) {
+            await DB.obtenerInstancia().session.run(
+                "MATCH (c:Acopio {nombre: $nombre}) MERGE (r:Recurso {nombre: $recurso}) WITH c, r CREATE (c)-[:Recicla]->(r)",
+                {
+                    nombre: centro.nombre,
+                    recurso: recurso
+                }
+            );
+        }
+        return centro;
     }
 
     async obtenerRecursos() {
-        return await DB.obtenerInstancia().obtenerRecursos();
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (r:Recurso) RETURN DISTINCT r.nombre");
+        return consulta.records.map((registro) => {
+            return registro.get("r.nombre");
+        });
     }
 
     async obtenerCentrosPorRecurso(recurso: string) {
-        return await DB.obtenerInstancia().obtenerCentrosPorRecurso(recurso);
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN $recurso RETURN DISTINCT a.nombre", {
+            recurso
+        });
+        let centros = [];
+        for (let record of consulta.records.values()) {
+            centros.push(await this.obtenerCentroPorNombre(record.get("a.nombre")));
+        }
+        return centros;
     }
 
     async obtenerCentroPorNombre(nombre: string) {
-        let consulta = await DB.obtenerInstancia().session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE a.nombre CONTAINS $nombre RETURN DISTINCT a, r.nombre", {
-            nombre: nombre
+        console.log(nombre);
+        let query = `MATCH (a:Acopio) WHERE a.nombre =~ '(?i).*${nombre}.*' RETURN DISTINCT a`
+        let consulta = await DB.obtenerInstancia().session.run(query, {
+            nombre
         });
-        let centro = consulta.records[0].get("a").properties;
-        centro.recursos = [];
-        for (let record of consulta.records.values()) {
-            centro.recursos.push(record.get("r.nombre"));
-        }
-        return centro;
+        console.log(consulta.records);
+        //TODO: Hay que hacer que no empaquete de mas los registros.
+        return DB.obtenerInstancia().desempacarRegistros(consulta.records, ["a"]);
     }
 }

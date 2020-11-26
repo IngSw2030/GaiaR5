@@ -5,10 +5,10 @@ import {Usuario} from "../../../../entidades";
 import Controlador from "../Controlador";
 import AsignarSemillasAleatorias from "../../estrategias/AsignarSemillasAleatorias";
 import SuperControlador from "../SuperControlador";
-import {LatLng} from "@googlemaps/google-maps-services-js";
-import ControladorGeografico from "./ControladorGeografico";
 import EndPoint, {metodoEnum} from "../EndPoint";
 import Autentificacion from "../../servicios/Autentificacion";
+import {int as neo4jInt} from 'neo4j-driver'
+import Integer from "neo4j-driver/types/integer";
 
 export default class ControladorUsuario extends SuperControlador implements IControlador {
     constructor(path: string) {
@@ -23,38 +23,41 @@ export default class ControladorUsuario extends SuperControlador implements ICon
             new EndPoint("usuario",
                 metodoEnum.POST,
                 async (req, res) => {
-                    res.send(await this.crearUsuario(req.body.usuario));
+                    console.log(req.body);
+                    res.send(await this.crearUsuario(req.body));
                 }),
             new EndPoint(
                 "usuario/viajes",
                 metodoEnum.GET,
                 async (req, res) => {
-                    let cedula = <string>req.query.cedula;
-                    res.send(await this.obtenerHistorialVisitas(cedula));
+                    let {cedula} = Autentificacion.verificar(req);
+                    res.send(await this.obtenerHistorialViajes(cedula, neo4jInt(<string>req.query.limite)));
                 }
             ),
             new EndPoint(
                 "usuario/viaje",
                 metodoEnum.POST,
                 async (req, res) => {
-                    res.send(await this.iniciarRecorrido(req.body.inicio, req.body.fin, req.body.cedula, req.body.centro));
+                    let {cedula} = Autentificacion.verificar(req);
+                    res.send(await this.iniciarViaje(cedula, req.body.centro));
                 }
             ),
             new EndPoint(
                 "usuario/viaje",
                 metodoEnum.PATCH,
                 async (req, res) => {
-                    res.send(await this.finalizarRecorrido(req.body.cedula, req.body.distancia));
+                    let {cedula} = Autentificacion.verificar(req);
+                    res.send(await this.finalizarViaje(cedula, req.body.distancia));
                 }
             ),
             new EndPoint(
                 "usuario/sesion",
                 metodoEnum.POST,
                 async (req, res) => {
-                    try{
+                    try {
                         let token = await this.iniciarSesion(req.body.cedula, req.body.pass);
                         res.send(token);
-                    }catch (e) {
+                    } catch (e) {
                         res.status(401).send(e);
                     }
                 }
@@ -64,10 +67,10 @@ export default class ControladorUsuario extends SuperControlador implements ICon
                 metodoEnum.POST,
                 (req, res) => {
                     console.log(req.headers);
-                    let token = Autentificacion.verificar(req);
-                    try{
+                    try {
+                        let token = Autentificacion.verificar(req);
                         res.send(token.nombre);
-                    }catch (e) {
+                    } catch (e) {
                         res.status(401).send(e);
                     }
                 }
@@ -82,64 +85,79 @@ export default class ControladorUsuario extends SuperControlador implements ICon
     }
 
     async crearUsuario(usuario: Usuario) {
-        return await DB.obtenerInstancia().crearUsuario(usuario);
+        let consulta = await DB.obtenerInstancia().session.run("CREATE (n:Usuario $usuario) RETURN n", {
+            usuario
+        });
+        let props = consulta.records[0].get('n').properties;
+        delete props.pass;
+        return new Usuario(props.nombre, props.cedula, props.email);
     }
 
     async asignarSemillas(cedula: string, semillas: number) {
         return await DB.obtenerInstancia().asignarSemillasUsuario(cedula, semillas);
     }
 
-    async finalizarRecorrido(cedula: string, distancia: number) {
+    async iniciarViaje(cedula: string, centro: string) {
+        let viaje = {
+            fecha: Date.now(),
+            semillas: 0,
+            finalizada: false
+        }
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (u:Usuario{cedula:$cedula}), (a:Acopio{nombre:$centro}) WITH u, a CREATE (u)-[v:Visita $viaje]->(a) return v", {
+            cedula,
+            centro,
+            viaje
+        });
+        return consulta.records[0].get("v").properties;
+    }
+
+    async finalizarViaje(cedula: string, distancia: number) {
         let semillas = new AsignarSemillasAleatorias().calcularSemillas(distancia);
         let consulta = await DB.obtenerInstancia().session.run("MATCH (u:Usuario{cedula:$cedula})-[v:Visita{finalizada: false}]-(a:Acopio) SET v.finalizada = true, v.semillas = $semillas RETURN v, a",
             {
                 cedula,
                 semillas
             });
-        let visita = {
-            visita: consulta.records[0].get("v").properties,
-            centro: consulta.records[0].get("a").properties
-        }
         await this.asignarSemillas(cedula, semillas);
         return {
-            visita
+            visita: consulta.records[0].get("v").properties,
+            centro: consulta.records[0].get("a").properties
         };
     }
 
-    async iniciarRecorrido(inicio: LatLng, fin: LatLng, cedula: string, centro: string) {
-        let props = {
-            fecha: Date.now(),
-            semillas: 0,
-            finalizada: false
+    async obtenerHistorialViajes(cedula: string, limite: Integer) {
+        let consulta = await DB.obtenerInstancia().session.run(
+            "MATCH (u:Usuario{cedula:$cedula})-[v:Visita{finalizada:true}]-(a:Acopio) RETURN v, a.nombre ORDER BY v.fecha DESC LIMIT $limite",
+            {
+                cedula,
+                limite
+            });
+        let visitas = [];
+        for (let record of consulta.records.values()) {
+            visitas.push({
+                visita: record.get("v").properties,
+                centro: record.get("a.nombre")
+            });
         }
-        let consulta = await DB.obtenerInstancia().session.run("MATCH (u:Usuario{cedula:$cedula}), (a:Acopio{nombre:$centro}) WITH u, a CREATE (u)-[v:Visita $props]->(a) return v", {
-            cedula,
-            centro,
-            props
-        });
-        return consulta.records[0].get("v").properties;
+        return visitas;
     }
 
-    async obtenerHistorialVisitas(cedula: string) {
-        return await DB.obtenerInstancia().obtenerHistorialVisitas(cedula);
-    }
-
-    async iniciarSesion(cedula: string, pass: string){
+    async iniciarSesion(cedula: string, pass: string) {
         let query = await DB.obtenerInstancia().session.run(
             "MATCH (u:Usuario) WHERE u.cedula = $cedula RETURN u",
             {
                 cedula
             }
         );
-        let usuario:Usuario = query.records[0].get('u').properties;
-        if(pass === usuario.pass){
+        let usuario: Usuario = query.records[0].get('u').properties;
+        if (pass === usuario.pass) {
             let payload = {
                 nombre: usuario.nombre,
                 cedula: usuario.cedula,
                 semillas: usuario.semillas
             }
             return Autentificacion.crearToken(payload);
-        }else{
+        } else {
             throw new Error("Credenciales incorrectas");
         }
     }
