@@ -14,7 +14,7 @@
     <br>
     <br>
     <div align="center">
-      <q-input v-model="nickname" color="light-green-9" filled label="Nombre de usuario o Email"
+      <q-input v-model="cedula" color="light-green-9" filled label="Cédula"
                label-color="light-green-9" style="width: 300px">
         <template v-slot:append>
           <q-icon name="account_circle" style="color: #7FA949"></q-icon>
@@ -33,9 +33,8 @@
       </q-input>
       <br>
     </div>
-<<<<<<< HEAD
       <div align="center">
-        <q-btn push color="light-green-9" label="Iniciar Sesión" align="center" style=" font-size: medium; width: 200px" />
+        <q-btn push color="light-green-9" label="Iniciar Sesión" align="center" style=" font-size: medium; width: 200px" @click="login" />
       </div>
       <br>
       <div align="center">
@@ -43,34 +42,16 @@
           <q-btn flat label="¿Olvidaste tu contraseña?" size="12px" color="light-green-9" style=""></q-btn>
         </template>
       </div>
-        <br><br>
-=======
-    <div align="center">
-      <q-btn align="center" color="light-green-9" label="Iniciar Sesión" push style=" font-size: medium; width: 200px"/>
-    </div>
     <br>
     <div align="center">
-      <template>
-        <q-btn color="light-green-9" flat label="¿Olvidaste tu contraseña?" size="12px" style=""></q-btn>
-      </template>
-    </div>
-    <br><br>
->>>>>>> 211542d39a3d8bdc06c0ba3504af3cccc2786237
-    <div align="center" style="color: #7FA949; font-size: 19px; font-weight: bold">
-      ¿Quieres hacer parte de la comunidad R5?
-    </div>
-    <div align="center">
-<<<<<<< HEAD
       <q-btn flat label="Registrarme" to="/registroUsuario" text-color="light-green-9" style="font-size: large"></q-btn>
-=======
-      <q-btn flat label="Registrarme" style="font-size: large" text-color="light-green-9"></q-btn>
->>>>>>> 211542d39a3d8bdc06c0ba3504af3cccc2786237
     </div>
   </q-page>
 </template>
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
+import Controlador from "../api/Controlador";
 
 @Component({
   name: "Login"
@@ -79,6 +60,12 @@ export default class Login extends Vue {
   password: string = "";
   isPwd: boolean = true;
   email: string = "";
+  cedula: string ="";
+
+   login() {
+    console.log(Controlador.iniciarSesion(this.cedula, this.password));
+
+  }
 }
 </script>
 

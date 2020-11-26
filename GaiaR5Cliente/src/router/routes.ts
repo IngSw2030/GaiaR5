@@ -21,9 +21,11 @@ const routes: RouteConfig[] = [
       {path: '/registroUsuario', component: () => import('components/RegistroUsuario.vue')},
       {path: '/editarUsuario', component: () => import('components/EditarPerfilUsuario.vue')},
       {path: '/miPerfil', component: () => import('components/PerfilUsuario.vue')},
-      {path: '/visitarPerfil', component: () => import('components/VisitarPerfil.vue')}
+      {path: '/visitarPerfil', component: () => import('components/VisitarPerfil.vue')},
+      {path: '/chat', component: () => import('components/Chat.vue')},
+      {path: '/chatHistorial', component: () => import('components/HistorialChat.vue')},
     ]
-    
+
   },
 
   // Always leave this as last one,
