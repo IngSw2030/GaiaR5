@@ -19,7 +19,7 @@ export default class ControladorPost extends SuperControlador implements IContro
                 async (req, res) => {
                     try {
                         let token: Payload = Autentificacion.verificar(req);
-                        let estado = (await this.crearPost(Post.hidratar(req.body.post), token.cedula)) ? 200 : 500;
+                        let estado = (await this.crearPost(Post.hidratar(req.body), token.cedula)) ? 200 : 500;
                         res.sendStatus(estado);
                     } catch (e) {
                         res.sendStatus(403);
@@ -93,7 +93,7 @@ export default class ControladorPost extends SuperControlador implements IContro
                 "MATCH (u:Usuario) WHERE u.cedula = $cedulaUsuario WITH u CREATE (u)-[r:Postea]->(p:Post $post) RETURN p",
                 {
                     cedulaUsuario: cedulaUsuario,
-                    post: {}
+                    post: post
                 }
             );
             for (let tag of post.tags) {
