@@ -49,7 +49,7 @@
     <q-separator />
 
     <q-card-section>
-      <q-chip v-for="tag in postEnviado.tags" icon="label" label=tag color="white" text-color="light-green" />
+      <q-chip style="background-color: #fbf5d8" v-for="tag in postEnviado.tags" icon="label" label=tag  text-color="light-green" />
     </q-card-section>
 
   </q-card>

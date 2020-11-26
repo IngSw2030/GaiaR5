@@ -17,8 +17,8 @@
 
       <q-card-section class="col-4">
         <q-input
-          placeholder="¿De Qué quieres hablar?" :dense="dense"
-          v-model="text"
+          v-model="contenidoPost"
+          placeholder="¿De Qué quieres hablar?"
           type="textarea"
         />
       </q-card-section>
@@ -34,12 +34,13 @@
 
     <q-separator />
     <q-card-section class="col-4">
-      <q-input standout="bg-light-green text-white" v-model="text" label="Tags">
+      <q-input v-model="tagEntrante" standout="bg-light-green text-white"  label="Tags">
       <template v-slot:prepend>
         <q-icon name="label" />
       </template>
-        <template v-slot:append>
-          <q-btn  dense flat icon="add" />
+        <template
+          v-slot:append>
+          <q-btn  dense flat icon="add" @click="imprimir" />
         </template>
       </q-input>
     </q-card-section>
@@ -48,7 +49,7 @@
     <q-separator />
 
     <q-card-section>
-      <q-chip v-for="tag in listaTags" icon="label" label=tag color="white" text-color="light-green" />
+      <q-chip  style="background-color: #fbf5d8" v-for="tag in listaTags" icon="label" label="tag"  text-color="light-green" />
     </q-card-section>
 
 
@@ -68,6 +69,8 @@ export default class PostComponente extends Vue  {
 
 @Prop() postEnviado!: Post
 
+  contenidoPost: string="";
+  tagEntrante: string="";
 
 autor: Usuario=new Usuario(
   "Pepito perez",
@@ -75,11 +78,23 @@ autor: Usuario=new Usuario(
   5000
 )
 
- listaTags= [
+ listaTags: String []= [
    "aluminio",
    "vidrio",
    "paz mundial"
  ]
+
+  agregarTag(){
+   this.listaTags.push("hola bebe")
+  }
+
+  beforeCreated() {
+    this.listaTags=this.postEnviado.tags;
+  }
+
+  imprimir(){
+    console.log(this.listaTags)
+  }
 
 
 }

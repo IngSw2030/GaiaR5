@@ -9,7 +9,7 @@
 
     <post-componente class="q-my-md"  :post-enviado="variablePost"/>
     <comentario-componente class="q-my-md"  v-for="coment in listaComent" :comentario-enviado="coment"/>
-    <q-input standout="bg-light-green text-white" v-model="text" label="¿Qué opinas de este post?">
+    <q-input standout="bg-light-green text-white" v-model="nuevoComentario" label="¿Qué opinas de este post?">
       <template v-slot:prepend>
         <q-icon name="label" />
       </template>
@@ -39,6 +39,7 @@ import ComentarioComponente from "components/ComentarioComponente.vue";
 
 export default class PaginaInicio extends Vue {
 
+  nuevoComentario: string="";
 
   variablePost: Post =new Post(
     "1018499372",

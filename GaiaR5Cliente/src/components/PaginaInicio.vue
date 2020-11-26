@@ -1,16 +1,16 @@
 <template>
   <q-page style="background-color: #fdebc7">
 
-    <q-input class="q-mx-xs" v-model="texto" color="verde" label="Buscar" label-color="light-green-9" >
+    <q-input class="q-mx-xs" v-model="parametroBusqueda" color="verde" label="Buscar" label-color="light-green-9" >
       <template v-slot:append>
-        <q-btn color="light-green-9" flat icon="search" style="background-color: #fdebc7" @click="buscar">
+        <q-btn color="light-green-9" flat icon="search" style="background-color: #fdebc7" >
         </q-btn>
       </template>
     </q-input>
 
     <div class="q-gutter-sm">
-      <q-radio v-model="shape" val="name" label="Busqueda por nombre" color="light-green" />
-      <q-radio v-model="shape" val="tag" label="Busqueda por tag" color="light-green" />
+      <q-radio v-model="tipoBusqueda" val="name" label="Busqueda por nombre" color="light-green" />
+      <q-radio v-model="tipoBusqueda" val="tag" label="Busqueda por tag" color="light-green" />
     </div>
 
 
@@ -45,6 +45,8 @@ import PostComponente from "./PostComponente.vue";
 
 export default class PaginaInicio extends Vue {
 
+  tipoBusqueda: string="";
+  parametroBusqueda: string="";
 
   listaPost: Post []=[new Post(
     "1018499372",

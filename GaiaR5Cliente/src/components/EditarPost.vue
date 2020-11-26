@@ -39,6 +39,7 @@ export default class PaginaInicio extends Vue {
 }
 
 
+
 </script>
 
 
