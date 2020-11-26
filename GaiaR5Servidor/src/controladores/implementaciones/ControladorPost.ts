@@ -2,7 +2,7 @@ import SuperControlador from "../SuperControlador";
 import IControlador from "../IControlador";
 import Controlador from "../Controlador";
 import {Express} from "express";
-import {Post} from "../../../../entidades";
+import {Comentario, Post} from "../../../../entidades";
 import DB from "../../db";
 import EndPoint, {metodoEnum} from "../EndPoint";
 import Autentificacion, {Payload} from "../../servicios/Autentificacion";
@@ -86,6 +86,22 @@ export default class ControladorPost extends SuperControlador implements IContro
                         let {cedula} = Autentificacion.verificar(req);
                         await this.darLike(cedula, Post.hidratar(req.body))
                         res.sendStatus(200);
+                    }catch (e){
+                        if(e.message == "Token invalido"){
+                            res.sendStatus(403);
+                        }else{
+                            res.sendStatus(500);
+                        }
+                    }
+                }
+            ),
+            new EndPoint(
+                "post/comentario",
+                metodoEnum.POST,
+                async (req, res) => {
+                    try {
+                        let {cedula} = Autentificacion.verificar(req);
+                        res.send(await this.comentar(cedula, Post.hidratar(req.body.post), req.body.comentario));
                     }catch (e){
                         if(e.message == "Token invalido"){
                             res.sendStatus(403);
@@ -229,6 +245,17 @@ export default class ControladorPost extends SuperControlador implements IContro
             creador: post.creador,
             like: like
         });
+    }
+
+    async comentar(cedula: string, post: Post, comentario: string){
+        let coment = new Comentario(cedula, comentario, Date.now());
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (p:Post{titulo: $titulo, creador: $creador}), (u:Usuario{cedula: $cedula}) CREATE (u)-[c:Comenta $comentario]->(p) RETURN c", {
+            titulo: post.titulo,
+            creador: post.creador,
+            cedula: cedula,
+            comentario: coment
+        });
+        return DB.obtenerInstancia().desempacarRegistros(consulta.records, "c");
     }
 
 }
