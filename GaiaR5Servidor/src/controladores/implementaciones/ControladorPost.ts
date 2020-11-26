@@ -8,7 +8,7 @@ import EndPoint, {metodoEnum} from "../EndPoint";
 import Autentificacion, {Payload} from "../../servicios/Autentificacion";
 import {int as neo4jInt} from 'neo4j-driver'
 
-export default class Posts extends SuperControlador implements IControlador {
+export default class ControladorPost extends SuperControlador implements IControlador {
 
     constructor(path: string) {
         super(path);
@@ -17,9 +17,13 @@ export default class Posts extends SuperControlador implements IControlador {
                 "post",
                 metodoEnum.POST,
                 async (req, res) => {
-                    let token:Payload = Autentificacion.verificar(req);
-                    let estado = (await this.crearPost(new Post("", 0, "", []).hidratar(req.body.post), token.cedula))? 200 : 500;
-                    res.sendStatus(estado);
+                    try {
+                        let token: Payload = Autentificacion.verificar(req);
+                        let estado = (await this.crearPost(Post.hidratar(req.body.post), token.cedula)) ? 200 : 500;
+                        res.sendStatus(estado);
+                    } catch (e) {
+                        res.sendStatus(403);
+                    }
                 }
             ),
             new EndPoint(
@@ -27,20 +31,38 @@ export default class Posts extends SuperControlador implements IControlador {
                 metodoEnum.GET,
                 async (req, res) => {
                     let {titulo, tags} = req.query;
-                    if(titulo !== undefined){
-                        try{
+                    if (titulo !== undefined) {
+                        try {
                             res.send(await this.buscarPostsPorTitulo(<string>titulo));
-                        }catch (e) {
+                        } catch (e) {
                             res.sendStatus(500);
                         }
-                    }else if(tags !== undefined){
-                        try{
+                    } else if (tags !== undefined) {
+                        try {
                             res.send(await this.buscarPostsPorTags(<Array<string>>tags));
-                        }catch (e) {
+                        } catch (e) {
                             res.sendStatus(500);
                         }
-                    }else{
+                    } else {
                         res.sendStatus(400);
+                    }
+                }
+            ),
+            new EndPoint(
+                "post",
+                metodoEnum.PATCH,
+                async (req, res) => {
+                    try {
+                        let {postActual, postNuevo} = req.body;
+                        Autentificacion.verificar(req);
+                        await this.editarPost(Post.hidratar(postActual), Post.hidratar(postNuevo))
+                        res.sendStatus(200);
+                    }catch (e) {
+                        if(e.message == "Token invalido"){
+                            res.sendStatus(403);
+                        }else{
+                            res.sendStatus(500);
+                        }
                     }
                 }
             ),
@@ -48,9 +70,9 @@ export default class Posts extends SuperControlador implements IControlador {
                 "post/tags/popular",
                 metodoEnum.GET,
                 async (req, res) => {
-                    try{
+                    try {
                         res.send(await this.tagsPopulares(Number.parseInt(<string>req.query.top)));
-                    }catch (e) {
+                    } catch (e) {
                         res.sendStatus(500);
                     }
                 }
@@ -70,11 +92,11 @@ export default class Posts extends SuperControlador implements IControlador {
             await DB.obtenerInstancia().session.run(
                 "MATCH (u:Usuario) WHERE u.cedula = $cedulaUsuario WITH u CREATE (u)-[r:Postea]->(p:Post $post) RETURN p",
                 {
-                    cedulaUsuario,
-                    post
+                    cedulaUsuario: cedulaUsuario,
+                    post: {}
                 }
             );
-            for(let tag of post.tags){
+            for (let tag of post.tags) {
                 await DB.obtenerInstancia().session.run(
                     "MATCH (p:Post {creador: $creador, titulo: $titulo}) MERGE (t:Tag {tag: $tag}) WITH p, t CREATE (p)-[r:MarcadoPor]->(t) ",
                     {
@@ -91,18 +113,18 @@ export default class Posts extends SuperControlador implements IControlador {
         }
     }
 
-    public async buscarPostsPorTitulo(titulo:string){
+    public async buscarPostsPorTitulo(titulo: string) {
         let query = `MATCH (p:Post) WHERE p.titulo =~ '(?i).*${titulo}.*' RETURN p`
-        try{
+        try {
             let respuesta = await DB.obtenerInstancia().session.run(query);
             return (DB.obtenerInstancia().desempacarRegistros(respuesta.records, "p"));
-        }catch (e) {
+        } catch (e) {
             throw e;
         }
     }
 
-    public async buscarPostsPorTags(tags:string[]){
-        try{
+    public async buscarPostsPorTags(tags: string[]) {
+        try {
             let respuesta = await DB.obtenerInstancia().session.run(
                 "MATCH (p:Post)-[:MarcadoPor]-(t:Tag) WHERE t.tag IN $tags RETURN DISTINCT p",
                 {
@@ -110,27 +132,69 @@ export default class Posts extends SuperControlador implements IControlador {
                 }
             );
             return (DB.obtenerInstancia().desempacarRegistros(respuesta.records, "p"));
-        }catch (e) {
+        } catch (e) {
             throw e;
         }
     }
 
-    public async tagsPopulares(top:number){
-        try{
+    public async tagsPopulares(top: number) {
+        try {
             let respuesta = await DB.obtenerInstancia().session.run(
                 "MATCH (r:Tag)-[:MarcadoPor]-(:Post) WITH r, COUNT(r) AS c ORDER BY c DESC RETURN r.tag as tag, c LIMIT $top",
                 {
                     top: neo4jInt(top)
                 }
             );
-            let tablero = respuesta.records.map((registro)=>{
+            return respuesta.records.map((registro) => {
                 return {
                     tag: registro.get("tag"),
                     c: registro.get("c").toNumber()
                 };
             });
-            return tablero;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    public async editarPost(postActual: Post, postNuevo: Post) {
+        let {creador, titulo} = postActual;
+        try {
+            await DB.obtenerInstancia().session.run(
+                "MATCH (p:Post) WHERE p.creador = $creador AND p.titulo = $titulo SET p+=$postNuevo RETURN p",
+                {
+                    creador,
+                    titulo,
+                    postNuevo
+                }
+            );
+            let tagsNuevos = postNuevo.tags.filter((tag) => !postActual.tags.includes(tag));
+            let tagsEliminados = postActual.tags.filter((tag) => !postNuevo.tags.includes(tag));
+            console.log("tagsNuevos", tagsNuevos);
+            console.log("tagsEliminados", tagsEliminados);
+            for (let tag of tagsNuevos) {
+                console.log(tag);
+                await DB.obtenerInstancia().session.run(
+                    "MATCH (p:Post {creador: $creador, titulo: $titulo}) MERGE (t:Tag {tag: $tag}) WITH p, t CREATE (p)-[r:MarcadoPor]->(t) ",
+                    {
+                        creador: creador,
+                        titulo: titulo,
+                        tag: tag
+                    }
+                );
+            }
+            for (let tag of tagsEliminados) {
+                console.log(tag);
+                await DB.obtenerInstancia().session.run(
+                    "MATCH (p:Post {creador: $creador, titulo: $titulo})-[r:MarcadoPor]-(t:Tag {tag: $tag}) DELETE r;",
+                    {
+                        creador: creador,
+                        titulo: titulo,
+                        tag: tag
+                    }
+                )
+            }
         }catch (e) {
+            console.log(e);
             throw e;
         }
     }

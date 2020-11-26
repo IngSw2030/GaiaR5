@@ -5,7 +5,7 @@ import Controlador from "../Controlador";
 import SuperControlador from "../SuperControlador";
 import EndPoint, {metodoEnum} from "../EndPoint";
 
-export default class Geografico extends SuperControlador implements IControlador {
+export default class ControladorGeografico extends SuperControlador implements IControlador {
     server: Express;
     controlador: Controlador;
     pruebaInicio = [4.63127345, -74.06408751];

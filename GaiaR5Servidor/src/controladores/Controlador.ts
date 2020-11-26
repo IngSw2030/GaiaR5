@@ -1,17 +1,17 @@
-import CentrosAcopio from "./implementaciones/CentrosAcopio";
+import ControladorCentroAcopio from "./implementaciones/ControladorCentroAcopio";
 import IControlador from "./IControlador";
 import {Express} from "express";
-import Usuarios from "./implementaciones/Usuarios";
-import Geografico from "./implementaciones/Geografico";
-import Posts from "./implementaciones/Posts";
+import ControladorUsuario from "./implementaciones/ControladorUsuario";
+import ControladorGeografico from "./implementaciones/ControladorGeografico";
+import ControladorPost from "./implementaciones/ControladorPost";
 
 export default class Controlador{
     modulos: Map<string, IControlador> = new Map<string, IControlador>()
     constructor(server: Express) {
-        this.modulos.set("centrosAcopio", new CentrosAcopio(""));
-        this.modulos.set("usuarios", new Usuarios(""));
-        this.modulos.set("geografico", new Geografico(""));
-        this.modulos.set("posts", new Posts(""));
+        this.modulos.set("centrosAcopio", new ControladorCentroAcopio(""));
+        this.modulos.set("usuarios", new ControladorUsuario(""));
+        this.modulos.set("geografico", new ControladorGeografico(""));
+        this.modulos.set("posts", new ControladorPost(""));
         for(let modulo of this.modulos.values()){
             modulo.instalar(server, this);
         }

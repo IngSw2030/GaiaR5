@@ -14,10 +14,14 @@ export default class Autentificacion {
         return encode(payload, this.SECRETO);
     }
 
-    public static verificar(req: Request){
+    public static verificar(req: Request): Payload{
         let tokenStr = req.headers.authorization.split(" ")[1];
         try{
-            return decode(tokenStr, this.SECRETO);
+            let token = decode(tokenStr, this.SECRETO);
+            if(token == false){
+                throw new Error();
+            }
+            return token;
         }catch (e) {
             throw new Error("Token invalido");
         }

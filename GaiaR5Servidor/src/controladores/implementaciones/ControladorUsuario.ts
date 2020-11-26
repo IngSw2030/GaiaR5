@@ -6,11 +6,11 @@ import Controlador from "../Controlador";
 import AsignarSemillasAleatorias from "../../estrategias/AsignarSemillasAleatorias";
 import SuperControlador from "../SuperControlador";
 import {LatLng} from "@googlemaps/google-maps-services-js";
-import Geografico from "./Geografico";
+import ControladorGeografico from "./ControladorGeografico";
 import EndPoint, {metodoEnum} from "../EndPoint";
 import Autentificacion from "../../servicios/Autentificacion";
 
-export default class Usuarios extends SuperControlador implements IControlador {
+export default class ControladorUsuario extends SuperControlador implements IControlador {
     constructor(path: string) {
         super(path);
         this.endpoints = [
@@ -91,7 +91,15 @@ export default class Usuarios extends SuperControlador implements IControlador {
 
     async finalizarRecorrido(cedula: string, distancia: number) {
         let semillas = new AsignarSemillasAleatorias().calcularSemillas(distancia);
-        let visita = await DB.obtenerInstancia().finalizarRecorrido(cedula, semillas);
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (u:Usuario{cedula:$cedula})-[v:Visita{finalizada: false}]-(a:Acopio) SET v.finalizada = true, v.semillas = $semillas RETURN v, a",
+            {
+                cedula,
+                semillas
+            });
+        let visita = {
+            visita: consulta.records[0].get("v").properties,
+            centro: consulta.records[0].get("a").properties
+        }
         await this.asignarSemillas(cedula, semillas);
         return {
             visita
@@ -99,10 +107,17 @@ export default class Usuarios extends SuperControlador implements IControlador {
     }
 
     async iniciarRecorrido(inicio: LatLng, fin: LatLng, cedula: string, centro: string) {
-        let moduloGeografico = <Geografico>this.controlador.modulos.get("geografico");
-        let direcciones = await moduloGeografico.solicitarRecorrido(inicio, fin);
-        await DB.obtenerInstancia().iniciarRecorrido(cedula, centro);
-        return direcciones;
+        let props = {
+            fecha: Date.now(),
+            semillas: 0,
+            finalizada: false
+        }
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (u:Usuario{cedula:$cedula}), (a:Acopio{nombre:$centro}) WITH u, a CREATE (u)-[v:Visita $props]->(a) return v", {
+            cedula,
+            centro,
+            props
+        });
+        return consulta.records[0].get("v").properties;
     }
 
     async obtenerHistorialVisitas(cedula: string) {

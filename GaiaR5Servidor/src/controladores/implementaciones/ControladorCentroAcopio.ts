@@ -5,7 +5,7 @@ import Controlador from "../Controlador";
 import SuperControlador from "../SuperControlador";
 import EndPoint, {metodoEnum} from "../EndPoint";
 
-export default class CentrosAcopio extends SuperControlador implements IControlador {
+export default class ControladorCentroAcopio extends SuperControlador implements IControlador {
     server: Express;
     controlador: Controlador;
 
@@ -63,6 +63,14 @@ export default class CentrosAcopio extends SuperControlador implements IControla
     }
 
     async obtenerCentroPorNombre(nombre: string) {
-        return await DB.obtenerInstancia().obtenerCentroPorNombre(nombre);
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE a.nombre CONTAINS $nombre RETURN DISTINCT a, r.nombre", {
+            nombre: nombre
+        });
+        let centro = consulta.records[0].get("a").properties;
+        centro.recursos = [];
+        for (let record of consulta.records.values()) {
+            centro.recursos.push(record.get("r.nombre"));
+        }
+        return centro;
     }
 }
