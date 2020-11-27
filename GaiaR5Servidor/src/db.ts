@@ -29,7 +29,7 @@ export default class DB {
     }
 
     public desempacarRegistros(registros: Record[], variables: string[] | string): Array<any> {
-        if (registros.length == 0) return null;
+        if (registros.length == 0) return [];
         let desempaquetado = [];
         if (Array.isArray(variables)) {
             //Tenemos varias variables

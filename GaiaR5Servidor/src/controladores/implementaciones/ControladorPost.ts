@@ -164,6 +164,18 @@ export default class ControladorPost extends SuperControlador implements IContro
                         }
                     }
                 }
+            ),
+            new EndPoint(
+                "post/usuario",
+                metodoEnum.GET,
+                async (req, res) => {
+                    try {
+                        res.send(await this.postPorUsuario(<string>req.query.cedula));
+                    } catch (e) {
+                        console.log(e);
+                        res.status(500).send(e);
+                    }
+                }
             )
         ];
     }
@@ -354,5 +366,11 @@ export default class ControladorPost extends SuperControlador implements IContro
             home = [...home, ...postRandom];
         }
         return home;
+    }
+
+    async postPorUsuario(cedula: string){
+        let query = "MATCH (usuario:Usuario{cedula:$cedula})-[:Postea]-(post:Post) RETURN post";
+        let consulta = await DB.obtenerInstancia().session.run(query, {cedula:cedula});
+        return DB.obtenerInstancia().desempacarRegistros(consulta.records, "post");
     }
 }

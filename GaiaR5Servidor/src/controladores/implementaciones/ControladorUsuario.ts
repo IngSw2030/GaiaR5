@@ -39,6 +39,17 @@ export default class ControladorUsuario extends SuperControlador implements ICon
                     console.log(req.body);
                     res.send(await this.crearUsuario(req.body));
                 }),
+            new EndPoint("usuario",
+                metodoEnum.PATCH,
+                async (req, res) => {
+                    try{
+                        let {cedula} = Autentificacion.verificar(req);
+                        await this.editarUsuario(cedula, req.body.pass, req.body.avatar)
+                        res.sendStatus(200);
+                    }catch (e) {
+                        res.status(400).send(e);
+                    }
+                }),
             new EndPoint(
                 "usuario/viajes",
                 metodoEnum.GET,
@@ -147,12 +158,35 @@ export default class ControladorUsuario extends SuperControlador implements ICon
     }
 
     async crearUsuario(usuario: Usuario) {
+        let encontrado = await DB.obtenerInstancia().session.run("MATCH (u:Usuario{cedula:$cedula}) RETURN u", { cedula: usuario.cedula});
+        if(encontrado.records.length > 0){
+            throw new Error("Usuario ya registrado");
+        }
         let consulta = await DB.obtenerInstancia().session.run("CREATE (n:Usuario $usuario) RETURN n", {
             usuario
         });
         let props = consulta.records[0].get('n').properties;
         delete props.pass;
         return new Usuario(props.nombre, props.cedula, props.email, props.avatar);
+    }
+
+    async editarUsuario(cedula: string, pass: string, avatar: string){
+        let editable = {};
+        if(pass){
+            editable["pass"] = pass;
+        }
+        if(avatar){
+            editable["avatar"] = avatar;
+        }
+        if(editable != {}){
+            await DB.obtenerInstancia().session.run(
+                "MATCH (u:Usuario{cedula:$cedula}) SET u+=$editable RETURN u",
+                {
+                    cedula: cedula,
+                    editable: editable
+                }
+            );
+        }
     }
 
     async asignarSemillas(cedula: string, semillas: number) {
@@ -257,8 +291,9 @@ export default class ControladorUsuario extends SuperControlador implements ICon
     }
 
     async usuarioPorNombre(nombre: string) {
-        let query = `MATCH (u:Usuario) WHERE u.nombre =~ '(?i).*${nombre}.*' RETURN u`
+        let query = `MATCH (u:Usuario) WHERE u.nombre =~ '(?i).*${nombre}.*' RETURN u`;
         let consulta = await DB.obtenerInstancia().session.run(query);
+        console.log(consulta.records);
         return DB.obtenerInstancia().desempacarRegistros(consulta.records, "u");
     }
 
