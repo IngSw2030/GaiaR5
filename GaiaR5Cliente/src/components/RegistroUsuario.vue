@@ -1,3 +1,4 @@
+
 <template xmlns:a="http://www.w3.org/1999/html">
   <q-page padding style="background-color: #fdebc7" >
     <q-item to="/login" active clickable v-ripple fixed-right >
@@ -14,6 +15,12 @@
         height="110px"
         src="https://i.ibb.co/ggbP1bT/2.png"
       />
+      <!--<q-uploader
+        style="width: 50px;height: 50px ; background-color: #7FA949"
+        url="http://localhost:4444/upload"
+        accept=".jpg, image/*"
+        @rejected="onRejected"
+      /> -->
       <p align="center" style="color:#7FA949; font-size:12px;margin-bottom: 1.5px" >
         <q-icon name="add_photo_alternate" style="color: #7FA949;" />
         Agregar Avatar
@@ -38,26 +45,31 @@
       </template>
     </q-input>
 
+      <q-input v-model="password" :type="isPwd1 ? 'password' : 'text'" color="green"
+               label="Contraseña"  style="width:300px;position: center">
+        <template v-slot:prepend>
+          <q-icon name="lock" style="color: #7FA949;" />
+        </template>
+        <q-icon style="color: #7FA949; margin-top: 15px"
+                :name="isPwd1 ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isPwd1 = !isPwd1"
+                size="25px"
+        />
+      </q-input>
 
-
-    <q-input color= green v-model="ph" label="Número de Celular"   :dense="dense" style="width: 300px" label-color="#807979">
-      <template v-slot:prepend>
-        <q-icon name="call" style="color: #7FA949" />
-      </template>
-    </q-input>
-
-
-    <q-input color= green v-model="ph" label="Contraseña"   :dense="dense" type="password" style="width: 300px" label-color="#807979" >
-      <template v-slot:prepend>
-        <q-icon name="lock" style="color: #7FA949" />
-      </template>
-    </q-input>
-
-    <q-input color= green v-model="ph" label="Confirmar Contraseña"   :dense="dense" type="password" style="width: 300px;" label-color="#807979">
-      <template v-slot:prepend>
-        <q-icon name="no_encryption" style="color: #7FA949" />
-      </template>
-    </q-input>
+      <q-input v-model="password2" :type="isPwd2 ? 'password' : 'text'" color="green"
+               label="Confirmar Contraseña"  style="width:300px;position: center">
+        <template v-slot:prepend>
+          <q-icon name="no_encryption" style="color: #7FA949" />
+        </template>
+        <q-icon style="color: #7FA949; margin-top: 15px"
+                :name="isPwd2 ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isPwd2 = !isPwd2"
+                size="25px"
+        />
+      </q-input>
     </div>
     <div align="center">
       <q-btn push color="light-green"label="Registrarme" align="center" style=" font-size: 12px; width: auto; margin-top: 20px" />
@@ -84,15 +96,19 @@ p.centrar{
 }
 </style>
 <script lang="ts">
-export default {
-  name: "Login",
-  data () {
-    return {
-      password: '',
-      isPwd: true,
+import {Component, Vue} from 'vue-property-decorator';
+import Controlador from "../api/Controlador";
 
-      email: ''
-    }
-  }
+@Component({
+  name: "RegistrarUsuario"
+})
+export default class EditarPerfilUsuario extends Vue {
+  password2: string = "";
+  password: string = "";
+  isPwd1: boolean = true;
+  isPwd2: boolean = true;
+  email: string = "";
 }
+
+
 </script>
