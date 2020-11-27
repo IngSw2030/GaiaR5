@@ -143,7 +143,7 @@
       </q-scroll-area>
 
       <q-img class="absolute-top" style=" height: 150px; background-color: #fdebc7">
-        <div class="absolute-bottom" style="background-color: #fdebc7">
+        <div class="absolute-bottom" style="background-color: #fdebc7" @click="irPerfil">
 
           <div
             class="relative-position container   flex flex-center">
@@ -187,6 +187,9 @@ export default class MainLayout extends Vue {
     this.$q.cookies.remove("token");
     this.$store.commit("store_user/actualizarUsuario", undefined);
     this.$router.push("/");
+  }
+  public irPerfil(){
+    this.$router.push(`/testPerfilUsuario/${this.usuario.cedula}`);
   }
 }
 </script>
