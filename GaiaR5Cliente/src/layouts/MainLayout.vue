@@ -74,13 +74,13 @@
 
           </q-item>
 
-          <q-item v-ripple clickable>
+          <q-item v-ripple clickable to="/editarPost">
             <q-item-section avatar>
               <q-icon name="favorite" style="color: #7FA949;"/>
             </q-item-section>
 
             <q-item-section class="text-dark">
-              Chat
+              Crear post
             </q-item-section>
 
             <q-item-section avatar>
@@ -92,7 +92,7 @@
 
 
 
-          <q-item v-ripple active clickable to="/cerca">
+          <q-item v-ripple active clickable to="/mapaBusqueda">
             <q-item-section avatar>
               <q-icon name="location_on" style="color: #7FA949;"/>
             </q-item-section>
@@ -189,7 +189,7 @@ export default class MainLayout extends Vue {
     this.$router.push("/");
   }
   public irPerfil(){
-    this.$router.push(`/testPerfilUsuario/${this.usuario.cedula}`);
+    this.$router.push(`/perfilUsuario/${this.usuario.cedula}`);
   }
 }
 </script>
