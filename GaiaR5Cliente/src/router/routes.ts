@@ -26,7 +26,8 @@ const routes: RouteConfig[] = [
       {path: '/chat', component: () => import('components/Chat.vue')},
       {path: '/chatHistorial', component: () => import('components/HistorialChat.vue')},
       {path: '/editarComentario', component: () => import('components/editarComentario.vue')},
-      {path: '/nuevoPost', component: () => import('src/pages/EditarPost.vue')}
+      {path: '/nuevoPost', component: () => import('src/pages/EditarPost.vue')},
+      {path: '/testPerfilUsuario/:cedula', component: () => import('src/pages/PerfilUsuarioTest.vue')}
     ]
 
   },

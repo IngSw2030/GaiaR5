@@ -1,9 +1,19 @@
-export default class Comentario{
+export default class Comentario {
+    public autor: string;
     public texto: string;
-    public likes: number;
+    public publicacion: number;
 
-    constructor(texto: string, likes: number) {
+    constructor(autor: string, texto: string, publicacion: number) {
+        this.autor = autor;
         this.texto = texto;
-        this.likes = likes;
+        this.publicacion = publicacion;
+    }
+
+    public static hidratar(json: any): Comentario {
+        return new Comentario(
+            json.autor,
+            json.texto,
+            json.publicacion
+        );
     }
 }
