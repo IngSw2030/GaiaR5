@@ -35,11 +35,7 @@
               <img :src="usuario.avatar"/>
             </q-avatar>
           </q-item-section>
-<<<<<<< HEAD
-          <q-item-section @click="">
-=======
           <q-item-section @click="seleccionarUsuario(usuario.cedula)">
->>>>>>> a4500a090d34a9495732425b764095de6af9cea0
             <q-item-label caption blond v-html=usuario.nombre
                           style="color: #7FA949; font-size: 15px; width:300px"></q-item-label>
           </q-item-section>
