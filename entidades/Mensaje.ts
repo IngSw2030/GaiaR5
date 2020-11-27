@@ -1,9 +1,15 @@
 export default class Mensaje{
-    public fecha: Date;
-    public hora: Date;
+    public fecha: number;
+    public autor: string;
+    public destinatario: string;
+    public mensaje: string;
+    public leido: boolean;
 
-    constructor(fecha: Date, hora: Date) {
-        this.fecha = fecha;
-        this.hora = hora;
+    constructor(autor: string, destinatario: string, mensaje: string) {
+        this.fecha = Date.now();
+        this.autor = autor;
+        this.destinatario = destinatario;
+        this.mensaje = mensaje;
+        this.leido = false;
     }
 }

@@ -1,17 +1,3 @@
-export enum TipoContenido{
-    PARRAFO,
-    IMAGEN,
-    VIDEO
-}
+export default abstract class Contenido{
 
-export default class Contenido{
-    public tipo: TipoContenido;
-    public texto: string;
-    public enlace: string;
-
-    constructor(tipo: TipoContenido, texto: string, enlace: string) {
-        this.tipo = tipo;
-        this.texto = texto;
-        this.enlace = enlace;
-    }
 }

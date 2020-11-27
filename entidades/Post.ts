@@ -20,14 +20,7 @@ export default class Post{
         this.contenido = contenido? contenido : [];
     }
 
-    public hidratar(json:any):Post{
-        this.creador = json.creador;
-        this.publicacion = json.publicacion;
-        this.titulo = json.titulo;
-        this.tags = json.tags;
-        this.likes = json.likes;
-        this.comentarios = json.comentarios;
-        this.contenido = json.contenido;
-        return this;
+    public static hidratar(json:any):Post{
+        return new Post(json.creador, json.publicacion, json.titulo, json.tags, json.likes, json.comentarios, json.contenido);
     }
 }
