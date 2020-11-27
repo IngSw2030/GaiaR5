@@ -10,7 +10,7 @@ export default class Controlador {
   }
 
   public static async iniciarSesion(cedula: string, pass: string) {
-    try {
+    try{
       let respuesta = await Controlador.post(
         "usuario/sesion",
         {
@@ -26,6 +26,7 @@ export default class Controlador {
       return false;
     }
   }
+
   public static async get(recurso: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
     try {
       return await axios.get(`${this.URL}/${recurso}`, this.tokenizar(config));
