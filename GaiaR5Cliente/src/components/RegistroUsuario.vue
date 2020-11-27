@@ -9,7 +9,7 @@
       Haz parte de la comunidad R5
     </div>
     <div
-       style="cursor-pointer:hand;display: flex;flex-direction: column;align-content: center;align-items: center;color:#7FA949;justify-content: center;color:#7FA949">
+      style="cursor-pointer:hand;display: flex;flex-direction: column;align-content: center;align-items: center;color:#7FA949;justify-content: center;color:#7FA949">
       <q-img
         width="110px"
         height="110px"
@@ -112,13 +112,14 @@ export default class RegistroPerfilUsuario extends Vue {
   email: string = "";
   nombre: string = "";
   cedula: string = "";
-  user : Usuario | undefined;
-  avatar :string ="";
+  user: Usuario | undefined;
+  avatar: string = "";
 
   async registrarse() {
     await Controlador.iniciarSesion("1013632535", "holamundo");
+
     if (this.password === this.password2 && this.password != "") {
-      this.user= await Controlador.post("usuario", {
+      this.user = await Controlador.post("usuario", {
           nombre: this.nombre,
           cedula: this.cedula,
           email: this.email,
@@ -132,14 +133,21 @@ export default class RegistroPerfilUsuario extends Vue {
         }
       });
       console.log(viajes);
-    } else {
-      this.$q.notify("Las contraseñas no coinciden")
+    } if (this.password != this.password2) {
+      this.$q.notify({
+        message: "Las contraseñas no coinciden",
+        color: "warning",
+        position: "bottom"
+      })
     }
-    if (this.user != null){
+    if (this.user != null) {
       this.$router.push("/");
-    }
-    else{
-      this.$q.notify("Registro invalido")
+    } else {
+      this.$q.notify({
+        message: "Registro invalido",
+        color: "warning",
+        position: "bottom"
+      })
     }
 
   }
