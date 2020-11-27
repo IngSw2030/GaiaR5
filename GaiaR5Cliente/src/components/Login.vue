@@ -58,6 +58,7 @@
 import {Component, Vue} from 'vue-property-decorator';
 import Controlador from "../api/Controlador";
 
+
 @Component({
   name: "Login"
 })
