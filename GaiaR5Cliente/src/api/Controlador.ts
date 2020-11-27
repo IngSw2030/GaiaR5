@@ -1,7 +1,7 @@
 import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 
 export default class Controlador {
-  private static URL: string = "http://9b7fd101d32e.ngrok.io";
+  private static URL: string = "http://6c14dcaf8345.ngrok.io";
   private static token: string = "";
 
   public static cerrarSesion(){

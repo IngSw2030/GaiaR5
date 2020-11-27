@@ -24,6 +24,7 @@
           :text="['doing fine, how r you?']"
           stamp="4 minutes ago"
         />
+        <q-input></q-input>
       </div>
     </div>
   </q-page>

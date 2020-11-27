@@ -61,11 +61,22 @@ export default class Login extends Vue {
   isPwd: boolean = true;
   email: string = "";
   cedula: string ="";
+  inicio: boolean = false;
 
-   login() {
-    console.log(Controlador.iniciarSesion(this.cedula, this.password));
+   async login() {
+     this.inicio = await Controlador.iniciarSesion(this.cedula, this.password);
+     if(this.inicio==true){
+        this.$router.push("/");
+     }else {
+       this.$q.notify({
+         message: "Verifica tu cédula o tu contraseña",
+         color: "warning",
+         position: "center"
+       })
+     }
+   }
 
-  }
+
 }
 </script>
 
