@@ -23,7 +23,7 @@
 
 
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import {Post, Comentario} from "../../../entidades"
 import PostComponente from "./PostComponente.vue";
 import ComentarioComponente from "components/ComentarioComponente.vue";
@@ -38,6 +38,8 @@ import ComentarioComponente from "components/ComentarioComponente.vue";
 })
 
 export default class PaginaInicio extends Vue {
+
+  @Prop() postEnviado!: Post
 
   nuevoComentario: string="";
 
@@ -65,11 +67,6 @@ export default class PaginaInicio extends Vue {
     "Hola bebe",
     1
   )
-
-
-  crearPost (){
-
-  }
 
 
 }

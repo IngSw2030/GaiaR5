@@ -1,16 +1,17 @@
 import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
+import {Cookies} from "quasar";
 
 export default class Controlador {
   private static URL: string = "http://66e295d86ba6.ngrok.io";
   private static token: string = "";
 
-  public static cerrarSesion(){
-    this.token="";
+  public static cerrarSesion() {
+    this.token = "";
     return true;
   }
 
   public static async iniciarSesion(cedula: string, pass: string) {
-    try{
+    try {
       let respuesta = await Controlador.post(
         "usuario/sesion",
         {
@@ -18,6 +19,7 @@ export default class Controlador {
           pass
         }
       );
+      Cookies.set("token", respuesta.data);
       this.token = "Bearer " + respuesta.data;
       console.log(this.token);
       return true;
@@ -67,7 +69,12 @@ export default class Controlador {
     }
   }
 
+
   private static tokenizar(config: AxiosRequestConfig | undefined): AxiosRequestConfig | undefined {
+    let cookie = Cookies.get("token");
+    if (cookie) {
+      this.token = "Bearer " + cookie;
+    }
     if (this.token != "") {
       if (config) {
         if (config.headers) {

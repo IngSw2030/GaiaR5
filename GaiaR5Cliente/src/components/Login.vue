@@ -33,23 +33,24 @@
       </q-input>
       <br>
     </div>
-      <div align="center">
-        <q-btn push color="light-green-9" label="Iniciar Sesión" align="center" style=" font-size: medium; width: 200px" @click="login" />
-      </div>
-      <br>
-      <div align="center">
-        <template >
-          <q-btn flat label="¿Olvidaste tu contraseña?" size="12px" color="light-green-9" style=""></q-btn>
-        </template>
-      </div>
-        <br><br>
+    <div align="center">
+      <q-btn align="center" color="light-green-9" label="Iniciar Sesión" push style=" font-size: medium; width: 200px"
+             @click="login"/>
+    </div>
+    <br>
+    <div align="center">
+      <template>
+        <q-btn color="light-green-9" flat label="¿Olvidaste tu contraseña?" size="12px" style=""></q-btn>
+      </template>
+    </div>
+    <br><br>
     <br>
     <br><br>
     <div align="center" style="color: #7FA949; font-size: 19px; font-weight: bold">
       ¿Quieres hacer parte de la comunidad R5?
     </div>
     <div align="center">
-      <q-btn flat label="Registrarme" to="/registroUsuario" text-color="light-green-9" style="font-size: large"></q-btn>
+      <q-btn flat label="Registrarme" style="font-size: large" text-color="light-green-9" to="/registroUsuario"></q-btn>
     </div>
   </q-page>
 </template>
@@ -66,27 +67,36 @@ export default class Login extends Vue {
   password: string = "";
   isPwd: boolean = true;
   email: string = "";
-  cedula: string ="";
+  cedula: string = "";
   inicio: boolean = false;
 
-   async login() {
-     this.inicio = await Controlador.iniciarSesion(this.cedula, this.password);
-     if(this.inicio==true){
-        this.$router.push("/");
-     }else {
-       this.$q.notify({
-         message: "Verifica tu cédula o tu contraseña",
-         color: "warning",
-         position: "center"
-       })
-     }
-   }
-
-  get autentificado(){
+  get autentificado() {
     return this.$store.state.store_user.autentificacion
   }
 
-  setAutentificado(){
+  async login() {
+    this.inicio = await Controlador.iniciarSesion(this.cedula, this.password);
+    let usuario = (await Controlador.get("usuario", {
+      params: {
+        cedula: this.cedula
+      }
+    })).data;
+    console.log(usuario);
+    if (this.inicio) {
+      this.$q.cookies.set("usuario", usuario);
+      this.$q.notify(`Bienvenido ${usuario.nombre}`);
+      this.$store.commit('store_user/actualizarUsuario', usuario);
+      await this.$router.push("/home");
+    } else {
+      this.$q.notify({
+        message: "Verifica tu cédula o tu contraseña",
+        color: "warning",
+        position: "center"
+      })
+    }
+  }
+
+  setAutentificado() {
     this.$store.commit('store_user/toggleAutentificado')
   }
 

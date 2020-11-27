@@ -1,17 +1,9 @@
 import CentroAcopio from "src/api/clases/CentroAcopioBusqueda";
-import {Usuario} from "../../../../entidades"
-
+import {Cookies} from "quasar";
 export default function () {
   return {
     //variables de prueba
     autentificado: false,
-
-    user: Usuario= new Usuario(
-      "Lincoln Osan",
-      "1018499372",
-      0
-    )
-
-
+    usuario: Cookies.get("usuario")
   }
 }

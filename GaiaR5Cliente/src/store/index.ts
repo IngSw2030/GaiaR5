@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 // we first import the module
 import store_CA from './store_CA'
+import store_user from './store_user'
 
 Vue.use(Vuex)
 
@@ -17,7 +18,8 @@ export default function (/* { ssrContext } */) {
   return new Vuex.Store({
     modules: {
       // then we reference it
-      store_CA
+      store_CA,
+      store_user
     }
   })
 }
