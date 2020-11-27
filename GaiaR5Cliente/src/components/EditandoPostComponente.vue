@@ -21,53 +21,25 @@
 
 
     <q-card-section class="col-4">
-        <q-input
-          v-model="contenidoPost"
-          placeholder="¿De Qué quieres hablar?"
-          type="textarea"
-        />
+
+          <q-list>
+            <q-item v-for="(itemContenido, indice) in contenido" :key="`${itemContenido.tipo}:${indice}`">
+              <q-item-section>
+                <contenido-cluster :elemento="itemContenido"/>
+              </q-item-section>
+              <q-btn
+                class="q-mx-xs"
+                size='xs'
+                icon="cancel"
+                @click="removeContenido(indice)"
+              />
+            </q-item>
+          </q-list>
+          <q-select v-model="selector" :options="opciones" label="Tipo de contenido" emit-value/>
+          <q-input v-model="dataSeleccion"/>
+          <q-btn label="Añadir" @click="sumarSeleccion"/>
+
       </q-card-section>
-
-    <q-card-section v-if="prueba" class="col-4">
-
-      <q-img
-        class="rounded-borders"
-        src="https://i.imgur.com/6RhP8BS.jpg"
-      />
-
-    </q-card-section>
-
-
-    <q-separator />
-
-    <q-card-actions >
-      <q-btn flat round class="q-mx-xl" color="light-green" icon="insert_link" @click="desplegarVentana" />
-
-      <q-dialog v-model="ventanaLink" persistent transition-show="flip-down" transition-hide="flip-up">
-        <q-card class="bg-light-green text-white">
-          <q-bar>
-
-            <q-btn  flat icon="close" v-close-popup>
-              <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
-            </q-btn>
-          </q-bar>
-
-          <q-card-section class="column relative-position container   flex flex-center">
-            <div class="text-h10">Ingresa el link de la imagen que deseas agregar:</div>
-          </q-card-section>
-
-          <q-card-section class="q-pt-none">
-            <q-input class="q-mb-sm" v-model="enlaceImagen" label-color="white" />
-            <q-space/>
-            <div class="column relative-position container   flex flex-center" >
-              <q-btn  color="primary" label="publicar" @click="agregarLink" />
-            </div>
-          </q-card-section>
-        </q-card>
-      </q-dialog>
-
-
-    </q-card-actions>
 
     <q-separator />
     <q-card-section class="col-4">
@@ -97,6 +69,7 @@
       </q-chip >
     </q-card-section>
 
+    <q-btn color="primary" label="Primary" @click="crearPost" />
   </q-card>
 
 
@@ -105,23 +78,36 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import {Post, Usuario} from "../../../entidades"
+import Contenido, {TipoContenido} from "../../../entidades/Contenido";
+import ContenidoCluster from "components/ContenidoCluster.vue";
+import Controlador from "../api/Controlador";
 
-@Component
+
+
+@Component({
+  components: {ContenidoCluster}
+})
 export default class PostComponente extends Vue  {
 
 @Prop() postEnviado!: Post
+  @Prop() mandatoCrearPost!: boolean
 
-  contenidoPost: string="";
   tagEntrante: string="";
   tituloPost: string="";
-  ventanaLink:boolean=false;
   listaTags: string []= [
     "aluminio",
     "vidrio",
     "paz mundial"
   ]
-  enlaceImagen: string="";
-  prueba:boolean=true;
+
+  public contenido: Contenido[] = [];
+  public selector: string = "";
+  public opciones = [
+    {label: "Parrafo", value: "PARRAFO"},
+    {label: "Imagen", value: "IMAGEN"},
+    {label: "Video", value: "VIDEO"}
+  ];
+  public dataSeleccion: string = "";
 
 
 
@@ -136,38 +122,61 @@ autor: Usuario=new Usuario(
    this.listaTags.push(this.tagEntrante)
   }
 
-  desplegarVentana(){
-    this.ventanaLink=true;
+
+  beforeCreated() {
+    this.listaTags=this.postEnviado.tags;
   }
 
-  cerrarVentana(){
-    this.ventanaLink=false;
-  }
 
- // beforeCreated() {
-   // this.listaTags=this.postEnviado.tags;
-  //}
-
-
-  crearPost(){
-   let postCreado: Post= new Post(
-      "1013632535",
-      Date.now(),
-      this.tituloPost,
-      this.listaTags,
-      undefined,
-      undefined,
-      []
-
-    )
-  }
 
   removeTag ( index: number ) {
       this.listaTags.splice( index, 1 );
   }
 
+  removeContenido ( index: number ) {
+    this.contenido.splice( index, 1 );
+  }
+
   imprimir(){
     console.log(this.listaTags)
+  }
+
+
+  public sumarSeleccion() {
+    console.log(this.selector);
+    switch (this.selector) {
+      case "PARRAFO":
+        this.contenido.push(new Contenido(TipoContenido.PARRAFO, this.dataSeleccion, ""));
+        break;
+      case "IMAGEN":
+        this.contenido.push(new Contenido(TipoContenido.IMAGEN, "", this.dataSeleccion));
+        break;
+      case "VIDEO":
+        this.contenido.push(new Contenido(TipoContenido.VIDEO, "", this.dataSeleccion));
+        break;
+    }
+    this.selector = "";
+    this.dataSeleccion = "";
+    console.log(this.contenido);
+  }
+
+
+  async crearPost() {
+    try {
+      let resultado:any = await Controlador.post("post", {
+          creador:  "123456789",
+          publicacion: Date.now(),
+          titulo:this.tituloPost,
+          tags:this.listaTags,
+          contenido: this.contenido
+
+      },  undefined);
+
+      console.log(resultado)
+
+    }catch (e){
+      this.$q.notify(`Ocurrio un error: ${e.message}`);
+    }
   }
 
 

@@ -26,6 +26,7 @@ export default class Controlador {
       return false;
     }
   }
+
   public static async get(recurso: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
     try {
       return await axios.get(`${this.URL}/${recurso}`, this.tokenizar(config));
@@ -65,6 +66,7 @@ export default class Controlador {
       throw e;
     }
   }
+
 
   private static tokenizar(config: AxiosRequestConfig | undefined): AxiosRequestConfig | undefined {
     if (this.token != "") {
