@@ -35,7 +35,7 @@
               <img src="https://cdn.quasar.dev/img/avatar.png"/>
             </q-avatar>
           </q-item-section>
-          <q-item-section @click="seleccionarUsuario">
+          <q-item-section @click="">
             <q-item-label caption blond v-html=usuario.nombre
                           style="color: #7FA949; font-size: 15px; width:300px"></q-item-label>
           </q-item-section>

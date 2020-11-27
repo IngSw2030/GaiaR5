@@ -9,13 +9,13 @@
       <q-img
         width="80px"
         height="80px"
-        src="https://i.ibb.co/ggbP1bT/2.png"
+        :src="usuario.avatar"
       />
     <div style="cursor-pointer:hand;display: flex;flex-direction: column;align-content: center;align-items: center;justify-content: center;margin-top: 10px;color:darkgreen;margin-bottom: 0px">
 
-      <p style="margin-bottom: 0px">EcoName</p>
-      <p style="margin-top: 0px;margin-bottom:0px">Ecouser@gaiar5.eco</p>
-      <p style="margin-top: 0px;margin-bottom: 0px">Rango Eco</p>
+      <p style="margin-bottom: 0px">{{usuario.nombre}}</p>
+      <p style="margin-top: 0px;margin-bottom:0px">{{usuario.email}}</p>
+      <p style="margin-top: 0px;margin-bottom: 0px">{{usuario.rango}}}</p>
 
       <div align="center" style="margin-bottom: 0px;display:flex;flex-direction:row;align-content: center;align-items: center;justify-content: center;color:darkgreen">
         <p style="font-size: 12px;margin-bottom: 0px">20 Seguidores</p>
@@ -39,6 +39,37 @@
 
   </q-page>
 </template>
+<script lang="ts">
+import {Component, Vue} from 'vue-property-decorator';
+import {Usuario} from "../../../entidades/index";
+import Controlador from "../api/Controlador";
+import Post from "../../../entidades/Post";
+
+@Component({})
+export default class ContenidoCluster extends Vue {
+  usuario: Usuario | null = null;
+  post: Post[] | null = null;
+
+  async mounted() {
+    try {
+      let consulta = await Controlador.get("usuario", {
+        params: {
+          cedula: this.$route.params.cedula
+        }
+      });
+      this.usuario = consulta.data;
+      consulta = await Controlador.get("post/usuario", {
+        params: {
+          cedula: this.$route.params.cedula
+        }
+      });
+      this.post = consulta.data;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}
+</script>
 <style scoped>
 p.centrar{
   display: flex;
