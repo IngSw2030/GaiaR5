@@ -21,13 +21,13 @@ const routes: RouteConfig[] = [
       {path: '/editarPost', component: () => import('components/EditarPost.vue')},
       {path: '/registroUsuario', component: () => import('components/RegistroUsuario.vue')},
       {path: '/editarUsuario', component: () => import('components/EditarPerfilUsuario.vue')},
-      {path: '/miPerfil', component: () => import('src/pages/PerfilUsuario.vue')},
       {path: '/visitarPerfil', component: () => import('components/VisitarPerfil.vue')},
       {path: '/buscarPost', component: () => import('components/BuscarPost.vue')},
       {path: '/chat', component: () => import('components/Chat.vue')},
       {path: '/chatHistorial', component: () => import('components/HistorialChat.vue')},
       {path: '/editarComentario', component: () => import('components/editarComentario.vue')},
       {path: '/nuevoPost', component: () => import('src/pages/EditarPost.vue')},
+      {path: '/perfilUsuario/:cedula', component: () => import('src/pages/PerfilUsuario.vue')}
     ]
 
   },

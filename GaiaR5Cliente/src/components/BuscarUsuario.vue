@@ -104,7 +104,7 @@ export default class BuscarUsuario extends Vue {
   }
 
   seleccionarUsuario (cedula: string){
-    this.$router.push(`/miPerfil/${cedula}`);
+    this.$router.push(`/perfilUsuario/${cedula}`);
   }
 
 }
