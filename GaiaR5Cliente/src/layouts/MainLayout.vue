@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated style="background-color: #7FA949">
+    <q-header elevated style="background-color: #7FA949" v-if="usuario">
       <q-toolbar>
         <q-btn
           aria-label="Menu"
@@ -24,11 +24,12 @@
       :breakpoint="400"
       :width="300"
       show-if-above
+      v-if="usuario"
     >
       <q-scroll-area
         style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd; background-color: #fdebc7">
         <q-list padding>
-          <q-item v-ripple clickable to="/">
+          <q-item v-ripple clickable to="/inicio">
             <q-item-section avatar>
               <q-icon name="home" style="color: #7FA949;"/>
             </q-item-section>
@@ -122,6 +123,21 @@
 
           </q-item>
 
+          <q-item v-ripple active clickable @click="cerrarSesion">
+            <q-item-section avatar>
+              <q-icon name="exit_to_app" style="color: #7FA949;"/>
+            </q-item-section>
+
+            <q-item-section class="text-dark">
+              Cerrar Sesion
+            </q-item-section>
+
+            <q-item-section avatar>
+              <q-icon name="keyboard_arrow_right" style="color: #336eb9;"/>
+            </q-item-section>
+
+          </q-item>
+
 
         </q-list>
       </q-scroll-area>
@@ -132,17 +148,17 @@
           <div
             class="relative-position container   flex flex-center">
             <q-avatar class="fixed-center-right" size="56px" square>
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+              <img :src="usuario.avatar">
             </q-avatar>
           </div>
 
           <q-item-section>
             <div class="text-weight-bolder" style="color: #7FA949;">
-              <div class="text-center">ECO USUARIO</div>
+              <div class="text-center">{{usuario.nombre}}</div>
             </div>
           </q-item-section>
 
-          <div class="text-center" style="color: #336eb9;"> ecouser@Gaiar5.com</div>
+          <div class="text-center" style="color: #336eb9;">{{usuario.email}}</div>
         </div>
       </q-img>
     </q-drawer>
@@ -156,11 +172,20 @@
 <script lang="ts">
 
 import {Component, Vue} from 'vue-property-decorator';
+import {Usuario} from "../../../entidades/index";
 
 @Component({
   components: {}
 })
 export default class MainLayout extends Vue {
   leftDrawerOpen = false;
+  get usuario():Usuario{
+    return this.$store.state.store_user.usuario;
+  }
+  public cerrarSesion(){
+    this.$q.cookies.remove("usuario");
+    this.$store.commit("store_user/actualizarUsuario", undefined);
+    this.$router.push("/");
+  }
 }
 </script>

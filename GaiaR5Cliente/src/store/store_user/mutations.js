@@ -11,6 +11,6 @@ export const toggleAutentificado = (state) => {
   state.autentificado =! state.autentificado
 }
 
-export const updateUser = (state, opened) => {
-  state.user =opened
+export const actualizarUsuario = (state, usuario) => {
+  state.usuario = usuario
 }
