@@ -1,23 +1,21 @@
 import neo4j, {Driver, Record, Session} from "neo4j-driver"
-import {CentroAcopio, Usuario} from "../../entidades";
 
 export default class DB {
     private static instancia: DB;
     private driver: Driver;
+    private readonly _session: Session;
 
     private constructor() {
-        try{
+        try {
             this.driver = neo4j.driver(
                 'neo4j://localhost',
                 neo4j.auth.basic('neo4j', '1234')
             );
             this._session = this.driver.session();
-        }catch (e) {
+        } catch (e) {
             console.log(e);
         }
     }
-
-    private readonly _session: Session;
 
     public get session() {
         return this._session;
@@ -30,28 +28,40 @@ export default class DB {
         return DB.instancia;
     }
 
-    desempacarRegistros(registros: Record[], variables: string[] | string): Array<object> {
-        let despempaquetado = [];
+    public desempacarRegistros(registros: Record[], variables: string[] | string): Array<any> {
+        if (registros.length == 0) return null;
+        let desempaquetado = [];
         if (Array.isArray(variables)) {
-            if(registros.length == 0){
-                return [];
-            }
-            despempaquetado = registros.map((registro) => {
+            //Tenemos varias variables
+            registros.forEach((registro) => {
                 let reg = {};
                 variables.forEach((variable) => {
                     reg[variable] = registro.get(variable).properties;
                 });
-                return reg;
+                desempaquetado.push(reg);
             });
         } else {
-            if(registros.length == 0){
-                return null;
-            }
-            despempaquetado = registros.map((registro) => {
-                return registro.get(<string>variables).properties;
+            //Tenemos una sola variable
+            registros.forEach((registro) => {
+                desempaquetado.push(registro.get(variables).properties);
             });
         }
-        return despempaquetado;
+        return desempaquetado;
+    }
+
+    public desempacarRegistro(registro: Record, variables: string[] | string): any {
+        if (!registro) return null;
+        if (Array.isArray(variables)) {
+            //Tenemos varias variables
+            let reg = {};
+            variables.forEach((variable) => {
+                reg[variable] = registro.get(variable).properties;
+            });
+            return reg;
+        } else {
+            //Tenemos una sola variable
+            return registro.get(variables).properties;
+        }
     }
 
     async obtenerCentroPorNombre(nombre: string) {

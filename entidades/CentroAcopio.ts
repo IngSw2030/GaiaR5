@@ -21,4 +21,18 @@ export default class CentroAcopio {
         this.horarioCierre = horarioCierre? horarioCierre : 0;
         this.recursos = recursos? recursos : [];
     }
+
+    public static hidratar(json: any):CentroAcopio{
+        return new CentroAcopio(
+            json.nombre,
+            json.direccion,
+            json.numero,
+            json.latitud,
+            json.longitud,
+            json.pagina,
+            json.horarioApertura,
+            json.horarioCierre,
+            json.recursos
+        );
+    }
 }

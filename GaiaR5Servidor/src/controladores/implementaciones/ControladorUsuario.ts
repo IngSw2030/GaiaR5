@@ -1,7 +1,7 @@
 import IControlador from "../IControlador";
 import {Express} from "express";
 import DB from "../../db";
-import {Usuario} from "../../../../entidades";
+import {Mensaje, Usuario} from "../../../../entidades";
 import Controlador from "../Controlador";
 import AsignarSemillasAleatorias from "../../estrategias/AsignarSemillasAleatorias";
 import SuperControlador from "../SuperControlador";
@@ -17,8 +17,21 @@ export default class ControladorUsuario extends SuperControlador implements ICon
             new EndPoint("usuario",
                 metodoEnum.GET,
                 async (req, res) => {
-                    //TODO: Implementar la recuperacion de un usuario por query
-                    //res.send(await this.crearUsuario(req.body.usuario));
+                    try {
+                        console.log(req.query);
+                        if (req.query.cedula) {
+                            //Buscando por cedula
+                            res.send(await this.usuarioPorCedula(<string>req.query.cedula));
+                        } else if (req.query.nombre) {
+                            //Buscando por nombre
+                            res.send(await this.usuarioPorNombre(<string>req.query.nombre));
+                        } else {
+                            res.sendStatus(404);
+                        }
+                    } catch (e) {
+                        console.log(e);
+                        res.sendStatus(401);
+                    }
                 }),
             new EndPoint("usuario",
                 metodoEnum.POST,
@@ -63,15 +76,33 @@ export default class ControladorUsuario extends SuperControlador implements ICon
                 }
             ),
             new EndPoint(
-                "usuario/testJWT",
+                "usuario/mensaje",
                 metodoEnum.POST,
-                (req, res) => {
-                    console.log(req.headers);
+                async (req, res) => {
                     try {
-                        let token = Autentificacion.verificar(req);
-                        res.send(token.nombre);
+                        let {cedula} = Autentificacion.verificar(req);
+                        res.send(await this.enviarMensaje(cedula, req.body.destinatario, req.body.mensaje));
                     } catch (e) {
-                        res.status(401).send(e);
+                        res.sendStatus(401);
+                    }
+                }
+            ),
+            new EndPoint(
+                "usuario/mensajes",
+                metodoEnum.GET,
+                async (req, res) => {
+                    try {
+                        console.log("Recibiendo peticion");
+                        let {cedula} = Autentificacion.verificar(req);
+                        let buzon = await this.verBuzon(cedula);
+                        if(buzon){
+                            res.send(buzon);
+                        }else{
+                            res.sendStatus(404);
+                        }
+                    } catch (e) {
+                        console.log(e);
+                        res.sendStatus(401);
                     }
                 }
             )
@@ -157,7 +188,7 @@ export default class ControladorUsuario extends SuperControlador implements ICon
                 semillas: usuario.semillas,
                 admin: false
             }
-            if(usuario.admin){
+            if (usuario.admin) {
                 payload.admin = true;
             }
             return Autentificacion.crearToken(payload);
@@ -165,4 +196,39 @@ export default class ControladorUsuario extends SuperControlador implements ICon
             throw new Error("Credenciales incorrectas");
         }
     }
+
+    async usuarioPorCedula(cedula: string) {
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (u:Usuario{cedula:$cedula}) RETURN u", {
+            cedula
+        });
+        let usuario = DB.obtenerInstancia().desempacarRegistro(consulta.records[0], "u");
+        delete usuario.pass;
+        return usuario;
+    }
+
+    async enviarMensaje(autor: string, destinatario: string, mensaje: string) {
+        let mensajeObj = new Mensaje(autor, destinatario, mensaje);
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (u1:Usuario{cedula:$autor}), (u2:Usuario{cedula:$dest}) CREATE (u1)-[m:Mensaje $mensaje]->(u2) RETURN m", {
+            autor: autor,
+            dest: destinatario,
+            mensaje: mensajeObj
+        });
+        return DB.obtenerInstancia().desempacarRegistro(consulta.records[0], "m");
+    }
+
+    async verBuzon(cedula: string) {
+        console.log(cedula);
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (usuario:Usuario { cedula: $cedula })<-[m:Mensaje {leido: FALSE}]-() SET m.leido = TRUE RETURN m ORDER BY m.fecha", {
+            cedula
+        });
+        console.log(consulta.records);
+        return DB.obtenerInstancia().desempacarRegistros(consulta.records, "m");
+    }
+
+    async usuarioPorNombre(nombre: string) {
+        let query = `MATCH (u:Usuario) WHERE u.nombre =~ '(?i).*${nombre}.*' RETURN u`
+        let consulta = await DB.obtenerInstancia().session.run(query);
+        return DB.obtenerInstancia().desempacarRegistros(consulta.records, "u");
+    }
+
 }

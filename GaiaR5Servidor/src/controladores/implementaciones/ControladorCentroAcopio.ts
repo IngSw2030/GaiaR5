@@ -4,6 +4,8 @@ import DB from "../../db";
 import Controlador from "../Controlador";
 import SuperControlador from "../SuperControlador";
 import EndPoint, {metodoEnum} from "../EndPoint";
+import {CentroAcopio} from "../../../../entidades/index";
+import Autentificacion from "../../servicios/Autentificacion";
 
 export default class ControladorCentroAcopio extends SuperControlador implements IControlador {
     server: Express;
@@ -40,6 +42,26 @@ export default class ControladorCentroAcopio extends SuperControlador implements
                 async (req, res) => {
                     res.send(await this.obtenerCentroPorNombre(<string>req.query.nombre));
                 }
+            ),
+            new EndPoint(
+                "centroAcopio",
+                metodoEnum.PATCH,
+                async (req, res) => {
+                    try {
+                        let {admin} = Autentificacion.verificar(req);
+                        if(admin){
+                            res.send(await this.editarCentroAcopio(CentroAcopio.hidratar(req.body.centroActual), CentroAcopio.hidratar(req.body.centroNuevo)));
+                        }else{
+                            res.sendStatus(403);
+                        }
+                    } catch (e) {
+                        if (e.message == "Token invalido") {
+                            res.sendStatus(403);
+                        } else {
+                            res.sendStatus(500);
+                        }
+                    }
+                }
             )
         ];
     }
@@ -72,14 +94,10 @@ export default class ControladorCentroAcopio extends SuperControlador implements
     }
 
     async obtenerCentrosPorRecurso(recurso: string) {
-        let consulta = await DB.obtenerInstancia().session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN $recurso RETURN DISTINCT a.nombre", {
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (a:Acopio)-[:Recicla]-(r:Recurso) WHERE r.nombre IN $recurso RETURN DISTINCT a", {
             recurso
         });
-        let centros = [];
-        for (let record of consulta.records.values()) {
-            centros.push(await this.obtenerCentroPorNombre(record.get("a.nombre")));
-        }
-        return centros;
+        return DB.obtenerInstancia().desempacarRegistros(consulta.records, "a");
     }
 
     async obtenerCentroPorNombre(nombre: string) {
@@ -88,8 +106,46 @@ export default class ControladorCentroAcopio extends SuperControlador implements
         let consulta = await DB.obtenerInstancia().session.run(query, {
             nombre
         });
-        console.log(consulta.records);
-        //TODO: Hay que hacer que no empaquete de mas los registros.
-        return DB.obtenerInstancia().desempacarRegistros(consulta.records, ["a"]);
+        return DB.obtenerInstancia().desempacarRegistros(consulta.records, "a");
+    }
+
+    async editarCentroAcopio(centroActual: CentroAcopio, centroNuevo: CentroAcopio){
+        try {
+            await DB.obtenerInstancia().session.run(
+                "MATCH (a:Acopio{nombre:$nombre}) SET a+=$centroNuevo RETURN a",
+                {
+                    nombre: centroActual.nombre,
+                    centroNuevo: centroNuevo
+                }
+            );
+            let recursosNuevos = centroNuevo.recursos.filter((recurso) => !centroActual.recursos.includes(recurso));
+            let recursosEliminados = centroActual.recursos.filter((recurso) => !centroNuevo.recursos.includes(recurso));
+            console.log("recursosNuevos", recursosNuevos);
+            console.log("recursosEliminados", recursosEliminados);
+            for (let recurso of recursosNuevos) {
+                console.log(recurso);
+                await DB.obtenerInstancia().session.run(
+                    "MATCH (c:Acopio {nombre:$centro}) MERGE (r:Recurso {nombre: $recurso}) WITH c, r CREATE (c)-[recurso:Recicla]->(r) ",
+                    {
+                        centro: centroNuevo.nombre,
+                        recurso: recurso
+                    }
+                );
+            }
+            for (let recurso of recursosEliminados) {
+                console.log(recurso);
+                await DB.obtenerInstancia().session.run(
+                    "MATCH (c:Acopio {nombre:$centro})-[recurso:Recicla]-(r:Recurso {nombre: $recurso}) DELETE recurso;",
+                    {
+                        centro: centroNuevo.nombre,
+                        recurso: recurso,
+                    }
+                )
+            }
+            return centroNuevo;
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
     }
 }
