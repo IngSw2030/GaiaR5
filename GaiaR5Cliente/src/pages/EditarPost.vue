@@ -34,6 +34,7 @@ import Contenido, {TipoContenido} from "../../../entidades/Contenido";
 import ContenidoCluster from "components/ContenidoCluster.vue";
 import Post from "../../../entidades/Post";
 import Controlador from "../api/Controlador";
+import {Usuario} from "../../../entidades/index";
 
 @Component({
   components: {ContenidoCluster}
@@ -50,6 +51,9 @@ export default class PageIndex extends Vue {
     {label: "Video", value: "VIDEO"}
   ];
   public dataSeleccion: string = "";
+  get usuario():Usuario{
+    return this.$store.state.store_user.usuario;
+  }
 
   public sumarSeleccion() {
     console.log(this.selector);
@@ -79,7 +83,7 @@ export default class PageIndex extends Vue {
 
   public async crearPost(){
     try{
-      let post = new Post(this.$store.state.store_user.cedula, Date.now(), this.titulo, this.tags);
+      let post = new Post(this.usuario.cedula, Date.now(), this.titulo, this.tags);
       post.contenido = this.contenido;
       await Controlador.post("post", post);
       this.$q.notify("Post creado correctamente");

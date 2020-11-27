@@ -1,6 +1,6 @@
 <template xmlns:a="http://www.w3.org/1999/html">
   <q-page padding style="background-color: #fdebc7">
-    <q-item to="/login" active clickable v-ripple fixed-right>
+    <q-item to="/#/" active clickable v-ripple fixed-right>
       <q-item-section avatar>
         <q-icon name="keyboard_backspace" style="color: #7FA949; font-size: 5ex"/>
       </q-item-section>
@@ -81,7 +81,7 @@
       <p align="center" style=" font-size: 15px; font-weight: bold ;margin-right: 10px; color:#807979">
         Ya soy Eco...
       </p>
-      <a style="text-decoration: underline;font-weight: bold;cursor-pointer:hand;color:#7FA949" href='/#/login'>
+      <a style="text-decoration: underline;font-weight: bold;cursor-pointer:hand;color:#7FA949" href='/#/'>
         Iniciar Sesión </a>
     </div>
 
