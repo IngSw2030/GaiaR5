@@ -15,7 +15,7 @@
 
     <q-separator />
 
-    <q-input class="q-mx-xs"  v-model="tituloPost" label="titulo" stack-label :dense="dense" />
+    <q-input class="q-mx-md"  v-model="tituloPost" label="titulo" stack-label :dense="dense" />
 
     <q-separator />
 
@@ -45,7 +45,7 @@
       </template>
         <template
           v-slot:append>
-          <q-btn  dense flat icon="add" @click="imprimir" />
+          <q-btn  dense flat icon="add" @click="agregarTag" />
         </template>
       </q-input>
     </q-card-section>
@@ -93,7 +93,8 @@ autor: Usuario=new Usuario(
 
 
   agregarTag(){
-   this.listaTags.push("hola bebe")
+  if(this.tagEntrante!="")
+   this.listaTags.push(this.tagEntrante)
   }
 
  // beforeCreated() {

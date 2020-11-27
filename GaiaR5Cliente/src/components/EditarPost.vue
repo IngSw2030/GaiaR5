@@ -49,6 +49,8 @@ export default class PaginaInicio extends Vue {
   )
 
 
+
+
   //llamar a la Bd usaurio
 
   crearpost()

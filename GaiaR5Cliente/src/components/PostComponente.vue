@@ -27,32 +27,38 @@
 
     <q-separator />
 
+
     <q-card-section >
 
-      <q-card-section class="q-pt-xs" >
-        <div class="text-caption text-dark">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </div>
-      </q-card-section>
+      <q-item clickable>
 
-      <q-card-section class="col-5 flex flex-center">
-        <q-img
-          class="rounded-borders"
-          src="https://i.imgur.com/6RhP8BS.jpg"
-        />
-
-        <div class="q-pa-md">
-          <div class="q-video">
-            <iframe
-              src="https://www.youtube.com/embed/k3_tw44QsZQ?rel=0"
-              frameborder="0"
-              allowfullscreen
-            />
+        <q-card-section class="q-pt-xs" >
+          <div class="text-caption text-dark">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </div>
-        </div>
 
-      </q-card-section>
+          <div class="column relative-position container   flex flex-center">
+            <q-img
+              class="rounded-borders"
+              src="https://i.imgur.com/6RhP8BS.jpg"
+            />
+
+            <div class="q-pa-md">
+              <div class="q-video">
+                <iframe
+                  src="https://www.youtube.com/embed/k3_tw44QsZQ?rel=0"
+                  frameborder="0"
+                  allowfullscreen
+                />
+              </div>
+            </div>
+
+          </div>
+
+        </q-card-section>
+
+      </q-item>
 
       <q-separator />
 
@@ -105,7 +111,6 @@ autor: Usuario=new Usuario(
   "1018499372",
   5000
 )
-
 
 
   darLike(){
