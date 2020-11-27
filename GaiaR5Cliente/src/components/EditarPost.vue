@@ -9,7 +9,6 @@
 
     <editando-post-componente class="q-ma-xl"  :post-enviado="variablePost"/>
 
-
     <div class="column relative-position container   flex flex-center" >
       <q-btn class="q-my-xs"  color="light-green">
         <div class="row items-center no-wrap">
