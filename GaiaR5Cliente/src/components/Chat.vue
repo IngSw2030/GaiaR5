@@ -25,7 +25,7 @@
           stamp="4 minutes ago"
         />
         <div class=fixed-bottom>
-        <q-input filled ></q-input>
+        <q-input rounded filled color="light-green-9"></q-input>
         </div>
       </div>
     </div>

@@ -50,7 +50,7 @@ const {StringUtils} = require('turbocommons-ts');
 
 export default class BuscarUsuario extends Vue {
 
-  textoBusqueda: string | undefined = undefined;
+  textoBusqueda: string ="";
   centrosAcopioFiltrados= this.listaCentroCA;
 
   get listaCentroCA(){
@@ -65,6 +65,8 @@ export default class BuscarUsuario extends Vue {
     this.$store.commit('store_CA/updateCentroElegido', val)
   }
 
+  buscarPorNombre(){
+  }
 
   filtrarNombreUsuario(){
     this.centrosAcopioFiltrados = [];
@@ -76,9 +78,6 @@ export default class BuscarUsuario extends Vue {
     })
   }
 
-  prueba(){
-    console.log(this.textoBusqueda)
-  }
 }
 </script>
 

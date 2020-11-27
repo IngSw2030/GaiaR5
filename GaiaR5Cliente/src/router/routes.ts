@@ -24,6 +24,7 @@ const routes: RouteConfig[] = [
       {path: '/visitarPerfil', component: () => import('components/VisitarPerfil.vue')},
       {path: '/chat', component: () => import('components/Chat.vue')},
       {path: '/chatHistorial', component: () => import('components/HistorialChat.vue')},
+      {path: '/editarComentario', component: () => import('components/editarComentario.vue')},
     ]
 
   },
