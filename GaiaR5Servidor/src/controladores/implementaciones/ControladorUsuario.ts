@@ -88,16 +88,33 @@ export default class ControladorUsuario extends SuperControlador implements ICon
                 }
             ),
             new EndPoint(
+                "usuario/mensajes/nuevo",
+                metodoEnum.GET,
+                async (req, res) => {
+                    try {
+                        let {cedula} = Autentificacion.verificar(req);
+                        let buzon = await this.verBuzon(cedula);
+                        if (buzon) {
+                            res.send(buzon);
+                        } else {
+                            res.sendStatus(404);
+                        }
+                    } catch (e) {
+                        console.log(e);
+                        res.sendStatus(401);
+                    }
+                }
+            ),
+            new EndPoint(
                 "usuario/mensajes",
                 metodoEnum.GET,
                 async (req, res) => {
                     try {
-                        console.log("Recibiendo peticion");
                         let {cedula} = Autentificacion.verificar(req);
-                        let buzon = await this.verBuzon(cedula);
-                        if(buzon){
+                        let buzon = await this.buzonTotal(cedula);
+                        if (buzon) {
                             res.send(buzon);
-                        }else{
+                        } else {
                             res.sendStatus(404);
                         }
                     } catch (e) {
@@ -229,6 +246,14 @@ export default class ControladorUsuario extends SuperControlador implements ICon
         let query = `MATCH (u:Usuario) WHERE u.nombre =~ '(?i).*${nombre}.*' RETURN u`
         let consulta = await DB.obtenerInstancia().session.run(query);
         return DB.obtenerInstancia().desempacarRegistros(consulta.records, "u");
+    }
+
+    async buzonTotal(cedula: string) {
+        let consulta = await DB.obtenerInstancia().session.run("MATCH (usuario:Usuario { cedula: $cedula })<-[m:Mensaje {leido: TRUE}]-() RETURN m ORDER BY m.fecha", {
+            cedula
+        });
+        console.log(consulta.records);
+        return DB.obtenerInstancia().desempacarRegistros(consulta.records, "m");
     }
 
 }
