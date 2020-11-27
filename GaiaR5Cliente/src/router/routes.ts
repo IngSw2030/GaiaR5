@@ -22,7 +22,9 @@ const routes: RouteConfig[] = [
       {path: '/editarUsuario', component: () => import('components/EditarPerfilUsuario.vue')},
       {path: '/miPerfil', component: () => import('components/PerfilUsuario.vue')},
       {path: '/visitarPerfil', component: () => import('components/VisitarPerfil.vue')},
-      {path: '/buscarPost', component: () => import('components/BuscarPost.vue')}
+      {path: '/buscarPost', component: () => import('components/BuscarPost.vue')},
+      {path: '/chat', component: () => import('components/Chat.vue')},
+      {path: '/chatHistorial', component: () => import('components/HistorialChat.vue')}
     ]
 
   },

@@ -1,20 +1,31 @@
 import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 
 export default class Controlador {
-  private static URL: string = "http://6c14dcaf8345.ngrok.io";
+  private static URL: string = "http://9b7fd101d32e.ngrok.io";
   private static token: string = "";
 
-  public static async iniciarSesion(cedula: string, pass: string) {
-    let respuesta = await Controlador.post(
-      "usuario/sesion",
-      {
-        cedula,
-        pass
-      }
-    );
-    this.token = "Bearer " + respuesta.data;
+  public static cerrarSesion(){
+    this.token="";
+    return true;
   }
 
+  public static async iniciarSesion(cedula: string, pass: string) {
+    try {
+      let respuesta = await Controlador.post(
+        "usuario/sesion",
+        {
+          cedula,
+          pass
+        }
+      );
+      this.token = "Bearer " + respuesta.data;
+      console.log(this.token);
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
   public static async get(recurso: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
     try {
       return await axios.get(`${this.URL}/${recurso}`, this.tokenizar(config));

@@ -66,7 +66,15 @@ export default class PaginaInicio extends Vue {
     1
   )
 
+
+  crearPost (){
+
+  }
+
+
 }
+
+
 
 
 </script>
