@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh LpR fFf">
     <q-header elevated style="background-color: #7FA949" v-if="usuario">
       <q-toolbar>
         <q-btn
@@ -29,7 +29,7 @@
       <q-scroll-area
         style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd; background-color: #fdebc7">
         <q-list padding>
-          <q-item v-ripple clickable to="/inicio">
+          <q-item v-ripple clickable to="/home">
             <q-item-section avatar>
               <q-icon name="home" style="color: #7FA949;"/>
             </q-item-section>
@@ -184,6 +184,7 @@ export default class MainLayout extends Vue {
   }
   public cerrarSesion(){
     this.$q.cookies.remove("usuario");
+    this.$q.cookies.remove("token");
     this.$store.commit("store_user/actualizarUsuario", undefined);
     this.$router.push("/");
   }

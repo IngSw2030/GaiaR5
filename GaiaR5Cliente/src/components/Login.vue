@@ -86,7 +86,7 @@ export default class Login extends Vue {
       this.$q.cookies.set("usuario", usuario);
       this.$q.notify(`Bienvenido ${usuario.nombre}`);
       this.$store.commit('store_user/actualizarUsuario', usuario);
-      await this.$router.push("/inicio");
+      await this.$router.push("/home");
     } else {
       this.$q.notify({
         message: "Verifica tu cédula o tu contraseña",
