@@ -10,3 +10,4 @@ export {default as Parrafo} from "./Parrafo";
 export {default as Post} from "./Post";
 export {default as Usuario} from "./Usuario";
 export {default as Video} from "./Video";
+export {default as Contenido} from "./Contenido";

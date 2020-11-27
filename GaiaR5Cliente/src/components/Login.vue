@@ -42,7 +42,12 @@
           <q-btn flat label="¿Olvidaste tu contraseña?" size="12px" color="light-green-9" style=""></q-btn>
         </template>
       </div>
+        <br><br>
     <br>
+    <br><br>
+    <div align="center" style="color: #7FA949; font-size: 19px; font-weight: bold">
+      ¿Quieres hacer parte de la comunidad R5?
+    </div>
     <div align="center">
       <q-btn flat label="Registrarme" to="/registroUsuario" text-color="light-green-9" style="font-size: large"></q-btn>
     </div>
