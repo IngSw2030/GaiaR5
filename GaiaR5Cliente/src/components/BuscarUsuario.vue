@@ -32,10 +32,10 @@
         <q-item clickable v-ripple>
           <q-item-section side>
             <q-avatar rounded size="32px">
-              <img src="https://cdn.quasar.dev/img/avatar.png"/>
+              <img :src="usuario.avatar"/>
             </q-avatar>
           </q-item-section>
-          <q-item-section @click="seleccionarUsuario">
+          <q-item-section @click="seleccionarUsuario(usuario.cedula)">
             <q-item-label caption blond v-html=usuario.nombre
                           style="color: #7FA949; font-size: 15px; width:300px"></q-item-label>
           </q-item-section>
@@ -64,8 +64,7 @@ import {Usuario} from "../../../entidades"
 export default class BuscarUsuario extends Vue {
 
   textoBusqueda: string = "";
-  usuarios: [] = [];
-  usuarioElegido: Usuario;
+  usuarios: Usuario[] = [];
 
   async buscarPorNombre() {
     try {
@@ -75,9 +74,9 @@ export default class BuscarUsuario extends Vue {
         }
       });
       let usuariosJs = resultado.data;
-      this.usuarios=[];
+      this.usuarios = [];
       for (let usuariofor of usuariosJs){
-      let usuario = new Usuario(usuariofor.nombre, usuariofor.cedula, usuariofor.email, usuariofor.pass);
+      let usuario = Usuario.hidratar(usuariofor);
       this.usuarios.push(usuario);
       console.log(this.usuarios);
       }
@@ -104,11 +103,8 @@ export default class BuscarUsuario extends Vue {
 
   }
 
-  seleccionarUsuario (usuario: Usuario){
-    this.usuarioelegido=Usuario;
-  }
-  limpiarUsuarioElegido (usuario: Usuario){
-    this.usuarioelegido= null;
+  seleccionarUsuario (cedula: string){
+    this.$router.push(`/testPerfilUsuario/${cedula}`);
   }
 
 }

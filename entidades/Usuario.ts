@@ -18,4 +18,8 @@ export default class Usuario{
         this.email = email;
         this.avatar = avatar;
     }
+
+    public static hidratar(json:any){
+        return new Usuario(json.nombre, json.cedula, json.email, json.avatar);
+    }
 }
