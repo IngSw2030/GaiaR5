@@ -33,6 +33,9 @@
       </div>
       <div style="border-style:solid;width: 200px;border-radius: 2px;border-width: 1px;margin-top:0px"> </div>
       <p style="text-align:start;font-size: 12px;color: #7FA949;font-weight: bold">Mis Posts</p>
+      <q-card v-for="post in posts" :key="`${post.creador}:${post.titulo}`" style="background-color: #fbf5d8">
+        <post-componente :post-enviado="post"/>
+      </q-card>
     </div>
 
 
@@ -43,12 +46,16 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {Usuario} from "../../../entidades/index";
 import Controlador from "../api/Controlador";
+import PostComponente from "components/PostComponente.vue";
 import Post from "../../../entidades/Post";
+import {mdiPowerStandby} from "@quasar/extras/mdi-v5";
 
-@Component({})
+@Component({
+  components: {PostComponente}
+})
 export default class ContenidoCluster extends Vue {
   usuario: Usuario | null = null;
-  post: Post[] | null = null;
+  posts: Post[] | null = null;
 
   async mounted() {
     try {
@@ -63,7 +70,8 @@ export default class ContenidoCluster extends Vue {
           cedula: this.$route.params.cedula
         }
       });
-      this.post = consulta.data;
+      this.posts = consulta.data;
+      console.log(this.posts);
     } catch (e) {
       console.log(e);
     }
