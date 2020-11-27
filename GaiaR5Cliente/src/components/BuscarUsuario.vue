@@ -1,8 +1,9 @@
 <template>
   <q-page style="background-color: #fdebc7 ">
-   <br>
+    <br>
     <div class="q-gutter-md row items-start">
-      <q-input rounded outlined v-model="textoBusqueda" color="light-green-9" label="Buscar Post" label-color="light-green-10" style="width: 400px" @input="filtrarNombreUsuario" >
+      <q-input rounded outlined v-model="textoBusqueda" color="light-green-9" label="Buscar Usuario"
+               label-color="light-green-10" style="width: 400px" @input="buscarPorNombre">
         <template v-slot:prepend>
           <q-icon color="light-green-9" name="search">
           </q-icon>
@@ -11,71 +12,103 @@
           <q-icon color="light-green-9" name="keyboard_backspace">
           </q-icon>
         </template>
+        <template v-slot:append>
+          <q-btn flat label="cédula" color="light-green-9" @click="buscarPorID" >
+          </q-btn>
+        </template>
+        <template v-slot:after>
+          <q-icon name="close" @click="textoBusqueda = ''" class="cursor-pointer" />
+        </template>
       </q-input>
+
     </div>
     <br>
     <div style="color: #fdebc7; background-color: #fdebc7">
-      <q-chip class ="row"
+      <q-chip class="row"
               style="background: #fdebc7"
-              v-for="(centro, index) in centrosAcopioFiltrados"
-              :key="`${centro.nombre}:${index}`"
+              v-for="(usuario, index) in usuarios"
+              :key="`${usuario.nombre}:${index}`"
       >
-          <q-item clickable v-ripple>
-            <q-item-section side>
-              <q-avatar rounded size="32px">
-                <img src="https://cdn.quasar.dev/img/avatar.png" />
-              </q-avatar>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label caption blond  v-html=centro.nombre style="color: #7FA949; font-size: 15px; width:300px" ></q-item-label>
-            </q-item-section>
-            <br><br>
-          </q-item>
-          <br>
-        </q-chip>
+        <q-item clickable v-ripple>
+          <q-item-section side>
+            <q-avatar rounded size="32px">
+              <img src="https://cdn.quasar.dev/img/avatar.png"/>
+            </q-avatar>
+          </q-item-section>
+          <q-item-section @click="seleccionarUsuario">
+            <q-item-label caption blond v-html=usuario.nombre
+                          style="color: #7FA949; font-size: 15px; width:300px"></q-item-label>
+          </q-item-section>
+          <br><br>
+        </q-item>
         <br>
+      </q-chip>
+      <br>
     </div>
   </q-page>
 </template>
 
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
-import CentroAcopioBusqueda from "components/CentroAcopioBusqueda.vue";
+import {Vue, Component} from 'vue-property-decorator';
+import VisitarPerfil from "components/./VisitarPerfil.vue";
+import Controlador from "../api/Controlador";
+
 const {StringUtils} = require('turbocommons-ts');
+import {Usuario} from "../../../entidades"
 
 @Component({
-  components: { CentroAcopioBusqueda }
+  components: {VisitarPerfil}
 })
 
 export default class BuscarUsuario extends Vue {
 
-  textoBusqueda: string ="";
-  centrosAcopioFiltrados= this.listaCentroCA;
+  textoBusqueda: string = "";
+  usuarios: [] = [];
+  usuarioElegido: Usuario;
 
-  get listaCentroCA(){
-    return this.$store.state.store_CA.centrosCA
-  }
-
-  get listacentrobus(){
-    return this.$store.state.store_CA.centrobus
-  }
-
-  setCentroElegido(val:any){
-    this.$store.commit('store_CA/updateCentroElegido', val)
-  }
-
-  buscarPorNombre(){
-  }
-
-  filtrarNombreUsuario(){
-    this.centrosAcopioFiltrados = [];
-    this.listaCentroCA.forEach((centro:any)=>{
-      if(StringUtils.compareSimilarityPercent(this.textoBusqueda, centro.nombre)>25)
-      {
-        this.centrosAcopioFiltrados.push(centro)
+  async buscarPorNombre() {
+    try {
+      let resultado: any = await Controlador.get("usuario", {
+        params: {
+          nombre: this.textoBusqueda
+        }
+      });
+      let usuariosJs = resultado.data;
+      this.usuarios=[];
+      for (let usuariofor of usuariosJs){
+      let usuario = new Usuario(usuariofor.nombre, usuariofor.cedula, usuariofor.email, usuariofor.pass);
+      this.usuarios.push(usuario);
+      console.log(this.usuarios);
       }
-    })
+    }
+    catch (e) {
+      this.$q.notify(`Ocurrio un error: ${e.message}`);
+    }
+  }
+  async buscarPorID() {
+    try {
+      let resultado: any = await Controlador.get("usuario", {
+        params: {
+          cedula: this.textoBusqueda
+        }
+      });
+      let usuarioJs = resultado.data;
+      this.usuarios = [];
+      let usuario = new Usuario(usuarioJs.nombre, usuarioJs.cedula, usuarioJs.email, usuarioJs.pass);
+      this.usuarios.push(usuario);
+      console.log(this.usuarios);
+    } catch (e) {
+      this.$q.notify(`Ocurrio un error: ${e.message}`);
+    }
+
+  }
+
+  seleccionarUsuario (usuario: Usuario){
+    this.usuarioelegido=Usuario;
+  }
+  limpiarUsuarioElegido (usuario: Usuario){
+    this.usuarioelegido= null;
   }
 
 }

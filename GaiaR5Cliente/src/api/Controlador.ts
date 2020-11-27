@@ -10,7 +10,7 @@ export default class Controlador {
   }
 
   public static async iniciarSesion(cedula: string, pass: string) {
-    try {
+    try{
       let respuesta = await Controlador.post(
         "usuario/sesion",
         {
