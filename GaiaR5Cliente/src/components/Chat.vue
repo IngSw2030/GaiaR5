@@ -25,7 +25,11 @@
           stamp="4 minutes ago"
         />
         <div class=fixed-bottom>
-        <q-input rounded filled color="light-green-9"></q-input>
+        <q-input rounded filled color="light-green-9">
+          <template v-slot:after>
+          <q-icon name="send" color="light-green-9" @click=""></q-icon>
+          </template>
+        </q-input>
         </div>
       </div>
     </div>
@@ -34,7 +38,15 @@
 
 <script>
 export default {
-name: "Chat"
+  name: "Chat",
+  destinatario: String = [],
+
+
+  async enviarMensaje(){
+  Controlador.post("mensaje", {
+
+  })
+  }
 }
 </script>
 
