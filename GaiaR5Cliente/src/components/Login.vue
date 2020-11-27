@@ -76,6 +76,13 @@ export default class Login extends Vue {
      }
    }
 
+  get autentificado(){
+    return this.$store.state.store_user.autentificacion
+  }
+
+  setAutentificado(){
+    this.$store.commit('store_user/toggleAutentificado')
+  }
 
 }
 </script>

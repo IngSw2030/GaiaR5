@@ -9,6 +9,18 @@
 
     <editando-post-componente class="q-ma-xl"  :post-enviado="variablePost"/>
 
+
+    <div class="column relative-position container   flex flex-center" >
+      <q-btn class="q-my-xs"  color="light-green">
+        <div class="row items-center no-wrap">
+          <q-icon left name="post_add" />
+          <div class="text-center">
+            Postealo
+          </div>
+        </div>
+      </q-btn>
+    </div>
+
   </q-page>
 </template>
 
@@ -35,6 +47,23 @@ export default class PaginaInicio extends Vue {
     "cultivos hidroponicos",
     ["tierra", "amor"]
   )
+
+
+
+
+  //llamar a la Bd usaurio
+
+  crearpost()
+  {
+    new Post(
+      "1013632535",
+      Date.now(),
+      "cultivos hidroponicos",
+      ["tierra", "amor"]
+    )
+  }
+
+
 
 }
 
