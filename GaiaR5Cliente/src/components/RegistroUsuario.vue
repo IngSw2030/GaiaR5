@@ -8,26 +8,23 @@
     <div align="center" style="color:darkgreen; font-size: 19px; font-weight: bold">
       Haz parte de la comunidad R5
     </div>
-    <a href=''
+    <div
        style="cursor-pointer:hand;display: flex;flex-direction: column;align-content: center;align-items: center;color:#7FA949;justify-content: center;color:#7FA949">
       <q-img
         width="110px"
         height="110px"
         src="https://i.ibb.co/ggbP1bT/2.png"
       />
-      <!--<q-uploader
-        style="width: 50px;height: 50px ; background-color: #7FA949"
-        url="http://localhost:4444/upload"
-        accept=".jpg, image/*"
-        @rejected="onRejected"
-      /> -->
-      <p align="center" style="color:#7FA949; font-size:12px;margin-bottom: 1.5px">
-        <q-icon name="add_photo_alternate" style="color: #7FA949;"/>
-        Agregar Avatar
-      </p>
-    </a>
+    </div>
     <div align="center"
          style="display: flex;flex-direction: column;align-content: center;align-items: center;justify-content: center">
+
+      <q-input color=green v-model="avatar" label="Link avatar" :dense="dense" style="width: 300px"
+               label-color="#807979">
+        <template v-slot:prepend>
+          <q-icon name="add_photo_alternate" style="color: #7FA949"/>
+        </template>
+      </q-input>
       <q-input color=green v-model="nombre" label="Nombre de Usuario" :dense="dense" style="width: 300px"
                label-color="#807979">
         <template v-slot:prepend>
@@ -116,6 +113,7 @@ export default class RegistroPerfilUsuario extends Vue {
   nombre: string = "";
   cedula: string = "";
   user : Usuario | undefined;
+  avatar :string ="";
 
   async registrarse() {
     await Controlador.iniciarSesion("1013632535", "holamundo");
@@ -124,7 +122,8 @@ export default class RegistroPerfilUsuario extends Vue {
           nombre: this.nombre,
           cedula: this.cedula,
           email: this.email,
-          pass: this.password
+          pass: this.password,
+          avatar: this.avatar
         }
         , undefined);
       let viajes = await Controlador.get("usuario/viajes", {

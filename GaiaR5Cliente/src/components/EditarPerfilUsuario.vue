@@ -8,18 +8,21 @@
     <div align="center" style="color:darkgreen; font-size: 19px; font-weight: bold">
       ¿Puede ser tu perfil más Eco?
     </div>
-    <a   href='' style="cursor-pointer:hand;display: flex;flex-direction: column;align-content: center;align-items: center;justify-content: center;margin-top: 20px;color:#7FA949">
+    <div
+      style="cursor-pointer:hand;display: flex;flex-direction: column;align-content: center;align-items: center;color:#7FA949;justify-content: center;color:#7FA949">
       <q-img
         width="110px"
         height="110px"
         src="https://i.ibb.co/ggbP1bT/2.png"
       />
-      <q-item  align="center" style="color:#7FA949; font-size:12px" >
-        <q-icon name="add_photo_alternate" style="color: #7FA949;margin-top: 1.5px"  />
-        Editar Avatar
-      </q-item>
-    </a>
+    </div>
     <div align="center" style="display: flex;flex-direction: column;align-content: center;align-items: center;justify-content: center" >
+      <q-input color=green v-model="avatar" label="Link avatar" :dense="dense" style="width: 300px"
+               label-color="#807979">
+        <template v-slot:prepend>
+          <q-icon name="add_photo_alternate" style="color: #7FA949"/>
+        </template>
+      </q-input>
       <q-input color= green v-model="ph" label="Nombre de Usuario"   :dense="dense" style="width: 300px" label-color="#807979" disable >
         <template v-slot:prepend>
           <q-icon name="person" style="color: #7FA949" />
