@@ -17,24 +17,14 @@
         <q-icon color="light-green" name="eco"/>
         <p >Materiales:</p>
       </q-item-section>
-      <!-- <q-list>
-        <q-item v-for="(mat, index) in centro.tags" :key="`${centro.nombre}:${index}`">
-          <q-item-label >{{mat }} </q-item-label>
-        </q-item>
-      </q-list> -->
+
     </div>
     <div id="mapa">
 
     </div>
-    <q-item class="column justify-center full-height full-width text-center" >
-      <div class="text-weight-bold" style="color: #7FA949;margin-top: 50px; ">
-        <div class="text-center" style="font-size: 2.7ex;" >Conocer ruta desde mi ubicación </div>
-      </div>
-
-      <div >
-      <q-btn to="/ruta"  color="light-green" label="Continuar" style="margin-top: 3px; "> </q-btn>
-      </div>
-    </q-item>
+    <div class="relative-position container   flex flex-center">
+      <q-btn  style="color: #7FA949" v-on:click.once="showNotif" icon="eco" label="Validar visita" :disabled='validadorMapa' />
+    </div>
   </div>
 </template>
 
@@ -47,19 +37,41 @@ import { Plugins } from '@capacitor/core'
 import Map = google.maps.Map;
 import Marker = google.maps.Marker;
 const { Geolocation } = Plugins;
-const url = "http://6684480d9141.ngrok.io";
+const url = "http://66e295d86ba6.ngrok.io/";
 
 
 @Component
 export default class infoCentroAcopio extends Vue {
-  @Prop() centro!: CentroAcopio;
+  //@Prop() centro!: CentroAcopio;
   origen = {
     latitud: 4.628305,
     longitud: -74.064502
   };
+
+centro = new CentroAcopio("las marianas","Cr 7 B No 12 17", "23", 4.629070,  -74.062716, "HTTP",25, 18, ["Vidrio", "Carton"] )
+
+
   mapa:Map | undefined = undefined;
   marcadorUsuario:Marker | undefined = undefined;
   marcadorCentro:Marker | undefined = undefined;
+
+
+  getCurrentPosition() {
+    Geolocation.getCurrentPosition().then(position => {
+      this.origen.latitud=position.coords.latitude
+      this.origen.longitud=position.coords.longitude
+    });
+  }
+
+  created () {
+    this.getCurrentPosition()
+
+    // we start listening
+    this.geoId = Geolocation.watchPosition({}, (position, err) => {
+      this.origen.latitud=position.coords.latitude
+      this.origen.longitud=position.coords.longitude
+    })
+  }
 
   mounted(){
     /*Geolocation.getCurrentPosition().then(position => {
@@ -98,9 +110,26 @@ export default class infoCentroAcopio extends Vue {
     }));
   }
 
+
+  beforeDestroy() {
+    // we do cleanup
+    Geolocation.clearWatch(this.geoId)
+  }
+
   volverABusqueda(){
     this.$emit("volver");
   }
+
+  showNotif () {
+    this.$q.notify({
+      type: 'positive',
+      color:'light-green',
+      message: `Visita Registrada`,
+    })
+    //this.sumarSemillas(500)
+  }
+
+
 }
 </script>
 <style>

@@ -31,23 +31,10 @@
 
 
     <div class="relative-position container   flex flex-center">
-      <GmapMap
-        :center="ubicacion"
-        :zoom="15"
-        :options="mapOptions"
-        map-type-id="roadmap"
-        style="width: 500px; height: 300px"
-      >
 
-        <GmapMarker :position="ubicacion"/>
-        <GmapMarker :position="{lat:  centroElegido.lat, lng: centroElegido.lng}" />
+      <div id="mapa">
 
-        <gmap-polygon :paths="[ubicacion,{lat:  centroElegido.lat, lng: centroElegido.lng}]" :editable="false" :draggable="false"  ></gmap-polygon>
-
-        <GmapInfoWindow :position="{lat:  centroElegido.lat, lng: centroElegido.lng}" :options="{pixelOffset: {width: 0, height: -35},
-        content:'Destino' }" />
-
-      </GmapMap>
+      </div>
 
     </div>
     <br>
@@ -60,55 +47,38 @@
 </template>
 
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
-import * as VueGoogleMaps from 'vue2-google-maps'
 import { Plugins } from '@capacitor/core'
 import {  } from 'vue-class-component'
 const { Geolocation } = Plugins
-
-
-Vue.use(VueGoogleMaps, {
-  load: {
-    key: 'AIzaSyCvJo0DJMLi_DQFL_nw_XC0M2LFzU-YK40'
-  }
-})
-
+import {} from 'googlemaps';
+import {CentroAcopio} from "../../../entidades"
+import Map = google.maps.Map;
+import Marker = google.maps.Marker;
 
 @Component
 export default class Ruta extends Vue {
 
+  centro = new CentroAcopio("las marianas","Cr 7 B No 12 17", "23", 4.629070,  -74.062716, "HTTP",25, 18, ["Vidrio", "Carton"] )
 
-  data(){
-    return{
-      origen:{
-        lat: undefined,
-        lng: undefined
-      },
-      destino:{
+  origen = {
+    latitud: 4.628305,
+    longitud: -74.064502
+  }
+      destino={
         lat:undefined,
         lng:undefined
-      },
-      mapOptions:{
-        fullscreenControl:false,
-        zoomControl: true,
-        mapTypeControl: false,
-        scaleControl: false,
-        streetViewControl: false,
-        rotateControl: false,
-        disableDefaultUi: false,
-      },
-      diflng:100,
-      diflat:100,
-      intervalid1:'',
+      }
+      diflng=100
+      diflat=100
+      intervalid1=''
 
-    }
-  }
 
   getCurrentPosition() {
     Geolocation.getCurrentPosition().then(position => {
-      this.origen.lat=position.coords.latitude
-      this.origen.lng=position.coords.longitude
+      this.origen.latitud=position.coords.latitude
+      this.origen.longitud=position.coords.longitude
       this.setUbicacion(this.origen)
 
     });
@@ -125,6 +95,48 @@ export default class Ruta extends Vue {
       this.todo()
     })
   }
+
+  mapa:Map | undefined = undefined;
+  marcadorUsuario:Marker | undefined = undefined;
+  marcadorCentro:Marker | undefined = undefined;
+
+  mounted(){
+    /*Geolocation.getCurrentPosition().then(position => {
+      this.origen.latitud = position.coords.latitude;
+      this.origen.longitud = position.coords.longitude;
+    });*/
+    console.log(this.centro)
+    this.mapa = new google.maps.Map(<Element> document.getElementById("mapa"), {
+      center: {lat: this.origen.latitud, lng: this.origen.longitud},
+      zoom: 13
+    });
+    this.marcadorUsuario = new google.maps.Marker({
+      position: {lat: this.origen.latitud, lng: this.origen.longitud},
+      map: this.mapa,
+      title: "Usted esta aqui",
+      label: "Y"
+    });
+    this.marcadorCentro = new google.maps.Marker({
+      position: {lat: this.centro.latitud, lng: this.centro.longitud},
+      map: this.mapa,
+      title: this.centro.nombre,
+      label: this.centro.nombre[0]
+    });
+    let renderDirecciones =  new google.maps.DirectionsRenderer();
+    let servicioDirecciones = new google.maps.DirectionsService();
+    let peticion = {
+      origin: {lat: this.origen.latitud, lng: this.origen.longitud},
+      destination: {lat: this.centro.latitud, lng: this.centro.longitud},
+      travelMode: google.maps.TravelMode.DRIVING
+    }
+    renderDirecciones.setMap(this.mapa);
+    servicioDirecciones.route(peticion, ((result, status) => {
+      if(status === "OK"){
+        renderDirecciones.setDirections(result);
+      }
+    }));
+  }
+
 
   beforeDestroy () {
     // we do cleanup
@@ -193,6 +205,8 @@ export default class Ruta extends Vue {
      this.verficarCercania();
     }, 2000);
   }
+
+
 
 
 }
