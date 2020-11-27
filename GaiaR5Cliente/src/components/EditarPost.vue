@@ -10,7 +10,7 @@
     <editando-post-componente class="q-ma-xl"  :post-enviado="variablePost"/>
 
     <div class="column relative-position container   flex flex-center" >
-      <q-btn class="q-my-xs"  color="light-green">
+      <q-btn class="q-my-xs"  color="light-green" >
         <div class="row items-center no-wrap">
           <q-icon left name="post_add" />
           <div class="text-center">
@@ -48,9 +48,6 @@ export default class PaginaInicio extends Vue {
   )
 
 
-
-
-  //llamar a la Bd usaurio
 
   crearpost()
   {

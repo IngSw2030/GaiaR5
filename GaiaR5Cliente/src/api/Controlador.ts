@@ -67,6 +67,7 @@ export default class Controlador {
     }
   }
 
+
   private static tokenizar(config: AxiosRequestConfig | undefined): AxiosRequestConfig | undefined {
     if (this.token != "") {
       if (config) {
