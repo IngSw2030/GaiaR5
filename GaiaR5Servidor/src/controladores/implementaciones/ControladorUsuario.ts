@@ -122,6 +122,20 @@ export default class ControladorUsuario extends SuperControlador implements ICon
                         res.sendStatus(401);
                     }
                 }
+            ),
+            new EndPoint(
+                "usuario/suscripcion",
+                metodoEnum.POST,
+                async (req, res) => {
+                    try {
+                        let {cedula} = Autentificacion.verificar(req);
+                        await this.seguirUsuario(cedula, req.body.seguido);
+                        res.sendStatus(200);
+                    } catch (e) {
+                        console.log(e);
+                        res.sendStatus(401);
+                    }
+                }
             )
         ];
     }
@@ -138,7 +152,7 @@ export default class ControladorUsuario extends SuperControlador implements ICon
         });
         let props = consulta.records[0].get('n').properties;
         delete props.pass;
-        return new Usuario(props.nombre, props.cedula, props.email);
+        return new Usuario(props.nombre, props.cedula, props.email, props.avatar);
     }
 
     async asignarSemillas(cedula: string, semillas: number) {
@@ -254,6 +268,14 @@ export default class ControladorUsuario extends SuperControlador implements ICon
         });
         console.log(consulta.records);
         return DB.obtenerInstancia().desempacarRegistros(consulta.records, "m");
+    }
+
+    async seguirUsuario(seguidor:string, seguido:string){
+        let query = "MATCH (seguidor:Usuario{cedula:$seguidor}), (seguido:Usuario{cedula:$seguido}) CREATE (seguidor)-[sigue:Sigue]->(seguido)";
+        await DB.obtenerInstancia().session.run(query, {
+            seguidor,
+            seguido
+        });
     }
 
 }

@@ -134,12 +134,29 @@ export default class ControladorPost extends SuperControlador implements IContro
                 async (req, res) => {
                     try {
                         let {admin} = Autentificacion.verificar(req);
-                        if(admin){
+                        if (admin) {
                             res.send(await this.reportePostsReportados());
-                        }else{
+                        } else {
                             res.sendStatus(403);
                         }
                     } catch (e) {
+                        if (e.message == "Token invalido") {
+                            res.sendStatus(403);
+                        } else {
+                            res.sendStatus(500);
+                        }
+                    }
+                }
+            ),
+            new EndPoint(
+                "post/home",
+                metodoEnum.GET,
+                async (req, res) => {
+                    try {
+                        let {cedula} = Autentificacion.verificar(req);
+                        res.send(await this.home(cedula));
+                    } catch (e) {
+                        console.log(e);
                         if (e.message == "Token invalido") {
                             res.sendStatus(403);
                         } else {
@@ -285,7 +302,8 @@ export default class ControladorPost extends SuperControlador implements IContro
     }
 
     async comentar(cedula: string, post: Post, comentario: string) {
-        let coment = new Comentario(cedula, comentario, Date.now());
+        let coment: Comentario;
+        coment = new Comentario(cedula, comentario, Date.now());
         let consulta = await DB.obtenerInstancia().session.run("MATCH (p:Post{titulo: $titulo, creador: $creador}), (u:Usuario{cedula: $cedula}) CREATE (u)-[c:Comenta $comentario]->(p) RETURN c", {
             titulo: post.titulo,
             creador: post.creador,
@@ -315,5 +333,26 @@ export default class ControladorPost extends SuperControlador implements IContro
         let query = "MATCH ()-[reporte:Reporta{solucionado:FALSE}]->(post:Post) RETURN reporte, post";
         let consulta = await DB.obtenerInstancia().session.run(query);
         return DB.obtenerInstancia().desempacarRegistros(consulta.records, ["reporte", "post"]);
+    }
+
+    async home(cedula: string) {
+        let query = "MATCH (usuario:Usuario {cedula: $cedula})-[:Sigue]->(seguido:Usuario)-[:Postea]->(post:Post) RETURN post ORDER BY post.publicacion DESC LIMIT 10";
+        let consulta = await DB.obtenerInstancia().session.run(query, {
+            cedula
+        });
+        let postSeguidos = DB.obtenerInstancia().desempacarRegistros(consulta.records, "post");
+        query = "MATCH (post:Post), (usuario:Usuario {cedula: $cedula})  WHERE NOT (usuario)-[:Sigue]->(:Usuario)-[:Postea]->(:Post) RETURN post ORDER BY post.publicacion DESC LIMIT 10";
+        consulta = await DB.obtenerInstancia().session.run(query, {
+            cedula
+        });
+        let postRandom = DB.obtenerInstancia().desempacarRegistros(consulta.records, "post");
+        let home = [];
+        if(postSeguidos){
+            home = [...postSeguidos];
+        }
+        if(postRandom){
+            home = [...home, ...postRandom];
+        }
+        return home;
     }
 }
