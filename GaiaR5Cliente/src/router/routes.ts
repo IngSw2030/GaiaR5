@@ -21,16 +21,15 @@ const routes: RouteConfig[] = [
       {path: '/editarPost', component: () => import('components/EditarPost.vue')},
       {path: '/registroUsuario', component: () => import('components/RegistroUsuario.vue')},
       {path: '/editarUsuario', component: () => import('components/EditarPerfilUsuario.vue')},
-      {path: '/miPerfil', component: () => import('components/PerfilUsuario.vue')},
       {path: '/visitarPerfil', component: () => import('components/VisitarPerfil.vue')},
       {path: '/buscarPost', component: () => import('components/BuscarPost.vue')},
       {path: '/chat', component: () => import('components/Chat.vue')},
       {path: '/chatHistorial', component: () => import('components/HistorialChat.vue')},
       {path: '/editarComentario', component: () => import('components/editarComentario.vue')},
       {path: '/nuevoPost', component: () => import('src/pages/EditarPost.vue')},
-      {path: '/testPerfilUsuario/:cedula', component: () => import('src/pages/PerfilUsuario.vue')}
+      {path: '/mapaBusqueda', component: () => import('src/pages/MapaGeneral.vue')},
+      {path: '/perfilUsuario/:cedula', component: () => import('src/pages/PerfilUsuario.vue')}
     ]
-
   },
 
   // Always leave this as last one,

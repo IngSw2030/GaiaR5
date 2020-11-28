@@ -76,6 +76,7 @@ export default class ContenidoCluster extends Vue {
         }
       });
       this.posts = consulta.data;
+      console.log(this.posts);
     } catch (e) {
       console.log(e);
     }

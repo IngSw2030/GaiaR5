@@ -74,13 +74,13 @@
 
           </q-item>
 
-          <q-item v-ripple clickable>
+          <q-item v-ripple clickable to="/editarPost">
             <q-item-section avatar>
               <q-icon name="favorite" style="color: #7FA949;"/>
             </q-item-section>
 
             <q-item-section class="text-dark">
-              Chat
+              Crear post
             </q-item-section>
 
             <q-item-section avatar>
@@ -92,7 +92,7 @@
 
 
 
-          <q-item v-ripple active clickable to="/cerca">
+          <q-item v-ripple active clickable to="/mapaBusqueda">
             <q-item-section avatar>
               <q-icon name="location_on" style="color: #7FA949;"/>
             </q-item-section>
@@ -143,7 +143,7 @@
       </q-scroll-area>
 
       <q-img class="absolute-top" style=" height: 150px; background-color: #fdebc7">
-        <div class="absolute-bottom" style="background-color: #fdebc7">
+        <div class="absolute-bottom" style="background-color: #fdebc7" @click="irPerfil">
 
           <div
             class="relative-position container   flex flex-center">
@@ -187,6 +187,9 @@ export default class MainLayout extends Vue {
     this.$q.cookies.remove("token");
     this.$store.commit("store_user/actualizarUsuario", undefined);
     this.$router.push("/");
+  }
+  public irPerfil(){
+    this.$router.push(`/perfilUsuario/${this.usuario.cedula}`);
   }
 }
 </script>
