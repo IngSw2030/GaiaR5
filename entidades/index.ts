@@ -6,3 +6,4 @@ export {default as Comentario} from "./Comentario";
 export {default as Mensaje} from "./Mensaje";
 export {default as Post} from "./Post";
 export {default as Usuario} from "./Usuario";
+export {default as Contenido} from "./Contenido";
