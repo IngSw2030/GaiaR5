@@ -26,7 +26,7 @@
       <q-item-section>
         <div>
           <q-chip v-for="tag in postEnviado.tags" :label="tag" icon="label" style="background-color: #fbf5d8"
-                  text-color="light-green"/>
+                  text-color="light-green" :key="postEnviado.titulo+tag"/>
         </div>
       </q-item-section>
       <q-item-section side>

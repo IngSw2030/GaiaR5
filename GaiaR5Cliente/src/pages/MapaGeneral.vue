@@ -11,7 +11,7 @@
               <q-item-label>Resultados</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item v-for="centro in resultado">
+          <q-item v-for="centro in resultado" :key="centro.nombre">
             <centro-acopio-busqueda :centro="centro"></centro-acopio-busqueda>
           </q-item>
         </q-list>

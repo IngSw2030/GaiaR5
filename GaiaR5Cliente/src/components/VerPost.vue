@@ -8,7 +8,7 @@
     </q-item>
 
     <post-componente class="q-my-md"  :post-enviado="variablePost"/>
-    <comentario-componente class="q-my-md"  v-for="coment in listaComent" :comentario-enviado="coment"/>
+    <comentario-componente class="q-my-md"  v-for="coment in listaComent" :comentario-enviado="coment" :key="coment.autor + coment.publicacion"/>
     <q-input standout="bg-light-green text-white" v-model="nuevoComentario" label="¿Qué opinas de este post?">
       <template v-slot:prepend>
         <q-icon name="label" />

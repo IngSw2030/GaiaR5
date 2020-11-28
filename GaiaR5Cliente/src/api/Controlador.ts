@@ -2,7 +2,7 @@ import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 import {Cookies} from "quasar";
 
 export default class Controlador {
-  private static URL: string = "http://66e295d86ba6.ngrok.io";
+  private static URL: string = "http://localhost:4557";
   private static token: string = "";
 
   public static cerrarSesion() {

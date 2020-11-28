@@ -58,7 +58,7 @@
     <q-separator />
 
     <q-card-section>
-      <q-chip  style="background-color: #fbf5d8" v-for="(tag, index) in listaTags" icon="label" :label="tag"  text-color="light-green" >
+      <q-chip  style="background-color: #fbf5d8" v-for="(tag, index) in listaTags" icon="label" :label="tag"  text-color="light-green" :key="autor+tag" >
         <q-btn
           class="q-mx-xs"
           round

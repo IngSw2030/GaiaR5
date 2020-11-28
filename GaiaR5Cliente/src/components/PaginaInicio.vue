@@ -16,7 +16,7 @@
       </div>
 
 
-      <post-componente  class="q-ma-xl" v-for="post in listaPost" :post-enviado="post" @click="seleccionarPost(post)"/>
+      <post-componente  class="q-ma-xl" v-for="post in listaPost" :post-enviado="post" @click="seleccionarPost(post)" :key="post.creador+post.titulo"/>
 
     </div>
 
