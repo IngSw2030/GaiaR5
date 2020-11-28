@@ -2,7 +2,7 @@ import SuperControlador from "../SuperControlador";
 import IControlador from "../IControlador";
 import Controlador from "../Controlador";
 import {Express} from "express";
-import {Comentario, Post} from "../../../../entidades";
+import {Comentario, Post, Contenido} from "../../../../entidades";
 import DB from "../../db";
 import EndPoint, {metodoEnum} from "../EndPoint";
 import Autentificacion, {Payload} from "../../servicios/Autentificacion";
@@ -20,10 +20,12 @@ export default class ControladorPost extends SuperControlador implements IContro
                 metodoEnum.POST,
                 async (req, res) => {
                     try {
+                        console.log(req.headers);
                         let token: Payload = Autentificacion.verificar(req);
                         let estado = (await this.crearPost(Post.hidratar(req.body), token.cedula)) ? 200 : 500;
                         res.sendStatus(estado);
                     } catch (e) {
+                        console.log(e);
                         res.sendStatus(403);
                     }
                 }
@@ -176,6 +178,18 @@ export default class ControladorPost extends SuperControlador implements IContro
                         res.status(500).send(e);
                     }
                 }
+            ),
+            new EndPoint(
+                "post/comentarios",
+                metodoEnum.GET,
+                async (req, res) => {
+                    try {
+                        res.send(await this.buscarComentarios(req.query.titulo, req.query.creador));
+                    } catch (e) {
+                        console.log(e);
+                        res.status(500).send(e);
+                    }
+                }
             )
         ];
     }
@@ -186,9 +200,27 @@ export default class ControladorPost extends SuperControlador implements IContro
         this.exponer();
     }
 
+    private async addContenido(post:Post){
+        let contenido = await DB.obtenerInstancia().session.run("MATCH (post:Post{creador: $creador, titulo: $titulo})-[:Contiene]-(c:Contenido) RETURN c ORDER BY c.orden", {
+            creador: post.creador,
+            titulo: post.titulo
+        });
+        let contenidoArray = DB.obtenerInstancia().desempacarRegistros(contenido.records, "c");
+        post.contenido = contenidoArray;
+        return post;
+    }
+
+    private async poblarContenido(posts:Post[]){
+        for(let post of posts){
+            post = await this.addContenido(post);
+        }
+        return posts;
+    }
+
     public async crearPost(post: Post, cedulaUsuario: string): Promise<boolean> {
         try {
-            console.log(post);
+            let contenido = post.contenido;
+            delete post.contenido;
             await DB.obtenerInstancia().session.run(
                 "MATCH (u:Usuario) WHERE u.cedula = $cedulaUsuario WITH u CREATE (u)-[r:Postea]->(p:Post $post) RETURN p",
                 {
@@ -206,6 +238,21 @@ export default class ControladorPost extends SuperControlador implements IContro
                     }
                 );
             }
+            let i=0;
+            for (let item of contenido) {
+                await DB.obtenerInstancia().session.run(
+                    "MATCH (p:Post {creador: $creador, titulo: $titulo}) MERGE (c:Contenido{tipo:$tipo, texto:$texto, enlace: $enlace, orden: $orden}) WITH p, c CREATE (p)-[:Contiene]->(c)",
+                    {
+                        creador: cedulaUsuario,
+                        titulo: post.titulo,
+                        tipo: item.tipo,
+                        texto: item.texto,
+                        enlace: item.enlace,
+                        orden: i
+                    }
+                );
+                i++;
+            }
             return true;
         } catch (e) {
             console.log(e);
@@ -217,7 +264,7 @@ export default class ControladorPost extends SuperControlador implements IContro
         let query = `MATCH (p:Post) WHERE p.titulo =~ '(?i).*${titulo}.*' RETURN p`
         try {
             let respuesta = await DB.obtenerInstancia().session.run(query);
-            return (DB.obtenerInstancia().desempacarRegistros(respuesta.records, "p"));
+            return (await this.poblarContenido(DB.obtenerInstancia().desempacarRegistros(respuesta.records, "p")));
         } catch (e) {
             throw e;
         }
@@ -231,7 +278,7 @@ export default class ControladorPost extends SuperControlador implements IContro
                     tags
                 }
             );
-            return (DB.obtenerInstancia().desempacarRegistros(respuesta.records, "p"));
+            return (await this.poblarContenido(DB.obtenerInstancia().desempacarRegistros(respuesta.records, "p")));
         } catch (e) {
             throw e;
         }
@@ -259,6 +306,8 @@ export default class ControladorPost extends SuperControlador implements IContro
     public async editarPost(postActual: Post, postNuevo: Post) {
         let {creador, titulo} = postActual;
         try {
+            delete postActual.contenido;
+            delete postNuevo.contenido;
             await DB.obtenerInstancia().session.run(
                 "MATCH (p:Post) WHERE p.creador = $creador AND p.titulo = $titulo SET p+=$postNuevo RETURN p",
                 {
@@ -352,12 +401,12 @@ export default class ControladorPost extends SuperControlador implements IContro
         let consulta = await DB.obtenerInstancia().session.run(query, {
             cedula
         });
-        let postSeguidos = DB.obtenerInstancia().desempacarRegistros(consulta.records, "post");
+        let postSeguidos = await this.poblarContenido(DB.obtenerInstancia().desempacarRegistros(consulta.records, "post"));
         query = "MATCH (post:Post), (usuario:Usuario {cedula: $cedula})  WHERE NOT (usuario)-[:Sigue]->(:Usuario)-[:Postea]->(:Post) RETURN post ORDER BY post.publicacion DESC LIMIT 10";
         consulta = await DB.obtenerInstancia().session.run(query, {
             cedula
         });
-        let postRandom = DB.obtenerInstancia().desempacarRegistros(consulta.records, "post");
+        let postRandom = await this.poblarContenido(DB.obtenerInstancia().desempacarRegistros(consulta.records, "post"));
         let home = [];
         if(postSeguidos){
             home = [...postSeguidos];
@@ -371,6 +420,14 @@ export default class ControladorPost extends SuperControlador implements IContro
     async postPorUsuario(cedula: string){
         let query = "MATCH (usuario:Usuario{cedula:$cedula})-[:Postea]-(post:Post) RETURN post";
         let consulta = await DB.obtenerInstancia().session.run(query, {cedula:cedula});
-        return DB.obtenerInstancia().desempacarRegistros(consulta.records, "post");
+        return await this.poblarContenido(DB.obtenerInstancia().desempacarRegistros(consulta.records, "post"));
+    }
+
+    async buscarComentarios( titulo, creador ){
+        let query = await DB.obtenerInstancia().session.run("MATCH (:Usuario)-[c:Comenta]->(p:Post{titulo: $titulo, creador: $creador}) RETURN c ORDER BY c.publicacion", {
+            titulo: titulo,
+            creador: creador
+        });
+        return DB.obtenerInstancia().desempacarRegistros(query.records, "c");
     }
 }
